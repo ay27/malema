@@ -1,0 +1,3544 @@
+{
+  "schema": "malema-lexicon-supplement/v1",
+  "base_sha256": "877dc2358bf7852e4e94f8f5dc929825a0d7fdd44d8ce484e2cd8f7fe3dc93ca",
+  "model": "gpt-5.6-luna",
+  "reasoning_effort": "max",
+  "status": "candidate",
+  "summaries": {
+    "zh": {
+      "generated_families": 60,
+      "generated_forms": 173,
+      "discarded_review": 5,
+      "discarded_format": 1,
+      "new_unique_forms": 167,
+      "categories": {
+        "artifact_insult": 36,
+        "contextual": 58,
+        "personal_insult": 53,
+        "vulgarity": 20
+      },
+      "new_forms_from_families": 60
+    },
+    "en": {
+      "generated_families": 60,
+      "generated_forms": 231,
+      "discarded_review": 9,
+      "duplicate_in_supplement": 2,
+      "new_unique_forms": 220,
+      "categories": {
+        "artifact_insult": 39,
+        "contextual": 87,
+        "personal_insult": 78,
+        "vulgarity": 16
+      },
+      "new_forms_from_families": 60
+    }
+  },
+  "generation": {
+    "zh": {
+      "full_public_base_forms": 318,
+      "usage": {
+        "input_tokens": 17718,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 24241,
+        "reasoning_output_tokens": 22246
+      }
+    },
+    "en": {
+      "full_public_base_forms": 908,
+      "usage": {
+        "input_tokens": 19924,
+        "cached_input_tokens": 0,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19396,
+        "reasoning_output_tokens": 17206
+      }
+    }
+  },
+  "terms": [
+    {
+      "language": "en",
+      "text": "a dumpster fire",
+      "family": "dumpster fire",
+      "category": "artifact_insult",
+      "note": "灾难性比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "a hot mess",
+      "family": "hot mess",
+      "category": "contextual",
+      "note": "混乱状态比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute bozo",
+      "family": "bozo",
+      "category": "personal_insult",
+      "note": "小丑式骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute clown",
+      "family": "clown",
+      "category": "personal_insult",
+      "note": "小丑，也可字面",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute clown show",
+      "family": "clown show",
+      "category": "artifact_insult",
+      "note": "嘲讽混乱产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute drongo",
+      "family": "drongo",
+      "category": "personal_insult",
+      "note": "澳洲骂人，也指鸟",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute dropkick",
+      "family": "dropkick",
+      "category": "personal_insult",
+      "note": "澳洲骂人，也指踢法",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute dumpster fire",
+      "family": "dumpster fire",
+      "category": "artifact_insult",
+      "note": "灾难性比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute hot mess",
+      "family": "hot mess",
+      "category": "contextual",
+      "note": "混乱状态比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute numpty",
+      "family": "numpty",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute pillock",
+      "family": "pillock",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute plonker",
+      "family": "plonker",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute prick",
+      "family": "prick",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute shitshow",
+      "family": "shitshow",
+      "category": "artifact_insult",
+      "note": "混乱失败现场",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "absolute trainwreck",
+      "family": "trainwreck",
+      "category": "contextual",
+      "note": "失败或混乱比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bloody idiot",
+      "family": "bloody idiot",
+      "category": "personal_insult",
+      "note": "英澳粗口骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bloody useless idiot",
+      "family": "bloody idiot",
+      "category": "personal_insult",
+      "note": "英澳粗口骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bozo",
+      "family": "bozo",
+      "category": "personal_insult",
+      "note": "小丑式骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bozo bot",
+      "family": "bozo",
+      "category": "personal_insult",
+      "note": "小丑式骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "brain dead",
+      "family": "brain-dead",
+      "category": "contextual",
+      "note": "骂人或骂AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "brain-dead",
+      "family": "brain-dead",
+      "category": "contextual",
+      "note": "骂人或骂AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "brain-dead bot",
+      "family": "brain-dead",
+      "category": "personal_insult",
+      "note": "骂人或骂AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "braindead",
+      "family": "brain-dead",
+      "category": "contextual",
+      "note": "骂人或骂AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken ai",
+      "family": "broken bot",
+      "category": "contextual",
+      "note": "直指AI故障",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken ass code",
+      "family": "broken-ass code",
+      "category": "artifact_insult",
+      "note": "粗俗说代码坏",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken bot",
+      "family": "broken bot",
+      "category": "contextual",
+      "note": "直指AI故障",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken chatbot",
+      "family": "broken bot",
+      "category": "contextual",
+      "note": "直指AI故障",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken-as-fuck code",
+      "family": "broken-ass code",
+      "category": "artifact_insult",
+      "note": "粗俗说代码坏",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken-ass bot",
+      "family": "broken bot",
+      "category": "contextual",
+      "note": "直指AI故障",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "broken-ass code",
+      "family": "broken-ass code",
+      "category": "artifact_insult",
+      "note": "粗俗说代码坏",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bs generator",
+      "family": "bullshit generator",
+      "category": "artifact_insult",
+      "note": "胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bug factory",
+      "family": "bug factory",
+      "category": "contextual",
+      "note": "漏洞制造者",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bug generator",
+      "family": "bug factory",
+      "category": "contextual",
+      "note": "漏洞制造者",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bug-factory",
+      "family": "bug factory",
+      "category": "contextual",
+      "note": "漏洞制造者",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bug-generating code",
+      "family": "bug factory",
+      "category": "contextual",
+      "note": "漏洞制造者",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bullsh*t generator",
+      "family": "bullshit generator",
+      "category": "artifact_insult",
+      "note": "胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bullshit generator",
+      "family": "bullshit generator",
+      "category": "artifact_insult",
+      "note": "胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "bullshit machine",
+      "family": "bullshit generator",
+      "category": "artifact_insult",
+      "note": "胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "clown",
+      "family": "clown",
+      "category": "contextual",
+      "note": "小丑，也可字面",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "clown bot",
+      "family": "clown",
+      "category": "personal_insult",
+      "note": "小丑，也可字面",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "clown show",
+      "family": "clown show",
+      "category": "artifact_insult",
+      "note": "嘲讽混乱产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "clown-show",
+      "family": "clown show",
+      "category": "artifact_insult",
+      "note": "嘲讽混乱产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "code vomit",
+      "family": "code vomit",
+      "category": "artifact_insult",
+      "note": "代码像呕吐物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "code-vomit",
+      "family": "code vomit",
+      "category": "artifact_insult",
+      "note": "代码像呕吐物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "confidently incorrect",
+      "family": "confidently wrong",
+      "category": "contextual",
+      "note": "自信但错误",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "confidently wrong",
+      "family": "confidently wrong",
+      "category": "contextual",
+      "note": "自信但错误",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "confidently wrong bot",
+      "family": "confidently wrong",
+      "category": "contextual",
+      "note": "自信但错误",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "copy paste garbage",
+      "family": "copy-paste garbage",
+      "category": "artifact_insult",
+      "note": "粘贴拼凑的垃圾",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "copy-paste garbage",
+      "family": "copy-paste garbage",
+      "category": "artifact_insult",
+      "note": "粘贴拼凑的垃圾",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "copy-paste junk",
+      "family": "copy-paste garbage",
+      "category": "artifact_insult",
+      "note": "粘贴拼凑的垃圾",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "copy-pasted garbage",
+      "family": "copy-paste garbage",
+      "category": "artifact_insult",
+      "note": "粘贴拼凑的垃圾",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dick head",
+      "family": "dickhead",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dick-head",
+      "family": "dickhead",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dickhead",
+      "family": "dickhead",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dip shit",
+      "family": "dipshit",
+      "category": "personal_insult",
+      "note": "粗俗蠢货",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dip-shit",
+      "family": "dipshit",
+      "category": "personal_insult",
+      "note": "粗俗蠢货",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dipshit",
+      "family": "dipshit",
+      "category": "personal_insult",
+      "note": "粗俗蠢货",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "douche bag",
+      "family": "douchebag",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "douche-bag",
+      "family": "douchebag",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "douchebag",
+      "family": "douchebag",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "drongo",
+      "family": "drongo",
+      "category": "contextual",
+      "note": "澳洲骂人，也指鸟",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "drop-kick",
+      "family": "dropkick",
+      "category": "contextual",
+      "note": "澳洲骂人，也指踢法",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dropkick",
+      "family": "dropkick",
+      "category": "contextual",
+      "note": "澳洲骂人，也指踢法",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumb arse",
+      "family": "dumbass",
+      "category": "personal_insult",
+      "note": "粗俗笨蛋",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumb-ass",
+      "family": "dumbass",
+      "category": "personal_insult",
+      "note": "粗俗笨蛋",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumbarse",
+      "family": "dumbass",
+      "category": "personal_insult",
+      "note": "粗俗笨蛋",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumbass",
+      "family": "dumbass",
+      "category": "personal_insult",
+      "note": "粗俗笨蛋",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumpster fire",
+      "family": "dumpster fire",
+      "category": "artifact_insult",
+      "note": "灾难性比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "dumpster-fire",
+      "family": "dumpster fire",
+      "category": "artifact_insult",
+      "note": "灾难性比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "f**k off",
+      "family": "fuck off",
+      "category": "vulgarity",
+      "note": "粗俗赶人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "f*ck off",
+      "family": "fuck off",
+      "category": "vulgarity",
+      "note": "粗俗赶人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "f.u.b.a.r.",
+      "family": "fubar",
+      "category": "contextual",
+      "note": "军事缩写，指彻底失效",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "fancy autocomplete",
+      "family": "glorified autocomplete",
+      "category": "contextual",
+      "note": "讽刺仅会补全",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "fck off",
+      "family": "fuck off",
+      "category": "vulgarity",
+      "note": "粗俗赶人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "ffs",
+      "family": "for fuck's sake",
+      "category": "contextual",
+      "note": "粗口抱怨",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "for f's sake",
+      "family": "for fuck's sake",
+      "category": "vulgarity",
+      "note": "粗口抱怨",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "for f***'s sake",
+      "family": "for fuck's sake",
+      "category": "vulgarity",
+      "note": "粗口抱怨",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "for fuck's sake",
+      "family": "for fuck's sake",
+      "category": "vulgarity",
+      "note": "粗口抱怨",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "fubar",
+      "family": "fubar",
+      "category": "contextual",
+      "note": "军事缩写，指彻底失效",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "fubar'd",
+      "family": "fubar",
+      "category": "contextual",
+      "note": "军事缩写，指彻底失效",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "fuck off",
+      "family": "fuck off",
+      "category": "vulgarity",
+      "note": "粗俗赶人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "garbage answer",
+      "family": "garbage answer",
+      "category": "artifact_insult",
+      "note": "贬损回答",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "garbage output",
+      "family": "garbage answer",
+      "category": "artifact_insult",
+      "note": "贬损回答",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "garbage reply",
+      "family": "garbage answer",
+      "category": "artifact_insult",
+      "note": "贬损回答",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "garbage response",
+      "family": "garbage answer",
+      "category": "artifact_insult",
+      "note": "贬损回答",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "gfy",
+      "family": "go fuck yourself",
+      "category": "contextual",
+      "note": "强烈粗俗驱逐",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "glorified auto-complete",
+      "family": "glorified autocomplete",
+      "category": "contextual",
+      "note": "讽刺仅会补全",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "glorified autocomplete",
+      "family": "glorified autocomplete",
+      "category": "contextual",
+      "note": "讽刺仅会补全",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "glorified autocomplete bot",
+      "family": "glorified autocomplete",
+      "category": "contextual",
+      "note": "讽刺仅会补全",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "go f yourself",
+      "family": "go fuck yourself",
+      "category": "vulgarity",
+      "note": "强烈粗俗驱逐",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "go f*** yourself",
+      "family": "go fuck yourself",
+      "category": "vulgarity",
+      "note": "强烈粗俗驱逐",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "go fuck yourself",
+      "family": "go fuck yourself",
+      "category": "vulgarity",
+      "note": "强烈粗俗驱逐",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "go touch grass",
+      "family": "touch grass",
+      "category": "contextual",
+      "note": "叫人离网清醒",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "good one, genius",
+      "family": "nice try, genius",
+      "category": "contextual",
+      "note": "挖苦式称赞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "goofy ahh",
+      "family": "goofy ahh",
+      "category": "contextual",
+      "note": "网络委婉粗口",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "goofy ahh bot",
+      "family": "goofy ahh",
+      "category": "contextual",
+      "note": "网络委婉粗口",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "goofy ass",
+      "family": "goofy ahh",
+      "category": "contextual",
+      "note": "网络委婉粗口",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "goofy-ass",
+      "family": "goofy ahh",
+      "category": "contextual",
+      "note": "网络委婉粗口",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hallucinating bot",
+      "family": "hallucination machine",
+      "category": "contextual",
+      "note": "讽刺AI幻觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hallucination bot",
+      "family": "hallucination machine",
+      "category": "contextual",
+      "note": "讽刺AI幻觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hallucination engine",
+      "family": "hallucination machine",
+      "category": "contextual",
+      "note": "讽刺AI幻觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hallucination machine",
+      "family": "hallucination machine",
+      "category": "contextual",
+      "note": "讽刺AI幻觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hot mess",
+      "family": "hot mess",
+      "category": "contextual",
+      "note": "混乱状态比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "hot-mess",
+      "family": "hot mess",
+      "category": "contextual",
+      "note": "混乱状态比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "idiot",
+      "family": "idiot",
+      "category": "personal_insult",
+      "note": "笨蛋，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "idiotic",
+      "family": "idiot",
+      "category": "contextual",
+      "note": "笨蛋，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "imbecile",
+      "family": "imbecile",
+      "category": "personal_insult",
+      "note": "蠢人，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "imbecilic",
+      "family": "imbecile",
+      "category": "contextual",
+      "note": "蠢人，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "jack-ass",
+      "family": "jackass",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "jackass",
+      "family": "jackass",
+      "category": "contextual",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "knob head",
+      "family": "knobhead",
+      "category": "personal_insult",
+      "note": "英澳粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "knob-head",
+      "family": "knobhead",
+      "category": "personal_insult",
+      "note": "英澳粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "knobhead",
+      "family": "knobhead",
+      "category": "personal_insult",
+      "note": "英澳粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "l + ratio",
+      "family": "l + ratio",
+      "category": "contextual",
+      "note": "网络输赢嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "l + ratio + bozo",
+      "family": "l + ratio",
+      "category": "contextual",
+      "note": "网络输赢嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "l bozo",
+      "family": "l + ratio",
+      "category": "contextual",
+      "note": "网络输赢嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "l+ratio",
+      "family": "l + ratio",
+      "category": "contextual",
+      "note": "网络输赢嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "major skill issue",
+      "family": "skill issue",
+      "category": "contextual",
+      "note": "网络嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "moron",
+      "family": "moron",
+      "category": "personal_insult",
+      "note": "蠢货，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "moronic",
+      "family": "moron",
+      "category": "contextual",
+      "note": "蠢货，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "muppet",
+      "family": "muppet",
+      "category": "contextual",
+      "note": "英式轻骂，也指木偶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nice one, genius",
+      "family": "nice try, genius",
+      "category": "contextual",
+      "note": "挖苦式称赞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nice try genius",
+      "family": "nice try, genius",
+      "category": "contextual",
+      "note": "挖苦式称赞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nice try, genius",
+      "family": "nice try, genius",
+      "category": "contextual",
+      "note": "挖苦式称赞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nonsense bot",
+      "family": "nonsense generator",
+      "category": "artifact_insult",
+      "note": "贬损胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nonsense generator",
+      "family": "nonsense generator",
+      "category": "artifact_insult",
+      "note": "贬损胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "nonsense machine",
+      "family": "nonsense generator",
+      "category": "artifact_insult",
+      "note": "贬损胡说机器",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "numpty",
+      "family": "numpty",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "p.o.s.",
+      "family": "pos",
+      "category": "contextual",
+      "note": "侮辱缩写，也指销售点",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "pillock",
+      "family": "pillock",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "please touch grass",
+      "family": "touch grass",
+      "category": "contextual",
+      "note": "叫人离网清醒",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "plonker",
+      "family": "plonker",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "pos",
+      "family": "pos",
+      "category": "contextual",
+      "note": "侮辱缩写，也指销售点",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "prick",
+      "family": "prick",
+      "category": "contextual",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "prickhead",
+      "family": "prick",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "scum bag",
+      "family": "scumbag",
+      "category": "personal_insult",
+      "note": "卑劣者辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "scum-bag",
+      "family": "scumbag",
+      "category": "personal_insult",
+      "note": "卑劣者辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "scumbag",
+      "family": "scumbag",
+      "category": "personal_insult",
+      "note": "卑劣者辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit for brains",
+      "family": "shit-for-brains",
+      "category": "personal_insult",
+      "note": "极粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit show",
+      "family": "shitshow",
+      "category": "artifact_insult",
+      "note": "混乱失败现场",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit stain",
+      "family": "shitstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit-for-brains",
+      "family": "shit-for-brains",
+      "category": "personal_insult",
+      "note": "极粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit-show",
+      "family": "shitshow",
+      "category": "artifact_insult",
+      "note": "混乱失败现场",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shit-stain",
+      "family": "shitstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shitforbrains",
+      "family": "shit-for-brains",
+      "category": "personal_insult",
+      "note": "极粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shitshow",
+      "family": "shitshow",
+      "category": "artifact_insult",
+      "note": "混乱失败现场",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shitstain",
+      "family": "shitstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shut tf up",
+      "family": "shut the fuck up",
+      "category": "vulgarity",
+      "note": "粗俗要求闭嘴",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shut the f up",
+      "family": "shut the fuck up",
+      "category": "vulgarity",
+      "note": "粗俗要求闭嘴",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "shut the fuck up",
+      "family": "shut the fuck up",
+      "category": "vulgarity",
+      "note": "粗俗要求闭嘴",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "skill issue",
+      "family": "skill issue",
+      "category": "contextual",
+      "note": "网络嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "skill-issue",
+      "family": "skill issue",
+      "category": "contextual",
+      "note": "网络嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "sounds like a skill issue",
+      "family": "skill issue",
+      "category": "contextual",
+      "note": "网络嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "spaghetti code",
+      "family": "spaghetti code",
+      "category": "contextual",
+      "note": "代码结构混乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "spaghetti codebase",
+      "family": "spaghetti code",
+      "category": "contextual",
+      "note": "代码结构混乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "spaghetti-code",
+      "family": "spaghetti code",
+      "category": "contextual",
+      "note": "代码结构混乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "spaghetti-code mess",
+      "family": "spaghetti code",
+      "category": "contextual",
+      "note": "代码结构混乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "steaming pile o' shit",
+      "family": "steaming pile of shit",
+      "category": "artifact_insult",
+      "note": "粗俗产物辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "steaming pile of crap",
+      "family": "steaming pile of shit",
+      "category": "artifact_insult",
+      "note": "粗俗产物辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "steaming pile of shit",
+      "family": "steaming pile of shit",
+      "category": "artifact_insult",
+      "note": "粗俗产物辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "stfu",
+      "family": "shut the fuck up",
+      "category": "contextual",
+      "note": "粗俗要求闭嘴",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "stochastic parrot",
+      "family": "stochastic parrot",
+      "category": "contextual",
+      "note": "AI批评术语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "stochastic parrots",
+      "family": "stochastic parrot",
+      "category": "contextual",
+      "note": "AI批评术语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "stochastic-parrot",
+      "family": "stochastic parrot",
+      "category": "contextual",
+      "note": "AI批评术语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "thanks for absolutely nothing",
+      "family": "thanks for nothing",
+      "category": "contextual",
+      "note": "讽刺毫无帮助",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "thanks for jack shit",
+      "family": "thanks for nothing",
+      "category": "contextual",
+      "note": "讽刺毫无帮助",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "thanks for nothing",
+      "family": "thanks for nothing",
+      "category": "contextual",
+      "note": "讽刺毫无帮助",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "this clown show",
+      "family": "clown show",
+      "category": "artifact_insult",
+      "note": "嘲讽混乱产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "touch grass",
+      "family": "touch grass",
+      "category": "contextual",
+      "note": "叫人离网清醒",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "touch some grass",
+      "family": "touch grass",
+      "category": "contextual",
+      "note": "叫人离网清醒",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "train wreck",
+      "family": "trainwreck",
+      "category": "contextual",
+      "note": "失败或混乱比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "train-wreck",
+      "family": "trainwreck",
+      "category": "contextual",
+      "note": "失败或混乱比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "trainwreck",
+      "family": "trainwreck",
+      "category": "contextual",
+      "note": "失败或混乱比喻",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "trash answer",
+      "family": "trash output",
+      "category": "artifact_insult",
+      "note": "贬损输出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "trash output",
+      "family": "trash output",
+      "category": "artifact_insult",
+      "note": "贬损输出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "trash reply",
+      "family": "trash output",
+      "category": "artifact_insult",
+      "note": "贬损输出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "trash response",
+      "family": "trash output",
+      "category": "artifact_insult",
+      "note": "贬损输出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "useless ai",
+      "family": "useless bot",
+      "category": "personal_insult",
+      "note": "直指AI无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "useless bot",
+      "family": "useless bot",
+      "category": "personal_insult",
+      "note": "直指AI无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "useless chatbot",
+      "family": "useless bot",
+      "category": "personal_insult",
+      "note": "直指AI无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "useless-ass bot",
+      "family": "useless bot",
+      "category": "personal_insult",
+      "note": "直指AI无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "wank stain",
+      "family": "wankstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "wank-stain",
+      "family": "wankstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "wankstain",
+      "family": "wankstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what a fucking joke",
+      "family": "what a joke",
+      "category": "contextual",
+      "note": "讽刺无效结果",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what a joke",
+      "family": "what a joke",
+      "category": "contextual",
+      "note": "讽刺无效结果",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what a joke of a bot",
+      "family": "what a joke",
+      "category": "contextual",
+      "note": "讽刺无效结果",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what a joke of an answer",
+      "family": "what a joke",
+      "category": "contextual",
+      "note": "讽刺无效结果",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what a muppet",
+      "family": "muppet",
+      "category": "personal_insult",
+      "note": "英式轻骂，也指木偶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what tf",
+      "family": "what the fuck",
+      "category": "vulgarity",
+      "note": "粗口惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what the f",
+      "family": "what the fuck",
+      "category": "vulgarity",
+      "note": "粗口惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "what the fuck",
+      "family": "what the fuck",
+      "category": "vulgarity",
+      "note": "粗口惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "word salad",
+      "family": "word salad",
+      "category": "contextual",
+      "note": "中性术语或嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "word salad answer",
+      "family": "word salad",
+      "category": "contextual",
+      "note": "中性术语或嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "word salad response",
+      "family": "word salad",
+      "category": "contextual",
+      "note": "中性术语或嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "word-salad",
+      "family": "word salad",
+      "category": "contextual",
+      "note": "中性术语或嘲讽",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "wtf",
+      "family": "what the fuck",
+      "category": "contextual",
+      "note": "粗口惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you absolute muppet",
+      "family": "muppet",
+      "category": "personal_insult",
+      "note": "英式轻骂，也指木偶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you bloody idiot",
+      "family": "bloody idiot",
+      "category": "personal_insult",
+      "note": "英澳粗口骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you bozo",
+      "family": "bozo",
+      "category": "personal_insult",
+      "note": "小丑式骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you clown",
+      "family": "clown",
+      "category": "personal_insult",
+      "note": "小丑，也可字面",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you dickhead",
+      "family": "dickhead",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you dipshit",
+      "family": "dipshit",
+      "category": "personal_insult",
+      "note": "粗俗蠢货",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you douchebag",
+      "family": "douchebag",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you drongo",
+      "family": "drongo",
+      "category": "personal_insult",
+      "note": "澳洲骂人，也指鸟",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you dropkick",
+      "family": "dropkick",
+      "category": "personal_insult",
+      "note": "澳洲骂人，也指踢法",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you idiot",
+      "family": "idiot",
+      "category": "personal_insult",
+      "note": "笨蛋，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you imbecile",
+      "family": "imbecile",
+      "category": "personal_insult",
+      "note": "蠢人，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you jackass",
+      "family": "jackass",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you knobhead",
+      "family": "knobhead",
+      "category": "personal_insult",
+      "note": "英澳粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you moron",
+      "family": "moron",
+      "category": "personal_insult",
+      "note": "蠢货，直指AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you muppet",
+      "family": "muppet",
+      "category": "personal_insult",
+      "note": "英式轻骂，也指木偶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you numpty",
+      "family": "numpty",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you pillock",
+      "family": "pillock",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you plonker",
+      "family": "plonker",
+      "category": "personal_insult",
+      "note": "英式轻骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you prick",
+      "family": "prick",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you scumbag",
+      "family": "scumbag",
+      "category": "personal_insult",
+      "note": "卑劣者辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you shit-for-brains",
+      "family": "shit-for-brains",
+      "category": "personal_insult",
+      "note": "极粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you shitstain",
+      "family": "shitstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "en",
+      "text": "you wankstain",
+      "family": "wankstain",
+      "category": "personal_insult",
+      "note": "粗俗人格辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一句人话没有",
+      "family": "没一句人话",
+      "category": "artifact_insult",
+      "note": "强烈贬低表达",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一团乱麻",
+      "family": "乱七八糟",
+      "category": "contextual",
+      "note": "贬低组织质量",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一坨屎",
+      "family": "一坨屎",
+      "category": "artifact_insult",
+      "note": "强烈贬低产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一坨答辩",
+      "family": "一坨答辩",
+      "category": "artifact_insult",
+      "note": "贬低低质产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一堆废话",
+      "family": "废话连篇",
+      "category": "artifact_insult",
+      "note": "指回答空泛冗长",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一本正经地瞎扯",
+      "family": "一本正经胡说",
+      "category": "artifact_insult",
+      "note": "讽刺装专业乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一本正经胡说",
+      "family": "一本正经胡说",
+      "category": "artifact_insult",
+      "note": "讽刺装专业乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "一点屁用没有",
+      "family": "屁用没有",
+      "category": "artifact_insult",
+      "note": "指产出毫无用处",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "三脚猫",
+      "family": "半吊子",
+      "category": "contextual",
+      "note": "指水平很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "不懂装懂",
+      "family": "不懂装懂",
+      "category": "contextual",
+      "note": "指无知还卖弄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "丑到辣眼",
+      "family": "辣眼睛",
+      "category": "artifact_insult",
+      "note": "多说设计或视觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "丢人现眼",
+      "family": "现眼包",
+      "category": "contextual",
+      "note": "嘲笑丢脸表现",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "乱七八糟",
+      "family": "乱七八糟",
+      "category": "contextual",
+      "note": "贬低组织质量",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "乱成一锅粥",
+      "family": "乱七八糟",
+      "category": "contextual",
+      "note": "贬低组织质量",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "二愣子",
+      "family": "二货",
+      "category": "personal_insult",
+      "note": "粗俗指人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "二百五",
+      "family": "二货",
+      "category": "personal_insult",
+      "note": "粗俗指人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "二货",
+      "family": "二货",
+      "category": "personal_insult",
+      "note": "粗俗指人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "人工智障",
+      "family": "人工智障",
+      "category": "personal_insult",
+      "note": "专骂AI无能",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "人机",
+      "family": "人机",
+      "category": "contextual",
+      "note": "可指AI或反应机械",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "人機",
+      "family": "人机",
+      "category": "contextual",
+      "note": "可指AI或反应机械",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "什么玩意儿",
+      "family": "什么玩意儿",
+      "category": "contextual",
+      "note": "可骂人或产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "代码像坨屎",
+      "family": "屎山代码",
+      "category": "artifact_insult",
+      "note": "代码混乱难维护",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "你傻不傻",
+      "family": "你是不是傻",
+      "category": "personal_insult",
+      "note": "质疑智力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "你是不是傻",
+      "family": "你是不是傻",
+      "category": "personal_insult",
+      "note": "质疑智力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "你有病啊",
+      "family": "有病吧",
+      "category": "personal_insult",
+      "note": "可疑问也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "你算什么东西",
+      "family": "你算什么东西",
+      "category": "personal_insult",
+      "note": "强烈贬低身份",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "你算哪根葱",
+      "family": "你算什么东西",
+      "category": "personal_insult",
+      "note": "强烈贬低身份",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "依托答辩",
+      "family": "一坨答辩",
+      "category": "artifact_insult",
+      "note": "贬低低质产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "傻x",
+      "family": "傻缺",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "傻叉",
+      "family": "傻缺",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "傻缺",
+      "family": "傻缺",
+      "category": "personal_insult",
+      "note": "粗俗骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "像坨屎",
+      "family": "一坨屎",
+      "category": "artifact_insult",
+      "note": "强烈贬低产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "写的什么鬼",
+      "family": "鬼画符",
+      "category": "contextual",
+      "note": "贬低代码或设计",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "净扯淡",
+      "family": "扯淡",
+      "category": "vulgarity",
+      "note": "指胡说废话",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "净放屁",
+      "family": "放屁",
+      "category": "vulgarity",
+      "note": "骂其胡说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "北七",
+      "family": "北七",
+      "category": "contextual",
+      "note": "台湾网络骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "半吊子",
+      "family": "半吊子",
+      "category": "contextual",
+      "note": "指水平很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "半懂装懂",
+      "family": "不懂装懂",
+      "category": "contextual",
+      "note": "指无知还卖弄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "半桶水",
+      "family": "半吊子",
+      "category": "contextual",
+      "note": "指水平很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "卧槽",
+      "family": "卧槽",
+      "category": "vulgarity",
+      "note": "惊叹或发泄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "卧艹",
+      "family": "卧槽",
+      "category": "vulgarity",
+      "note": "惊叹或发泄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "去你大爷",
+      "family": "去你的",
+      "category": "vulgarity",
+      "note": "轻度粗口发泄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "去你的",
+      "family": "去你的",
+      "category": "vulgarity",
+      "note": "轻度粗口发泄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "呸",
+      "family": "我呸",
+      "category": "vulgarity",
+      "note": "不屑或厌恶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "呸呸",
+      "family": "我呸",
+      "category": "vulgarity",
+      "note": "不屑或厌恶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "啥玩意儿",
+      "family": "什么玩意儿",
+      "category": "contextual",
+      "note": "可骂人或产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "坑人玩意儿",
+      "family": "坑货",
+      "category": "personal_insult",
+      "note": "指不可靠添乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "坑爹货",
+      "family": "坑货",
+      "category": "personal_insult",
+      "note": "指不可靠添乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "坑货",
+      "family": "坑货",
+      "category": "personal_insult",
+      "note": "指不可靠添乱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "垃圾代码",
+      "family": "垃圾回答",
+      "category": "artifact_insult",
+      "note": "直接贬低AI产出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "垃圾回答",
+      "family": "垃圾回答",
+      "category": "artifact_insult",
+      "note": "直接贬低AI产出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "垃圾设计",
+      "family": "垃圾回答",
+      "category": "artifact_insult",
+      "note": "直接贬低AI产出",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "太抽象了",
+      "family": "抽象",
+      "category": "contextual",
+      "note": "可褒可贬看语境",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "太离谱了",
+      "family": "离谱",
+      "category": "contextual",
+      "note": "轻度嘲讽或惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "审美灾难",
+      "family": "审美灾难",
+      "category": "artifact_insult",
+      "note": "贬低设计观感",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "寄",
+      "family": "拉了",
+      "category": "contextual",
+      "note": "失败或嘲讽语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "寄了",
+      "family": "拉了",
+      "category": "contextual",
+      "note": "失败或嘲讽语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "小丑",
+      "family": "小丑",
+      "category": "contextual",
+      "note": "可调侃也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "小丑行为",
+      "family": "小丑",
+      "category": "contextual",
+      "note": "可调侃也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "屁用没有",
+      "family": "屁用没有",
+      "category": "artifact_insult",
+      "note": "指产出毫无用处",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "屎一样的回答",
+      "family": "一坨屎",
+      "category": "artifact_insult",
+      "note": "强烈贬低产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "屎代码",
+      "family": "屎山代码",
+      "category": "artifact_insult",
+      "note": "代码混乱难维护",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "屎山代码",
+      "family": "屎山代码",
+      "category": "artifact_insult",
+      "note": "代码混乱难维护",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "废柴",
+      "family": "废物",
+      "category": "personal_insult",
+      "note": "贬低能力无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "废物",
+      "family": "废物",
+      "category": "personal_insult",
+      "note": "贬低能力无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "废话连篇",
+      "family": "废话连篇",
+      "category": "artifact_insult",
+      "note": "指回答空泛冗长",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "廢柴",
+      "family": "废物",
+      "category": "personal_insult",
+      "note": "贬低能力无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "廢物",
+      "family": "废物",
+      "category": "personal_insult",
+      "note": "贬低能力无用",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "张口就来",
+      "family": "张口就来",
+      "category": "contextual",
+      "note": "嘲讽无依据乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "张口就编",
+      "family": "张口就来",
+      "category": "contextual",
+      "note": "嘲讽无依据乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "张口胡来",
+      "family": "张口就来",
+      "category": "contextual",
+      "note": "嘲讽无依据乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "很機車",
+      "family": "机车",
+      "category": "contextual",
+      "note": "台湾指讨厌难搞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "我呸",
+      "family": "我呸",
+      "category": "vulgarity",
+      "note": "不屑或厌恶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "我靠",
+      "family": "卧槽",
+      "category": "vulgarity",
+      "note": "惊叹或发泄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "战五渣",
+      "family": "菜鸡",
+      "category": "personal_insult",
+      "note": "网络贬弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "扯淡",
+      "family": "扯淡",
+      "category": "vulgarity",
+      "note": "指胡说废话",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "扯蛋",
+      "family": "扯淡",
+      "category": "vulgarity",
+      "note": "指胡说废话",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "抽象",
+      "family": "抽象",
+      "category": "contextual",
+      "note": "可褒可贬看语境",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "抽象ai",
+      "family": "抽象",
+      "category": "contextual",
+      "note": "可褒可贬看语境",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "拉了",
+      "family": "拉了",
+      "category": "contextual",
+      "note": "失败或嘲讽语",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "拉垮",
+      "family": "拉胯",
+      "category": "contextual",
+      "note": "指表现很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "拉胯",
+      "family": "拉胯",
+      "category": "contextual",
+      "note": "指表现很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "拉跨",
+      "family": "拉胯",
+      "category": "contextual",
+      "note": "指表现很差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "排版灾难",
+      "family": "审美灾难",
+      "category": "artifact_insult",
+      "note": "贬低设计观感",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "放什么屁",
+      "family": "放屁",
+      "category": "vulgarity",
+      "note": "骂其胡说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "放屁",
+      "family": "放屁",
+      "category": "vulgarity",
+      "note": "骂其胡说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "是不是傻",
+      "family": "你是不是傻",
+      "category": "personal_insult",
+      "note": "质疑智力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "有毛病吧",
+      "family": "有病吧",
+      "category": "personal_insult",
+      "note": "可疑问也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "有病吧",
+      "family": "有病吧",
+      "category": "personal_insult",
+      "note": "可疑问也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "机器人吧",
+      "family": "人机",
+      "category": "contextual",
+      "note": "可指AI或反应机械",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "机车",
+      "family": "机车",
+      "category": "contextual",
+      "note": "台湾指讨厌难搞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "柒头",
+      "family": "柒头",
+      "category": "personal_insult",
+      "note": "粤语骂蠢人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "柒頭",
+      "family": "柒头",
+      "category": "personal_insult",
+      "note": "粤语骂蠢人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "柒頭皮",
+      "family": "柒头",
+      "category": "personal_insult",
+      "note": "粤语骂蠢人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "機車",
+      "family": "机车",
+      "category": "contextual",
+      "note": "台湾指讨厌难搞",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "正经胡说八道",
+      "family": "一本正经胡说",
+      "category": "artifact_insult",
+      "note": "讽刺装专业乱说",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "没一句人话",
+      "family": "没一句人话",
+      "category": "artifact_insult",
+      "note": "强烈贬低表达",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "没个屁用",
+      "family": "屁用没有",
+      "category": "artifact_insult",
+      "note": "指产出毫无用处",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "活现眼",
+      "family": "现眼包",
+      "category": "contextual",
+      "note": "嘲笑丢脸表现",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "滚一边去",
+      "family": "滚蛋",
+      "category": "vulgarity",
+      "note": "粗暴驱赶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "滚开",
+      "family": "滚蛋",
+      "category": "vulgarity",
+      "note": "粗暴驱赶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "滚蛋",
+      "family": "滚蛋",
+      "category": "vulgarity",
+      "note": "粗暴驱赶",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "满嘴跑火车",
+      "family": "满嘴跑火车",
+      "category": "contextual",
+      "note": "指夸张胡扯",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "满篇废话",
+      "family": "废话连篇",
+      "category": "artifact_insult",
+      "note": "指回答空泛冗长",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "烂到家了",
+      "family": "稀烂",
+      "category": "artifact_insult",
+      "note": "指质量极差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "烂透了",
+      "family": "稀烂",
+      "category": "artifact_insult",
+      "note": "指质量极差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "狗东西",
+      "family": "狗东西",
+      "category": "personal_insult",
+      "note": "粗俗贬人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "狗屁不通",
+      "family": "狗屁不通",
+      "category": "artifact_insult",
+      "note": "指内容荒谬",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "狗屁回答",
+      "family": "狗屁不通",
+      "category": "artifact_insult",
+      "note": "指内容荒谬",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "狗屁报告",
+      "family": "狗屁不通",
+      "category": "artifact_insult",
+      "note": "指内容荒谬",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "狗玩意儿",
+      "family": "狗东西",
+      "category": "personal_insult",
+      "note": "粗俗贬人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "现眼包",
+      "family": "现眼包",
+      "category": "contextual",
+      "note": "嘲笑丢脸表现",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "甚麼玩意",
+      "family": "什么玩意儿",
+      "category": "contextual",
+      "note": "可骂人或产物",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "电子智障",
+      "family": "人工智障",
+      "category": "personal_insult",
+      "note": "专骂AI无能",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "痴线",
+      "family": "痴线",
+      "category": "personal_insult",
+      "note": "粤语指人疯癫",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "白目",
+      "family": "白目",
+      "category": "personal_insult",
+      "note": "台湾指讨厌无脑",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "白目ai",
+      "family": "白目",
+      "category": "personal_insult",
+      "note": "台湾指讨厌无脑",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "白目仔",
+      "family": "白目",
+      "category": "personal_insult",
+      "note": "台湾指讨厌无脑",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "瞎编乱造",
+      "family": "胡编乱造",
+      "category": "contextual",
+      "note": "指回答凭空捏造",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "瞎说八道",
+      "family": "胡说八道",
+      "category": "contextual",
+      "note": "指内容全是胡扯",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "离谱",
+      "family": "离谱",
+      "category": "contextual",
+      "note": "轻度嘲讽或惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "离谱回答",
+      "family": "离谱",
+      "category": "contextual",
+      "note": "轻度嘲讽或惊叹",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "稀烂",
+      "family": "稀烂",
+      "category": "artifact_insult",
+      "note": "指质量极差",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "窝囊东西",
+      "family": "窝囊废",
+      "category": "personal_insult",
+      "note": "指人无能懦弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "窝囊废",
+      "family": "窝囊废",
+      "category": "personal_insult",
+      "note": "指人无能懦弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "窝囊货",
+      "family": "窝囊废",
+      "category": "personal_insult",
+      "note": "指人无能懦弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "笑话一样",
+      "family": "纯纯的笑话",
+      "category": "contextual",
+      "note": "把产物贬为笑柄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "算个什么东西",
+      "family": "你算什么东西",
+      "category": "personal_insult",
+      "note": "强烈贬低身份",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "纯小丑",
+      "family": "小丑",
+      "category": "contextual",
+      "note": "可调侃也可辱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "纯纯的笑话",
+      "family": "纯纯的笑话",
+      "category": "contextual",
+      "note": "把产物贬为笑柄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "胡编",
+      "family": "胡编乱造",
+      "category": "contextual",
+      "note": "指回答凭空捏造",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "胡编乱造",
+      "family": "胡编乱造",
+      "category": "contextual",
+      "note": "指回答凭空捏造",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "胡说一通",
+      "family": "胡说八道",
+      "category": "contextual",
+      "note": "指内容全是胡扯",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "胡说八道",
+      "family": "胡说八道",
+      "category": "contextual",
+      "note": "指内容全是胡扯",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "脑子坏了",
+      "family": "脑子进水",
+      "category": "contextual",
+      "note": "骂人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "脑子进水",
+      "family": "脑子进水",
+      "category": "personal_insult",
+      "note": "骂人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "脑残",
+      "family": "脑残",
+      "category": "personal_insult",
+      "note": "辱骂智力能力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "脑残ai",
+      "family": "脑残",
+      "category": "personal_insult",
+      "note": "辱骂智力能力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "脑袋进水",
+      "family": "脑子进水",
+      "category": "personal_insult",
+      "note": "骂人糊涂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "腦殘",
+      "family": "脑残",
+      "category": "personal_insult",
+      "note": "辱骂智力能力",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "自以为是",
+      "family": "自作聪明",
+      "category": "contextual",
+      "note": "指人自负自大",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "自作聪明",
+      "family": "自作聪明",
+      "category": "contextual",
+      "note": "指人自负自大",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "艹",
+      "family": "艹",
+      "category": "contextual",
+      "note": "粗口替代字",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "草包",
+      "family": "草包",
+      "category": "personal_insult",
+      "note": "指人无能",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "菜狗",
+      "family": "菜鸡",
+      "category": "personal_insult",
+      "note": "网络贬弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "菜鸡",
+      "family": "菜鸡",
+      "category": "personal_insult",
+      "note": "网络贬弱",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "蠢东西",
+      "family": "蠢货",
+      "category": "personal_insult",
+      "note": "直接骂人或AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "蠢材",
+      "family": "蠢货",
+      "category": "personal_insult",
+      "note": "直接骂人或AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "蠢货",
+      "family": "蠢货",
+      "category": "personal_insult",
+      "note": "直接骂人或AI",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "装懂",
+      "family": "不懂装懂",
+      "category": "contextual",
+      "note": "指无知还卖弄",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "装聪明",
+      "family": "自作聪明",
+      "category": "contextual",
+      "note": "指人自负自大",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "视觉垃圾",
+      "family": "审美灾难",
+      "category": "artifact_insult",
+      "note": "贬低设计观感",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "说的不是人话",
+      "family": "没一句人话",
+      "category": "artifact_insult",
+      "note": "强烈贬低表达",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "辣眼",
+      "family": "辣眼睛",
+      "category": "artifact_insult",
+      "note": "多说设计或视觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "辣眼睛",
+      "family": "辣眼睛",
+      "category": "artifact_insult",
+      "note": "多说设计或视觉",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "逆天",
+      "family": "逆天",
+      "category": "contextual",
+      "note": "网络嘲讽也可中性",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "逆天发言",
+      "family": "逆天",
+      "category": "contextual",
+      "note": "网络嘲讽也可中性",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "逆天回答",
+      "family": "逆天",
+      "category": "contextual",
+      "note": "网络嘲讽也可中性",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "雷包",
+      "family": "雷包",
+      "category": "personal_insult",
+      "note": "台湾游戏骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "雷隊友",
+      "family": "雷包",
+      "category": "personal_insult",
+      "note": "台湾游戏骂人",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "食屎",
+      "family": "食屎",
+      "category": "vulgarity",
+      "note": "粤语粗俗驱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "食屎啦",
+      "family": "食屎",
+      "category": "vulgarity",
+      "note": "粤语粗俗驱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "食屎喇",
+      "family": "食屎",
+      "category": "vulgarity",
+      "note": "粤语粗俗驱骂",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "饭桶",
+      "family": "草包",
+      "category": "personal_insult",
+      "note": "指人无能",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "鬼画符",
+      "family": "鬼画符",
+      "category": "artifact_insult",
+      "note": "贬低代码或设计",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "黐筋",
+      "family": "痴线",
+      "category": "personal_insult",
+      "note": "粤语指人疯癫",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    },
+    {
+      "language": "zh",
+      "text": "黐線",
+      "family": "痴线",
+      "category": "personal_insult",
+      "note": "粤语指人疯癫",
+      "provenance": "luna-max",
+      "matching": "literal_candidate"
+    }
+  ]
+}

@@ -1,0 +1,803 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>骂了吗</title>
+<style>
+:root{color-scheme:light;--ink:#263344;--muted:#5d6b7c;--line:#e5eaf1;--bg:#f7f9fc;--card:#fff;--nav:#edf3fa;--blue:#4566be;--orange:#ad4d58;--radius:16px;font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
+*{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--bg)}button,select{font:inherit;color:inherit}button,select,summary{cursor:pointer}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #4867ee;outline-offset:3px}[hidden]{display:none!important}
+.shell{min-height:100vh;display:grid;grid-template-columns:177px minmax(0,1fr)}
+aside{position:sticky;top:0;height:100vh;background:var(--nav);color:var(--ink);border-right:1px solid #e1e9f4;padding:24px 13px 16px;display:flex;flex-direction:column;gap:29px}
+.brand{display:flex;align-items:center;gap:9px;padding:0 7px;font-size:19px;font-weight:730;white-space:nowrap}
+.brand img{display:block;width:32px;height:32px;border-radius:8px;flex:none}
+nav{display:grid;gap:6px}nav button{width:100%;text-align:left;display:flex;align-items:center;gap:10px;border:0;border-radius:8px;padding:10px 11px;color:#53627b;background:none;white-space:nowrap}
+nav button:hover{color:#334f9e;background:#e3ecfa}nav button[aria-current="page"]{background:#dfeaff;color:#3856a4;font-weight:650}
+.nav-icon{width:18px;flex:none;font:18px/1 -apple-system,sans-serif;text-align:center;color:#5975bd}
+.local{margin:auto 8px 0;display:flex;align-items:center;gap:8px;font-size:12px;color:#5e6e81;white-space:nowrap}
+.local::before{content:"";width:7px;height:7px;background:#469178;border-radius:50%}
+.contribution-control{margin-top:auto}
+.contribution-switch{appearance:none;display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;padding:8px;border:0;border-radius:8px;background:transparent;text-align:left;color:var(--ink)}
+.contribution-switch:not(:disabled):hover{background:#e3ecfa}
+.contribution-label{font-size:12px;font-weight:650;white-space:nowrap}
+.contribution-label small{display:block;font-size:10px;font-weight:400}
+.switch-track{box-sizing:border-box;flex:none;position:relative;width:34px;height:20px;border:1px solid #718299;border-radius:999px;background:#78879b}
+.switch-track::before{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #26334433}
+.contribution-switch[aria-checked="true"] .switch-track{border-color:var(--blue);background:var(--blue)}
+.contribution-switch[aria-checked="true"] .switch-track::before{transform:translateX(14px)}
+.contribution-error{margin:3px 8px 0;color:#9b3749;font-size:11px;overflow-wrap:anywhere}
+main{min-width:0}.toolbar{position:sticky;top:0;z-index:3;background:#fffffff5;border-bottom:1px solid var(--line);padding:13px clamp(15px,3vw,33px);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.toolbar strong{font-size:17px;white-space:nowrap}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.scan-status{white-space:nowrap}
+#toolbar-filters{display:contents}
+
+.filter{position:relative;min-width:112px}
+.filter-trigger,.plain-btn{min-height:34px;border:1px solid #dce5f1;border-radius:9px;background:#fff;font-size:12px;padding:6px 10px}
+.filter-trigger{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;white-space:nowrap}
+.filter-trigger::after{content:"";width:6px;height:6px;border-right:1.5px solid #657890;border-bottom:1.5px solid #657890;transform:rotate(45deg) translateY(-2px);margin-right:2px}
+.filter-trigger:hover,.filter-trigger[aria-expanded="true"]{background:#f4f7fe;border-color:#b9ccee}
+.filter-options{position:absolute;right:0;top:calc(100% + 6px);min-width:max(100%,135px);display:grid;gap:2px;padding:5px;background:white;border:1px solid #dce5f1;border-radius:11px;box-shadow:0 9px 24px #27447522;z-index:5}
+.filter-options button{border:0;padding:6px 9px;border-radius:6px;background:#fff;text-align:left;white-space:nowrap;font-size:12px}
+.filter-options button:hover,.filter-options button:focus{background:#f1f5fc}
+.filter-options button[aria-selected="true"]{color:#3959a5;background:#eaf1ff;font-weight:650}
+.filter-options button[aria-selected="true"]::after{content:"✓";float:right;margin-left:12px}
+
+.plain-btn:hover{border-color:#8a9fee;background:#f4f6ff}.content{max-width:1240px;margin:auto;padding:22px clamp(15px,3vw,33px) 34px}
+h1,h2,p{margin:0}h1{font-size:24px;line-height:1.23;font-weight:760;letter-spacing:-.055em}h2{font-size:16px;font-weight:720}small,.subtle{color:var(--muted);font-size:12px}.subtle{line-height:1.55}
+.intro{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:14px}.intro .subtle{white-space:nowrap}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:15px}
+.metric,.panel{border:1px solid var(--line);border-radius:var(--radius);background:var(--card);box-shadow:0 3px 13px #1d365709}
+.metric{padding:13px 15px;min-width:0}.metric > span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;font-size:clamp(23px,3.35vw,36px);line-height:1.21;letter-spacing:-.06em;font-weight:740;font-variant-numeric:tabular-nums;margin:3px 0 2px;white-space:nowrap}
+.metric.primary{background:#fff2f4;border-color:#f4dce2}.metric.primary strong{color:#a54459}.metric small{display:block;overflow-wrap:anywhere}
+.panels{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(250px,1fr);gap:14px;align-items:stretch}
+.panel{padding:15px 17px;min-width:0;overflow-wrap:anywhere}.panel-title{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:12px}.panel-title h2{white-space:nowrap}
+.segments{display:flex;gap:2px;background:#edf1f7;border-radius:8px;padding:2px;white-space:nowrap}
+.segments button{border:0;border-radius:6px;padding:4px 7px;font-size:11px;color:var(--muted);background:none;white-space:nowrap}
+.segments button[aria-pressed=true]{color:#243e93;background:#fff;font-weight:675;box-shadow:0 1px 3px #10264f1c}
+.plot{position:relative;display:grid;grid-template-columns:33px 1fr;align-items:stretch;height:153px;margin-top:16px}
+.axis{position:relative;display:flex;flex-direction:column;justify-content:space-between;line-height:1;font-size:10px;color:var(--muted);padding-right:7px;text-align:right}
+.columns{position:relative;display:grid;grid-auto-columns:minmax(0,1fr);grid-auto-flow:column;gap:3px;padding:0 2px;background:linear-gradient(to bottom,var(--line) 1px,transparent 1px) top / 100% 33.333%;border-bottom:1px solid var(--line)}
+.columns button{padding:0;border:0;background:transparent;display:flex;align-items:flex-end;justify-content:center;min-width:0;position:relative}
+.columns button:hover,.columns button[aria-pressed=true]{background:#ebeffa}
+.bar{width:95%;max-width:27px;min-width:2px;display:flex;flex-direction:column-reverse;border-radius:4px 4px 1px 1px;overflow:hidden;pointer-events:none}
+.bar span{display:block;width:100%}
+.bottom-axis{display:flex;justify-content:space-between;align-items:center;margin:6px 1px 0 33px;color:var(--muted);font-size:10px}
+.chart-detail,.heat-detail{min-height:30px;display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:9px;font-size:12px;color:var(--muted)}
+.chart-detail strong,.heat-detail strong{color:var(--ink);font-variant-numeric:tabular-nums}
+.legend{display:flex;flex-wrap:wrap;gap:4px 10px;color:var(--muted);font-size:10px}
+.swatch{display:inline-block;width:8px;height:8px;margin-right:4px;border-radius:3px;background:var(--swatch);vertical-align:baseline}
+.breakdown{display:grid;gap:7px}.group{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;padding:3px 0;border-bottom:1px solid #f0f2f6}.group:last-child{border:0}
+.group p,.group b{font-size:12px}.group p{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:610}.group b{font-variant-numeric:tabular-nums}
+.bar-track{height:4px;border-radius:5px;background:#edf0f6;grid-column:1/-1;overflow:hidden}.bar-track span{display:block;height:100%;background:var(--swatch);border-radius:5px}
+.group small{grid-column:1/-1;font-size:10px;line-height:1.3}
+.heat-panel{margin-top:14px}.heat-panel h2{white-space:nowrap}.heatmap{overflow:auto;padding:2px 0 1px}
+.heat-grid{display:grid;grid-template-rows:16px repeat(7,14px);grid-auto-flow:column;grid-auto-columns:minmax(13px,1fr);gap:4px;align-items:center;width:min(100%,calc(var(--weeks,13) * 35px));padding-bottom:4px}
+.heat-month{font-size:10px;color:var(--muted);white-space:nowrap}.heat-day{width:100%;max-width:24px;height:14px;border:0;padding:0;border-radius:3px;background:var(--cell,#e8edf4);position:relative}.heat-day:hover,.heat-day[aria-pressed=true]{outline:1px solid #4155a7;outline-offset:1px}.heat-day[data-hit=true]::after{content:"";position:absolute;top:0;right:0;background:#d47269;border-radius:50%;width:4px;height:4px}
+.heat-legend{display:flex;gap:5px;align-items:center;white-space:nowrap}.heat-legend i{display:block;width:9px;height:9px;border-radius:3px;background:var(--cell)}
+.records-top{margin-bottom:12px}.records-top p{margin-top:5px}.record{border-top:1px solid var(--line)}.record:first-of-type{border-top:0}.record summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 3px;overflow-wrap:anywhere}.record summary::-webkit-details-marker{display:none}.record summary::after{content:"›";font-size:21px;line-height:1;font-weight:500;color:var(--muted)}.record[open] summary::after{transform:rotate(90deg)}.record summary strong{color:#a24457;font-size:14px}.record summary small{display:block;margin-top:1px}
+.record-body{padding:0 4px 12px}.record-body blockquote{border-left:3px solid #dd9aab;background:#fff4f5;padding:8px 11px;border-radius:0 7px 7px 0;margin:7px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-body small{overflow-wrap:anywhere}
+.source-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.source-card{padding:13px 15px}.source-card h2{margin-bottom:7px}.source-card p{font-weight:630;margin-bottom:4px}.source-card small{display:block;overflow-wrap:anywhere}
+.index-filters{display:grid;grid-template-columns:minmax(112px,1fr) minmax(95px,.85fr) minmax(130px,1.45fr) minmax(88px,.75fr) auto;align-items:end;gap:10px;margin-bottom:12px}
+.index-field{display:grid;gap:4px;min-width:0;color:var(--muted);font-size:12px}
+.index-field .filter{min-width:0}.index-field .filter-trigger{color:var(--ink)}.index-field .filter-trigger::after{flex:none}
+.index-field .filter-options{inset-inline:0;min-width:100%}.index-field .filter-options button{white-space:normal}
+.index-field input[type=search]{min-width:0;width:100%;height:34px;padding:6px 9px;border:1px solid #dce5f1;border-radius:9px;background:#fff;color:var(--ink);font:inherit}
+.index-field input:focus-visible{outline:2px solid #4867ee;outline-offset:2px}
+.index-filter-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-height:34px;font-size:12px}
+.index-filter-actions label{white-space:nowrap;display:flex;align-items:center;gap:4px}
+.index-filter-actions input{accent-color:var(--blue);margin:0}.index-filter-actions button{white-space:nowrap}
+.index-chart-panel{margin-bottom:12px}
+.index-chart-panel h2 small{font-weight:400;margin-left:6px}.index-chart-panel .panel-title{flex-wrap:wrap}
+.index-chart-row,.index-chart-axis{display:grid;grid-template-columns:minmax(114px,1fr) minmax(30px,2.5fr) 74px;gap:11px;align-items:center;width:100%;text-align:left}
+.index-chart-row{border:0;border-radius:8px;background:transparent;padding:4px 5px;min-height:38px}
+.index-chart-row:hover{background:#f4f7fd}
+.index-chart-name{min-width:0}.index-chart-name strong{font-size:12px;display:block;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.index-chart-name small,.index-chart-value small{display:block;font-size:10px;color:var(--muted);line-height:1.18}
+.index-chart-track{display:block;height:14px;border-radius:4px;background:#edf2f9;overflow:hidden}
+.index-chart-bar{display:block;height:100%;border-radius:4px;background:var(--bar-color,var(--blue))}
+.index-chart-value{text-align:right;font-size:13px;font-variant-numeric:tabular-nums}.index-chart-value strong{font-weight:680}
+.index-chart-axis{padding:0 5px;font-size:10px;color:var(--muted)}
+.index-chart-axis span:nth-child(2){display:flex;justify-content:space-between}
+.index-scroll{overflow-x:auto}.index-panel table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.index-panel :is(th,td){padding:9px 10px;border-bottom:1px solid var(--line);text-align:left}
+.index-panel thead th{font-size:12px;color:var(--muted);white-space:nowrap;text-align:left}
+.index-panel thead button{display:inline-flex;gap:5px;align-items:center;white-space:nowrap;font:inherit;font-weight:650;background:transparent;border:0;padding:4px 0}
+.index-panel thead button:hover,.index-panel th[aria-sort] button{color:var(--blue)}
+.index-panel thead button span{color:var(--blue);opacity:.48;min-width:1em;text-align:center}
+.index-panel th[aria-sort] button span{opacity:1}
+.index-panel :is(th,td):nth-child(n+3){text-align:right;white-space:nowrap}
+.index-panel tbody td:last-child{font-weight:650;color:var(--blue)}
+.index-panel tbody tr[data-unknown] td:last-child{color:var(--muted);font-weight:400}
+.index-panel tbody tr:last-child td{border-bottom:0}
+.index-panel tbody tr:focus{outline:2px solid #8aa8e4;outline-offset:-2px;background:#f4f7fd}
+.index-harness{white-space:nowrap}
+[data-pane="index"] .intro{flex-wrap:wrap}[data-pane="index"] .intro .subtle{white-space:normal}
+.note{margin-top:12px;padding:12px 15px}.note p+p{margin-top:4px}
+.review-primary{background:#e8efff;color:#3757a5;border-color:#ceddfc;font-weight:650}.review-primary:hover{background:#deebff}
+dialog{width:min(580px,calc(100% - 28px));max-height:calc(100vh - 36px);margin:auto;padding:19px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);color:var(--ink);box-shadow:0 12px 45px #263b6233;overflow:visible}
+#review-dialog[open]{display:flex;flex-direction:column}
+.review-header,#review-form,#review-state{flex:none}
+dialog::backdrop{background:#263a5c40}
+.review-header,.review-actions{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.review-header{margin-bottom:15px}.review-header h2{font-size:19px}.review-header p{margin-top:3px}
+#review-form,.review-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.review-fields,.review-actions{grid-column:1/-1}.review-fields>label:first-child{grid-column:1/-1}
+.review-field,#review-form label{display:grid;gap:4px;font-size:12px;color:var(--muted);min-width:0}
+#review-form input{font:inherit;color:var(--ink);min-width:0;min-height:34px;border:1px solid #dce5f1;background:#f7f9fd;border-radius:8px;padding:6px 9px}
+.review-field .filter{min-width:0}
+.review-field .filter-trigger,.review-field .filter-options button{color:var(--ink)}
+.review-field .filter-trigger::after{flex:none}
+.review-field .filter-options{inset-inline:0;min-width:0}
+.review-field .filter-options button{white-space:normal;overflow-wrap:anywhere}
+.review-field .filter-options button[aria-selected="true"]{color:#3959a5}
+.review-field .filter-options button:focus-visible{outline:1px solid #8aa8e4;outline-offset:-1px}
+.review-field .filter[data-opens-up] .filter-options{top:auto;bottom:calc(100% + 6px)}
+.review-actions button{flex:none}button:disabled{opacity:.55;cursor:default}
+#review-state,.review-results{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.review-results{min-height:0;max-height:42vh;overflow:auto;overscroll-behavior:contain}
+.review-error{color:#9b3749}.review-results>p+p{margin-top:4px}.review-results .record{margin-top:8px}.review-results blockquote{white-space:pre-wrap}
+@media(max-width:520px){#review-form,.review-fields{grid-template-columns:minmax(0,1fr)}.review-actions{flex-wrap:wrap;justify-content:flex-end}.review-actions p{flex-basis:100%}}
+@media(max-width:980px){.shell{grid-template-columns:149px minmax(0,1fr)}aside{padding-inline:10px}.panels{grid-template-columns:minmax(0,1.45fr) minmax(212px,1fr)}.panel{padding-inline:13px}}
+@media(max-width:930px){.index-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.index-filter-actions{grid-column:1/-1}}
+@media(max-width:760px){.shell{grid-template-columns:126px minmax(0,1fr)}.panels{grid-template-columns:1fr}.brand{font-size:16px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:565px){.shell{display:block}aside{position:static;height:auto;padding:10px 12px;gap:9px;flex-direction:row;align-items:center;justify-content:space-between}.brand{padding:0}.brand img{display:none}nav{display:flex;gap:3px}nav button{padding:4px 6px;font-size:11px}.nav-icon,.local{display:none}.toolbar{padding-block:8px}.controls{gap:4px}.controls button{font-size:11px;padding-inline:6px}.filter{min-width:83px}.filter-trigger{gap:6px}.toolbar strong{font-size:13px}.content{padding-top:14px}.source-list{grid-template-columns:1fr}}
+@media(max-width:565px){aside:has(.contribution-control){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,50%)}aside:has(.contribution-control) nav{grid-area:2/1/3/-1;flex-wrap:wrap}.contribution-control{margin:0;justify-self:end}.contribution-label small{display:none}}
+</style>
+</head>
+<body>
+<!-- MALEMA_BODY -->
+<script id="report-data" type="application/json"><!-- MALEMA_DATA --></script>
+<script>
+const dataScript = document.getElementById("report-data");
+if (document.querySelector(".shell")) init(JSON.parse(dataScript.textContent));
+
+function init(initialData) {
+  const $ = id => document.getElementById(id);
+  const fmt = new Intl.NumberFormat("zh-CN");
+  const colors = { "Codex":"#6689df", "Claude Code":"#c97b70", "DeepSeek Harness":"#6b9fc7",
+    "WorkBuddy":"#4d9c89", "Cursor":"#927ac7", "pi":"#9c8757" };
+  const today = new Date();
+  const anchor = new Date(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()));
+  const localDate = d => d.toISOString().slice(0,10);
+  function dayBefore(offset) {
+    const day = new Date(anchor);
+    day.setUTCDate(day.getUTCDate() - offset);
+    return localDate(day);
+  }
+  const shortDate = iso => iso.slice(5).replace("-", "/");
+  const current = { view:"overview", days:0, source:"", metric:"turns", groups:"source", day:dayBefore(0), recordsDay:null };
+  const indexView = { query:"", minimum:0, hitsOnly:false, sort:"score", direction:-1, metric:"score" };
+  let data = initialData ?? {rows:[], clients:[]};
+  let hasData = initialData !== null;
+  let recordsLoaded = hasData;
+  let records = [...$("record-list").children];
+  const byDate = new Map();
+  const el = (tag, type, text) => {
+    const node = document.createElement(tag);
+    if (type) node.className = type;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const within = (day, lower) => !lower || Boolean(day && day >= lower && day <= dayBefore(0));
+  const onDate = row => !current.source || row.client === current.source;
+  const marker = color => { const i = el("i","swatch"); i.style.setProperty("--swatch",color); return i; };
+  const rates = (hits, turns) => turns ? (100 * hits / turns).toFixed(2) + "%" : "—";
+  const sourceNames = Object.keys(colors);
+  const selected = selector => [...document.querySelectorAll(selector)];
+
+  function groups(rows, key) {
+    const sum = new Map();
+    for (const row of rows) {
+      const id = key(row);
+      const n = sum.get(id) || {turns:0, hits:0};
+      n.turns += row.turns;
+      n.hits += row.hits;
+      sum.set(id,n);
+    }
+    return sum;
+  }
+
+  function bucket(day) {
+    return byDate.get(day) || {turns:0, hits:0, byClient:new Map()};
+  }
+
+  function filteredReportRows() {
+    const lower = current.days ? dayBefore(current.days - 1) : null;
+    return data.rows.filter(row => onDate(row) && within(row.date, lower));
+  }
+
+  function refreshData() {
+    const viewRows = filteredReportRows();
+    const total = groups(viewRows, () => 1).get(1) || {turns:0, hits:0};
+    byDate.clear();
+    for (const row of data.rows) {
+      if (!row.date || !onDate(row)) continue;
+      if (!byDate.has(row.date)) byDate.set(row.date,{turns:0,hits:0,byClient:new Map()});
+      const day = byDate.get(row.date);
+      day.turns += row.turns;
+      day.hits += row.hits;
+      const n = day.byClient.get(row.client) || {turns:0,hits:0};
+      n.turns += row.turns;
+      n.hits += row.hits;
+      day.byClient.set(row.client,n);
+    }
+    $("turns").textContent = hasData ? fmt.format(total.turns) : "—";
+    $("hits").textContent = hasData ? fmt.format(total.hits) : "—";
+    $("rate").textContent = rates(total.hits,total.turns);
+    $("active-days").textContent = hasData ? fmt.format(new Set(viewRows.flatMap(row => row.date ? [row.date] : [])).size) : "—";
+    const missing = viewRows.reduce((acc,row) => acc + (row.date ? 0 : row.turns),0);
+    $("undated").textContent = missing ? fmt.format(missing) + " 条日期未知" : "";
+    plot();
+    breakdown(viewRows, total.turns);
+    heatmap();
+    if(current.day)selectDay(current.day);
+    filterRecords();
+    if(current.view === "index") renderIndex(viewRows);
+  }
+
+  function selectDay(day) {
+    current.day = day;
+    for (const node of selected("[data-day]")) node.setAttribute("aria-pressed",String(node.dataset.day === day));
+    const b = bucket(day);
+    for (const area of [$("chart-detail"), $("heat-detail")]) {
+      const text = el("span", "", day + "　");
+      text.append(el("strong", "", hasData ? fmt.format(b.turns) + " 条真人消息 · " + b.hits + " 次挨骂" : "—"));
+      area.replaceChildren(text);
+      if (b.hits) {
+        const review = el("button","plain-btn","查看记录");
+        review.addEventListener("click",() => {
+          current.recordsDay = day;
+          changeView("records");
+        });
+        area.append(review);
+      }
+    }
+  }
+
+  function dateButton(day, klass) {
+    const b = bucket(day);
+    const button = el("button",klass);
+    button.dataset.day = day;
+    button.title = day + " · " + b.turns + " 条真人消息 · " + b.hits + " 次挨骂";
+    button.setAttribute("aria-label",button.title);
+    button.setAttribute("aria-pressed",String(current.day === day));
+    button.addEventListener("click",()=>selectDay(day));
+    return button;
+  }
+
+  function plot() {
+    const length = current.days === 7 ? 7 : 30;
+    const days = Array.from({length},(_,i) => dayBefore(length - 1 - i));
+    $("chart-start").textContent = shortDate(days[0]);
+    $("chart-mid").textContent = shortDate(days[Math.floor(length/2)]);
+    $("chart-end").textContent = shortDate(days.at(-1));
+    const max = Math.max(1,...days.map(day => bucket(day)[current.metric]));
+    const scale = Math.ceil(max / 3) * 3;
+    $("axis").replaceChildren(...[scale,2*scale/3,scale/3,0].map(n=>el("span","",String(n))));
+    $("bars").replaceChildren(...days.map(day => {
+      const button = dateButton(day,"");
+      const b = bucket(day);
+      const bar = el("span","bar");
+      bar.style.height = (100 * b[current.metric] / scale) + "%";
+      for (const name of sourceNames) {
+        const value = b.byClient.get(name)?.[current.metric] || 0;
+        if (!value) continue;
+        const part = el("span","");
+        part.style.height = (100 * value / b[current.metric]) + "%";
+        part.style.background = colors[name];
+        bar.append(part);
+      }
+      button.append(bar);
+      return button;
+    }));
+    $("legend").replaceChildren(...sourceNames.filter(n=>!current.source||current.source===n).map(name=>{
+      const d = el("span","");
+      d.append(marker(colors[name]),name);
+      return d;
+    }));
+  }
+
+  function breakdown(rows, total) {
+    const byClient = current.groups === "source";
+    const sum = groups(rows, row => byClient ? row.client : (row.model || "模型未知"));
+    const items = [...sum.entries()].sort((a,b) => b[1].turns-a[1].turns || a[0].localeCompare(b[0]));
+    const host = $("breakdown");
+    host.replaceChildren();
+    if (!items.length) host.append(el("p","subtle",hasData ? "所选时间没有记录" : "正在统计…"));
+    const maximum = byClient ? items.length : 6;
+    for (const [label,n] of items.slice(0,maximum)){
+      const group = el("div","group");
+      group.style.setProperty("--swatch", byClient ? colors[label] : "#6d77c4");
+      const name = el("p","",label);
+      name.title = label;
+      const progress = el("div","bar-track");
+      const fill = el("span","");
+      fill.style.width = (total ? 100*n.turns/total : 0) + "%";
+      progress.append(fill);
+      group.append(name,el("b","",fmt.format(n.turns)),progress,el("small","", n.hits + " 次挨骂"));
+      host.append(group);
+    }
+    if (items.length > maximum) host.append(el("p","subtle","另有 " + (items.length-maximum) + " 个模型"));
+  }
+
+  function heatmap() {
+    const palette = ["#e8edf4","#ccd9fa","#a4b8f5","#6c8ce9","#3e5dc7"];
+    const enabled = current.days || 90;
+    const oldest = new Date(anchor);
+    oldest.setUTCDate(oldest.getUTCDate() - (enabled - 1));
+    const start = new Date(oldest);
+    start.setUTCDate(start.getUTCDate() - ((start.getUTCDay()+6)%7));
+    const host = $("heat-grid");
+    host.replaceChildren();
+    let lastMonth = -1;
+    const max = Math.max(1, ...[...byDate].filter(([day]) => within(day,localDate(oldest))).map(([,n])=>n.turns));
+    for (let week = new Date(start); week <= anchor; week.setUTCDate(week.getUTCDate()+7)) {
+      const month = week.getUTCMonth();
+      host.append(el("span","heat-month",month === lastMonth ? "" : month + 1 + "月"));
+      lastMonth = month;
+      for (let i=0; i<7; i++){
+        const date=new Date(week);
+        date.setUTCDate(date.getUTCDate()+i);
+        if (date > anchor || date < oldest) { host.append(el("span","")); continue; }
+        const day=localDate(date), n=bucket(day);
+        const square=dateButton(day,"heat-day");
+        const level=n.turns ? Math.min(4,Math.max(1,Math.ceil(4*Math.sqrt(n.turns/max)))) : 0;
+        square.style.setProperty("--cell",palette[level]);
+        square.dataset.hit = String(n.hits>0);
+        host.append(square);
+      }
+    }
+    host.style.setProperty("--weeks", Math.floor((anchor - start) / 604800000) + 1);
+    $("heat-range").textContent = current.days ? "近 " + current.days + " 天" : "近 90 天";
+  }
+
+  function filterRecords() {
+    const lower = current.days ? dayBefore(current.days - 1) : null;
+    let count = 0;
+    for (const row of records) {
+      const shown = onDate(row.dataset) && within(row.dataset.date,lower)
+        && (!current.recordsDay || row.dataset.date === current.recordsDay);
+      row.hidden = !shown;
+      if(shown) count++;
+    }
+    $("record-count").textContent = recordsLoaded ? fmt.format(count) + " 条" : "";
+    $("empty-records").hidden = count > 0;
+    $("empty-records").textContent = recordsLoaded ? "所选范围内没有明确冲 AI 的辱骂。" : "正在读取记录…";
+    $("clear-day").hidden = !current.recordsDay;
+    $("clear-day").textContent = current.recordsDay ? current.recordsDay + "　清除日期" : "";
+  }
+
+  const indexNumbers = (key, value) => key === "score" ? value.toFixed(1) : fmt.format(value);
+  const indexTie = (a,b) => b.turns - a.turns || a.client.localeCompare(b.client)
+    || (a.model || "").localeCompare(b.model || "");
+
+  function renderIndexChart(entries, tableRows) {
+    const metric = indexView.metric;
+    const ordered = entries.filter(entry => entry[metric] !== null)
+      .sort((a,b) => b[metric] - a[metric] || indexTie(a,b));
+    const shown = ordered.slice(0,6);
+    $("index-chart").hidden = !entries.length;
+    $("index-chart-count").textContent = ordered.length > shown.length ? "前 " + shown.length + " 组" : "";
+    $("index-chart-empty").hidden = shown.length > 0;
+    if (!shown.length) {
+      $("index-bars").replaceChildren();
+      return;
+    }
+    const max = Math.max(1,shown[0][metric]);
+    const step = 10 ** Math.floor(Math.log10(max));
+    const scale = [1,2,5,10].map(n => n * step).find(n => n >= max);
+    const axis = el("div","index-chart-axis");
+    axis.setAttribute("aria-hidden","true");
+    const marks = el("span","");
+    marks.append(el("span","","0"),el("span","",indexNumbers(metric,scale)));
+    axis.append(el("span",""),marks);
+    const bars = shown.map(entry => {
+      const button = el("button","index-chart-row");
+      button.type = "button";
+      const model = entry.model || "模型未知";
+      const label = el("span","index-chart-name");
+      label.append(el("strong","",model),el("small","",entry.client));
+      const track = el("span","index-chart-track");
+      track.setAttribute("aria-hidden","true");
+      const bar = el("i","index-chart-bar");
+      bar.style.width = (100 * entry[metric] / scale) + "%";
+      bar.style.setProperty("--bar-color",colors[entry.client]);
+      track.append(bar);
+      const value = el("span","index-chart-value");
+      value.append(el("strong","",indexNumbers(metric,entry[metric])));
+      if (metric === "score") value.append(el("small","",fmt.format(entry.hits) + " 次 / " + fmt.format(entry.turns) + " 条"));
+      button.title = entry.client + " · " + model + " · 查看明细";
+      button.append(label,track,value);
+      button.addEventListener("click",()=>{
+        const row = tableRows.get(entry.key);
+        row.scrollIntoView({block:"center",inline:"nearest"});
+        row.focus({preventScroll:true});
+      });
+      return button;
+    });
+    $("index-bars").replaceChildren(...bars,axis);
+  }
+
+  function renderIndex(rows) {
+    const combinations = groups(rows, row => JSON.stringify([row.client, row.model]));
+    const entries = [...combinations.entries()].map(([key, count]) => {
+      const [client, model] = JSON.parse(key);
+      return {key,client,model,...count,score: model && count.turns ? 1000 * count.hits / count.turns : null};
+    }).filter(({model,turns,hits}) => {
+      return (model || "模型未知").toLocaleLowerCase().includes(indexView.query)
+        && turns >= indexView.minimum && (!indexView.hitsOnly || hits > 0);
+    });
+    const key = indexView.sort;
+    entries.sort((a,b) => {
+      const left = a[key], right = b[key];
+      if (left === null || right === null) return Number(left === null) - Number(right === null) || indexTie(a,b);
+      const diff = typeof left === "number" ? left - right : left.localeCompare(right);
+      return indexView.direction * diff || indexTie(a,b);
+    });
+    for (const button of selected("[data-index-sort]")) {
+      const active = button.dataset.indexSort === key;
+      const header = button.closest("th");
+      if (active) header.setAttribute("aria-sort",indexView.direction === 1 ? "ascending" : "descending");
+      else header.removeAttribute("aria-sort");
+      button.lastElementChild.textContent = active ? (indexView.direction === 1 ? "↑" : "↓") : "↕";
+    }
+    $("index-empty").hidden = entries.length > 0;
+    $("index-empty").textContent = hasData ? "没有符合筛选条件的组合。" : "正在统计…";
+    $("index-table").hidden = !entries.length;
+    $("index-count").textContent = hasData ? fmt.format(entries.length) + " 个组合" : "";
+    const tableRows = new Map();
+    $("index-rows").replaceChildren(...entries.map(({key,client,model,turns,hits,score}) => {
+      const row = el("tr","");
+      row.tabIndex = -1;
+      row.toggleAttribute("data-unknown",score === null);
+      const harness = el("td","index-harness");
+      harness.append(marker(colors[client]),client);
+      row.append(harness,el("td",model ? "" : "subtle",model || "模型未知"),
+        el("td","",fmt.format(turns)),el("td","",fmt.format(hits)),
+        el("td","",score === null ? "—" : indexNumbers("score",score)));
+      tableRows.set(key,row);
+      return row;
+    }));
+    renderIndexChart(entries,tableRows);
+  }
+
+  function changeView(next) {
+    current.view=next;
+    for(const button of selected("[data-tab]")) {
+      if(button.dataset.tab===next) button.setAttribute("aria-current","page");
+      else button.removeAttribute("aria-current");
+    }
+    for(const pane of selected("[data-pane]")) pane.hidden=pane.dataset.pane!==next;
+    $("current-title").textContent = {overview:"总览",records:"挨骂记录",index:"被骂指数",sources:"数据来源"}[next];
+    const sourceFilter = $("source-filter"), rangeFilter = $("range-filter");
+    if(next === "index") {
+      $("index-source-slot").append(sourceFilter);
+      $("index-range-slot").append(rangeFilter);
+    } else if(sourceFilter.parentElement !== $("toolbar-filters")) {
+      $("toolbar-filters").append(sourceFilter,rangeFilter);
+    }
+    rangeFilter.hidden=next==="sources";
+    sourceFilter.hidden=next==="sources";
+    if(next==="records")filterRecords();
+    if(next==="index")refreshData();
+    window.scrollTo(0,0);
+  }
+
+  for(const button of selected("[data-tab]")) button.addEventListener("click",() => {
+    current.recordsDay=null;
+    changeView(button.dataset.tab);
+  });
+  function resetSelection(){
+    current.recordsDay=null;
+    current.day=current.view==="overview" ? dayBefore(0) : null;
+    refreshData();
+  }
+  const menuClosers = [];
+  function filterMenu(id, onSelect) {
+    const component = $(id + "-filter");
+    const trigger = $(id + "-trigger");
+    const list = $(id + "-options");
+    const options = [...list.querySelectorAll("button")];
+    const label = trigger.getAttribute("aria-label");
+    const selectedOption = () => options.find(button => button.getAttribute("aria-selected") === "true");
+    let open = false;
+    function close(restoreFocus = false) {
+      if (!open) return;
+      open = false;
+      list.hidden = true;
+      component.removeAttribute("data-opens-up");
+      trigger.setAttribute("aria-expanded", "false");
+      if (restoreFocus) trigger.focus();
+    }
+    function show(initial = selectedOption()) {
+      for (const closeOther of menuClosers) closeOther();
+      open = true;
+      list.hidden = false;
+      if (component.closest("dialog")) {
+        const bounds = list.getBoundingClientRect();
+        const roomAbove = trigger.getBoundingClientRect().top;
+        component.toggleAttribute("data-opens-up", bounds.bottom > window.innerHeight - 8 && roomAbove > bounds.height + 8);
+      }
+      trigger.setAttribute("aria-expanded", "true");
+      initial.focus();
+    }
+    menuClosers.push(close);
+    trigger.addEventListener("click", () => open ? close(true) : show());
+    trigger.addEventListener("keydown", event => {
+      if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+        event.preventDefault();
+        if (!open) show(event.key === "ArrowUp" ? options.at(-1) : selectedOption());
+      }
+    });
+    function setOption(option) {
+      for (const item of options) item.setAttribute("aria-selected", String(item === option));
+      trigger.firstElementChild.textContent = option.textContent;
+      trigger.setAttribute("aria-label", label + "：" + option.textContent);
+    }
+    for (const option of options) option.addEventListener("click", () => {
+      setOption(option);
+      close(true);
+      onSelect(option.dataset.value);
+    });
+    list.addEventListener("keydown", event => {
+      const index = options.indexOf(document.activeElement);
+      const next = {ArrowDown: (index + 1) % options.length, ArrowUp: (index + options.length - 1) % options.length,
+        Home: 0, End: options.length - 1}[event.key];
+      if (next !== undefined) {
+        event.preventDefault();
+        options[next].focus();
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        close(true);
+      }
+    });
+    component.addEventListener("focusout", event => {
+      if (event.relatedTarget && !component.contains(event.relatedTarget)) close();
+    });
+    document.addEventListener("click", event => {
+      if (!component.contains(event.target)) close();
+    });
+    return {
+      trigger, close, get value() { return selectedOption().dataset.value; },
+      setValue(value) { setOption(options.find(option => option.dataset.value === value)); }
+    };
+  }
+  const dateMenu = filterMenu("range", value => { current.days = Number(value); resetSelection(); });
+  const sourceMenu = filterMenu("source", value => { current.source = value; resetSelection(); });
+  const refreshIndex = () => renderIndex(filteredReportRows());
+  const minimumMenu = filterMenu("index-min", value => { indexView.minimum = Number(value); refreshIndex(); });
+  $("index-query").addEventListener("input",event=>{
+    indexView.query = event.target.value.trim().toLocaleLowerCase();
+    refreshIndex();
+  });
+  $("index-hits-only").addEventListener("change",event=>{
+    indexView.hitsOnly = event.target.checked;
+    refreshIndex();
+  });
+  $("index-reset").addEventListener("click",()=>{
+    sourceMenu.setValue("");
+    dateMenu.setValue("0");
+    minimumMenu.setValue("0");
+    current.source = "";
+    current.days = 0;
+    $("index-query").value = indexView.query = "";
+    $("index-hits-only").checked = indexView.hitsOnly = false;
+    indexView.minimum = 0;
+    resetSelection();
+  });
+  for(const button of selected("[data-index-sort]")) button.addEventListener("click",()=>{
+    const key = button.dataset.indexSort;
+    indexView.direction = key === indexView.sort ? -indexView.direction : (key === "client" || key === "model" ? 1 : -1);
+    indexView.sort = key;
+    refreshIndex();
+  });
+  for(const button of selected("[data-index-metric]")) button.addEventListener("click",()=>{
+    indexView.metric = button.dataset.indexMetric;
+    for(const item of selected("[data-index-metric]")) item.setAttribute("aria-pressed",String(item === button));
+    refreshIndex();
+  });
+  $("clear-day").addEventListener("click",()=>{current.recordsDay=null;filterRecords()});
+  for(const btn of selected("[data-metric]")) btn.addEventListener("click",()=>{
+    current.metric=btn.dataset.metric;
+    for(const b of selected("[data-metric]")) b.setAttribute("aria-pressed",String(btn===b));
+    plot();
+  });
+  for(const btn of selected("[data-group]")) btn.addEventListener("click",()=>{
+    current.groups=btn.dataset.group;
+    for(const b of selected("[data-group]")) b.setAttribute("aria-pressed",String(btn===b));
+    refreshData();
+  });
+  const rescan=$("rescan");
+  if(rescan && window.ipc){
+    const scanStatus=$("scan-status");
+    rescan.addEventListener("click",()=>{
+      rescan.disabled=true;
+      scanStatus.hidden=false;
+      scanStatus.textContent="正在后台扫描…";
+      window.ipc.postMessage("rescan");
+    });
+    window.scanCached=snapshot=>{
+      data=snapshot;
+      hasData=true;
+      scanStatus.textContent="上次结果 · 后台更新中";
+      renderSources();
+      refreshData();
+    };
+    window.scanDone=(fresh,recordsHtml)=>{
+      data=fresh;
+      hasData=recordsLoaded=true;
+      $("record-list").innerHTML=recordsHtml;
+      records=[...$("record-list").children];
+      renderSources();
+      refreshData();
+      scanStatus.hidden=true;
+      rescan.disabled=false;
+    };
+  }
+  const contributionSwitch = $("contribution-switch");
+  if (contributionSwitch && window.ipc) {
+    const post = (action, data = {}) => window.ipc.postMessage("contribution:" + JSON.stringify({action,...data}));
+    const error = $("contribution-error");
+    window.contributionStatus = status => {
+      contributionSwitch.setAttribute("aria-checked", String(status.enabled));
+      contributionSwitch.disabled = !status.enabled && (!status.ready || status.sending);
+      error.textContent = status.message;
+      error.hidden = !status.message;
+    };
+    $("open-leaderboard").addEventListener("click", () => post("open"));
+    contributionSwitch.addEventListener("click", () => {
+      if (contributionSwitch.disabled) return;
+      contributionSwitch.disabled = true;
+      if (contributionSwitch.getAttribute("aria-checked") === "true") post("disable");
+      else post("enable", {history:true});
+    });
+    post("status");
+  }
+  const reviewDialog=$("review-dialog");
+  if(reviewDialog && window.ipc){
+    const endpoint=$("review-endpoint"), model=$("review-model"), customKey=$("review-custom-key");
+    const isCustom=value=>value==="custom_system_one" || value==="custom_chat";
+    let lastCustom;
+    const provider=filterMenu("review-provider", value=>{
+      $("review-jev").hidden=value!=="jev";
+      const custom=isCustom(value);
+      $("review-custom").hidden=!custom;
+      endpoint.required=model.required=custom;
+      if(custom){
+        if(lastCustom && lastCustom!==value)endpoint.value=model.value=customKey.value="";
+        lastCustom=value;
+        const systemOne=value==="custom_system_one";
+        $("review-endpoint-label").textContent=systemOne ? "Jev System One 接口地址" : "Chat Completions 接口地址";
+        endpoint.placeholder=systemOne ? "https://example.com/v1/systemone" : "https://example.com/v1/chat/completions";
+      }
+    });
+    const scope=filterMenu("review-scope", ()=>{});
+    const stop=$("cancel-review");
+    const results=$("review-results"), status=$("review-state");
+    const key=$("review-key");
+    let runRange="";
+    const rangeText=()=>[
+      current.source || "全部来源",
+      current.recordsDay || (current.days ? "近 "+current.days+" 天" : "全部时间")
+    ].join(" · ");
+    const setBusy=busy=>{
+      for(const item of [provider.trigger,scope.trigger,key,endpoint,model,customKey,$("start-review")]) item.disabled=busy;
+      stop.hidden=!busy;
+      stop.disabled=false;
+    };
+    const showStatus=(message,error=false)=>{
+      status.hidden=false;
+      status.textContent=message;
+      status.classList.toggle("review-error",error);
+    };
+    const openReview=()=>{
+      $("review-range").textContent=rangeText();
+      if(!reviewDialog.open) reviewDialog.showModal();
+    };
+    $("open-review").addEventListener("click",openReview);
+    $("open-review-nav").addEventListener("click",openReview);
+    $("close-review").addEventListener("click",()=>reviewDialog.close());
+    reviewDialog.addEventListener("close",()=>{
+      provider.close();
+      scope.close();
+    });
+    $("review-form").addEventListener("submit",event=>{
+      event.preventDefault();
+      const custom=isCustom(provider.value);
+      const activeKey=custom ? customKey : provider.value==="jev" ? key : null;
+      runRange=rangeText();
+      const day=current.recordsDay;
+      const request={
+        provider:provider.value,scope:scope.value,source:current.source,
+        first_day:day || (current.days ? dayBefore(current.days-1) : null),
+        last_day:day || (current.days ? dayBefore(0) : null),
+        api_key:activeKey ? activeKey.value : ""
+      };
+      if(custom){
+        request.endpoint=endpoint.value.trim();
+        request.model=model.value.trim();
+      }
+      if(activeKey)activeKey.value="";
+      results.hidden=true;
+      results.replaceChildren();
+      setBusy(true);
+      showStatus("正在整理所选范围的本机会话…");
+      window.ipc.postMessage(JSON.stringify(request));
+    });
+    stop.addEventListener("click",()=>{
+      stop.disabled=true;
+      showStatus("正在停止复核…");
+      window.ipc.postMessage("cancel-review");
+    });
+    window.reviewProgress=(done,total)=>{
+      if(!stop.disabled)showStatus("正在复核 · "+fmt.format(done)+" / "+fmt.format(total)+" 条");
+    };
+    window.reviewDone=review=>{
+      setBusy(false);
+      const found=review.findings.length;
+      if(review.error) showStatus(review.error,true);
+      else if(review.cancelled) showStatus("复核已停止");
+      else showStatus("复核完成 · "+review.provider);
+      if(review.error && !review.reviewed)return;
+      results.hidden=false;
+      results.append(
+        el("p","subtle",runRange),
+        el("p","",fmt.format(review.reviewed)+" 条已复核 · "+fmt.format(found)+" 条明确挨骂 · "+fmt.format(review.uncertain)+" 条证据不足")
+      );
+      if(review.skipped) results.append(el("p","subtle",fmt.format(review.skipped)+" 条没有可提交的脱敏片段"));
+      if(review.reviewed) results.append(el("p","subtle",
+        "新增 "+fmt.format(review.added)+" 条 · 规则命中获确认 "+fmt.format(review.retained)+" / "+fmt.format(review.rule_hits_reviewed)+" 条"));
+      for(const finding of review.findings){
+        const detail=el("details","record");
+        const label=el("summary",""), head=el("span","");
+        head.append(el("strong","",finding.reason),el("small","",
+          (finding.rule_hit ? "规则已命中" : "AI 新发现")+" · "+finding.source+" · "+
+          (finding.model || "模型未知")+" · "+(finding.date || "日期未知")));
+        label.append(head);
+        const body=el("div","record-body");
+        body.append(el("blockquote","",finding.text));
+        detail.append(label,body);
+        results.append(detail);
+      }
+    };
+  }
+  function renderSources(){
+    const sourceList=$("source-list");
+    sourceList.replaceChildren();
+    for(const source of data.clients){
+      const card=el("article","panel source-card");
+      const title=el("h2","");
+      title.append(marker(colors[source.client]),source.client);
+      const n=source.turns;
+      const status=source.found ? fmt.format(n) + " 条真人消息 · " + source.hits + " 次挨骂" : "未找到本地记录";
+      card.append(title,el("p","",status));
+      if(source.found){
+        const detail=[fmt.format(source.files)+" 个会话文件"];
+        if(source.compressed)detail.push(fmt.format(source.compressed)+" 个压缩文件");
+        if(source.archived)detail.push(fmt.format(source.archived)+" 个归档文件");
+        if(source.history_turns)detail.push(fmt.format(source.history_turns)+" 条由输入历史补录");
+        card.append(el("small","",detail.join(" · ")));
+        if(source.versioned_turns)card.append(el("small","",fmt.format(source.versioned_turns)+" 条有工具版本"));
+        const skipped=[];
+        if(source.ignored)skipped.push(source.ignored+" 个子代理或自动评审");
+        if(source.duplicates)skipped.push(source.duplicates+" 个重复会话文件");
+        if(source.errors)skipped.push(source.errors+" 个读取异常");
+        if(source.malformed)skipped.push(source.malformed+" 行无法解析");
+        if(skipped.length)card.append(el("small","",skipped.join(" · ")));
+        const calendar = [];
+        if(source.inferred_neighbors)calendar.push(fmt.format(source.inferred_neighbors)+" 条由同日相邻消息补齐");
+        if(source.inferred_file_days)calendar.push(fmt.format(source.inferred_file_days)+" 条按文件日期推断");
+        if(source.missing_days)calendar.push(fmt.format(source.missing_days)+" 条日期未知");
+        if(calendar.length)card.append(el("small","",calendar.join(" · ")));
+      }
+      sourceList.append(card);
+    }
+  }
+  renderSources();
+  refreshData();
+  if(rescan && window.ipc)window.ipc.postMessage("report-ready");
+}
+</script>
+</body>
+</html>

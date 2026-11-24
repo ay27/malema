@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="骂了吗全球被骂榜，查看不同开发工具与模型在中文、英文会话中每千条消息的挨骂次数。">
+  <title>全球被骂榜 · 骂了吗</title>
+  <link rel="icon" href="/mark.png" type="image/png">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/board.js" type="module"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="/"><img src="/mark.png" alt="" width="36" height="36"><span data-text="brand">骂了吗</span></a>
+      <nav aria-label="导航">
+        <button id="interface-language" type="button" aria-label="Switch interface to English">EN</button>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <h1 id="title" data-text="title">全球被骂榜</h1>
+      </div>
+      <div class="hero-meta">
+        <label for="period" data-text="period">统计期次</label>
+        <div class="select"><select id="period">
+          <option value="current" data-text="current">本期</option>
+          <option value="previous" data-text="previous">上期</option>
+        </select></div>
+        <span id="period-range"></span>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="榜单筛选">
+      <div>
+        <span class="field-label" data-text="messageLanguage">消息语言</span>
+        <div class="segments" id="language-filter" role="group" aria-label="Language filter">
+          <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
+          <button data-language="zh" type="button" aria-pressed="false">中文</button>
+          <button data-language="en" type="button" aria-pressed="false">English</button>
+        </div>
+      </div>
+      <label><span class="field-label" data-text="harness">运行工具</span>
+        <span class="select"><select id="harness"><option value="" data-text="allHarnesses">全部工具</option></select></span>
+      </label>
+      <label class="model-field"><span class="field-label" data-text="model">回复模型</span>
+        <span class="select"><select id="model"><option value="" data-text="allModels">全部模型</option></select></span>
+      </label>
+    </section>
+
+    <section class="panel" aria-labelledby="chart-title">
+      <div class="panel-head">
+        <div><h2 id="chart-title" data-text="compare">组合对比</h2><p id="chart-hint"></p></div>
+        <ul id="legend" class="legend" hidden><li><i class="key zh"></i>中文</li><li><i class="key en"></i>English</li></ul>
+      </div>
+      <div id="bars" class="bars"></div>
+      <div id="empty" class="empty">
+        <img src="/mark.png" alt="" width="60" height="60">
+        <h3 id="empty-title">正在读取榜单</h3>
+        <p id="empty-details"></p>
+        <button type="button" id="retry" hidden data-text="retry">再试一次</button>
+      </div>
+    </section>
+
+    <section class="panel table-panel" aria-labelledby="detail-title">
+      <div class="panel-head">
+        <div><h2 id="detail-title" data-text="details">组合明细</h2><p id="refresh" aria-live="polite"></p></div>
+        <span id="result-count"></span>
+      </div>
+      <div class="scroll">
+        <table>
+          <thead><tr>
+            <th scope="col"><button data-sort="harness"><span data-text="harness">运行工具</span><i aria-hidden="true"></i></button></th>
+            <th scope="col"><button data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
+            <th scope="col"><button data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
+            <th scope="col"><button data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
+            <th scope="col" aria-sort="descending"><button data-sort="score"><span data-text="score">被骂指数</span><i aria-hidden="true"></i></button></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+  <footer><span>malema.app</span><a href="#title" data-text="top">回到顶部 ↑</a></footer>
+</body>
+</html>

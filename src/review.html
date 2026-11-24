@@ -1,0 +1,25 @@
+<dialog id="review-dialog" aria-labelledby="review-title">
+  <header class="review-header">
+    <div><h2 id="review-title">AI 复核</h2><p class="subtle" id="review-range"></p></div>
+    <button class="plain-btn" id="close-review" type="button">关闭</button>
+  </header>
+  <form id="review-form">
+    <div class="review-field"><span>判定工具</span><!-- REVIEW_PROVIDER --></div>
+    <div class="review-field"><span>复核范围</span><!-- REVIEW_SCOPE --></div>
+    <div class="review-fields" id="review-jev" hidden>
+      <label>TypeSafe API Key<input id="review-key" type="password" autocomplete="off" maxlength="4096" placeholder="填写密钥，或使用 TYPESAFE_API_KEY"></label>
+    </div>
+    <div class="review-fields" id="review-custom" hidden>
+      <label><span id="review-endpoint-label">接口地址</span><input id="review-endpoint" type="text" inputmode="url" autocomplete="off" spellcheck="false" maxlength="4096"></label>
+      <label>模型名<input id="review-model" type="text" autocomplete="off" spellcheck="false" maxlength="128" placeholder="填写接口的模型名"></label>
+      <label>API Key（可选）<input id="review-custom-key" type="password" autocomplete="off" maxlength="4096" placeholder="接口无需鉴权时留空"></label>
+    </div>
+    <div class="review-actions">
+      <p class="subtle">开始后，脱敏片段会交给所选 Agent 或模型服务。</p>
+      <button type="button" class="plain-btn" id="cancel-review" hidden>停止</button>
+      <button type="submit" class="plain-btn review-primary" id="start-review">开始复核</button>
+    </div>
+  </form>
+  <div id="review-state" role="status" hidden></div>
+  <div class="review-results" id="review-results" hidden></div>
+</dialog>

@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.93.0 --profile minimal
+      - run: cargo +1.93.0 test --locked --release
+      - run: cargo +1.93.0 build --locked --release
+      - run: scripts/package-macos.sh target/release/malema 'dist/骂了吗.app'

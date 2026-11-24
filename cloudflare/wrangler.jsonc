@@ -1,0 +1,22 @@
+{
+  "name": "malema",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-24",
+  "observability": { "enabled": false },
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": { "directory": "./public", "run_worker_first": ["/api/*"] },
+  "d1_databases": [{
+    "binding": "DB",
+    "database_name": "malema",
+    "database_id": "00000000-0000-4000-8000-000000000000",
+    "migrations_dir": "migrations"
+  }],
+  "vars": { "INGEST_MODE": "local" },
+  "ratelimits": [{
+    "name": "UPLOAD_LIMIT",
+    "namespace_id": "1001",
+    "simple": { "limit": 30, "period": 60 }
+  }],
+  "triggers": { "crons": ["*/10 * * * *"] }
+}
