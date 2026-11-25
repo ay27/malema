@@ -1,3 +1,4 @@
+use crate::review_state::{self, MessageKey, Verdict};
 use crate::{detect, i18n, sources};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
@@ -79,6 +80,7 @@ struct Decisions {
 }
 
 struct Item {
+    key: MessageKey,
     text: String,
     source: &'static str,
     date: Option<String>,
@@ -109,6 +111,7 @@ pub struct Outcome {
     findings: Vec<Finding>,
     error: Option<String>,
     cancelled: bool,
+    pub saved: bool,
 }
 
 impl Outcome {
@@ -125,6 +128,7 @@ impl Outcome {
             findings: Vec::new(),
             error: None,
             cancelled: false,
+            saved: false,
         }
     }
 }
@@ -158,6 +162,7 @@ pub fn run(
         let evidence = hit.as_ref().map(|hit| hit.evidence.as_str());
         match redact(&turn.text, evidence) {
             Some(text) => items.push(Item {
+                key: review_state::message_key(stats.source, &turn),
                 text,
                 source: stats.source.label(),
                 date: turn.date,
@@ -168,6 +173,7 @@ pub fn run(
         }
     });
     progress(0, items.len());
+    let mut updates = Vec::new();
     for batch in items.chunks(request.batch_size()) {
         if cancel.load(Ordering::Relaxed) {
             break;
@@ -185,17 +191,13 @@ pub fn run(
         for (item, verdict) in batch.iter().zip(labels.bytes()) {
             result.reviewed += 1;
             result.rule_hits_reviewed += usize::from(item.rule_hit);
-            let reason = match verdict {
-                b'1' => t("明确辱骂当前 AI", "explicitly insults the AI"),
-                b'2' => t(
-                    "明确辱骂当前 AI 的产物或操作",
-                    "explicitly insults what the AI produced",
-                ),
-                b'3' => {
-                    result.uncertain += 1;
-                    continue;
-                }
-                _ => continue,
+            let Some(verdict) = Verdict::from_code(verdict - b'0') else {
+                result.uncertain += 1;
+                continue;
+            };
+            updates.push((item.key, verdict));
+            let Some((_, reason)) = verdict.reason() else {
+                continue;
             };
             result.retained += usize::from(item.rule_hit);
             result.added += usize::from(!item.rule_hit);
@@ -211,6 +213,21 @@ pub fn run(
         progress(result.reviewed, items.len());
     }
     result.cancelled = cancel.load(Ordering::Relaxed);
+    if !updates.is_empty() {
+        match review_state::save(home, &updates) {
+            Ok(()) => result.saved = true,
+            Err(error) => {
+                eprintln!("could not save review verdicts: {error}");
+                result.error = Some(
+                    t(
+                        "复核结论未能保存，统计尚未更新。",
+                        "Could not save review verdicts. The statistics have not been updated.",
+                    )
+                    .into(),
+                );
+            }
+        }
+    }
     result.findings.sort_by(|a, b| {
         a.rule_hit
             .cmp(&b.rule_hit)
@@ -670,6 +687,67 @@ fn jev_decisions(body: &str, count: usize) -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn completed_review_saves_the_verdict_that_changes_the_report() {
+        use std::io::{BufRead, BufReader};
+        use std::net::TcpListener;
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let home =
+            std::env::temp_dir().join(format!("malema-review-run-{}-{nonce}", std::process::id()));
+        let project = home.join(".claude/projects/test");
+        std::fs::create_dir_all(&project).unwrap();
+        std::fs::write(project.join("test.jsonl"), concat!(
+            "{\"type\":\"user\",\"message\":{\"role\":\"user\",\"content\":\"Please check the question again.\"}}\n",
+            "{\"type\":\"user\",\"message\":{\"role\":\"user\",\"content\":\"Your code is garbage.\"}}\n",
+        )).unwrap();
+        assert_eq!(crate::report::build(&home, false).summary()["hits"], 1);
+
+        let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, 0)).unwrap();
+        let endpoint = format!("http://{}/v1", listener.local_addr().unwrap());
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            stream
+                .set_read_timeout(Some(Duration::from_secs(5)))
+                .unwrap();
+            let mut reader = BufReader::new(&mut stream);
+            let mut length = 0;
+            for line in reader.by_ref().lines() {
+                let line = line.unwrap();
+                if line.is_empty() {
+                    break;
+                }
+                if let Some(value) = line.strip_prefix("Content-Length:") {
+                    length = value.trim().parse::<usize>().unwrap();
+                }
+            }
+            reader.read_exact(&mut vec![0; length]).unwrap();
+            let response =
+                json!({"choices":[{"message":{"content":"{\"v\":\"10\"}"}}]}).to_string();
+            write!(stream, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{response}", response.len()).unwrap();
+        });
+
+        let request = serde_json::from_value(json!({
+            "provider":"custom_chat", "scope":"all", "source":"", "endpoint":endpoint, "model":"test-model"
+        })).unwrap();
+        let outcome = run(&home, false, request, &AtomicBool::new(false), |_, _| {});
+        assert!(outcome.saved, "{:?}", outcome.error);
+        server.join().unwrap();
+        let report = crate::report::build(&home, false);
+        assert_eq!(report.summary()["hits"], 1);
+        assert!(
+            report
+                .records_html()
+                .contains("Please check the question again.")
+        );
+        assert!(!report.records_html().contains("Your code is garbage."));
+        std::fs::remove_dir_all(home).unwrap();
+    }
 
     #[test]
     fn only_chat_completions_expands_a_v1_endpoint() {

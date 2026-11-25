@@ -618,10 +618,13 @@ function init(initialData) {
   const rescan=$("rescan");
   if(rescan && window.ipc){
     const scanStatus=$("scan-status");
-    rescan.addEventListener("click",()=>{
+    window.scanStarted=()=>{
       rescan.disabled=true;
       scanStatus.hidden=false;
       scanStatus.textContent=T.scanning;
+    };
+    rescan.addEventListener("click",()=>{
+      window.scanStarted();
       window.ipc.postMessage("rescan");
     });
     window.scanCached=snapshot=>{
@@ -753,6 +756,7 @@ function init(initialData) {
       const found=review.findings.length;
       if(review.error) showStatus(review.error,true);
       else if(review.cancelled) showStatus(T.reviewStopped);
+      else if(review.saved) showStatus(T.reviewSaved);
       else showStatus(fill(T.reviewFinished,{provider:review.provider}));
       if(review.error && !review.reviewed)return;
       results.hidden=false;

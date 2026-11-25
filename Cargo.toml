@@ -1,15 +1,16 @@
 [package]
 name = "malema"
-version = "0.5.7"
+version = "0.5.8"
 edition = "2024"
 
 [package.metadata.malema]
-bundle-version = 22
+bundle-version = 23
 
 [dependencies]
 regex = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = { version = "1", features = ["raw_value"] }
+sha2 = "0.10"
 unicode-normalization = "0.1"
 walkdir = "2"
 zstd = "0.13"

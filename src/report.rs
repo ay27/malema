@@ -1,5 +1,6 @@
 use crate::detect::{self, Hit};
 use crate::i18n;
+use crate::review_state;
 use crate::sources::{self, InferredDay, Source, SourceStats};
 use serde::Serialize;
 use std::collections::BTreeMap;
@@ -53,11 +54,24 @@ pub fn build_observed(
     use_env: bool,
     mut observe: impl FnMut(Source, &sources::Turn, bool),
 ) -> Report {
+    let verdicts = review_state::load(home).unwrap_or_else(|error| {
+        eprintln!("could not load review verdicts: {error}");
+        review_state::Verdicts::new()
+    });
     let mut hits = Vec::new();
     let mut totals = BTreeMap::<_, Count>::new();
     let sources = sources::scan(home, use_env, |stats, turn| {
-        let hit = detect::detect(&turn.text);
-        observe(stats.source, &turn, hit.is_some());
+        let rule_hit = detect::detect(&turn.text);
+        observe(stats.source, &turn, rule_hit.is_some());
+        let hit = if verdicts.is_empty() {
+            rule_hit
+        } else {
+            let key = review_state::message_key(stats.source, &turn);
+            match verdicts.get(key.as_slice()) {
+                Some(verdict) => verdict.hit(rule_hit, &turn.text),
+                None => rule_hit,
+            }
+        };
         let bucket = totals
             .entry((
                 stats.source.label(),
@@ -260,8 +274,13 @@ impl Report {
             let session = escape(&entry.session);
             let evidence = escape(&entry.hit.evidence);
             let excerpt = escape(&entry.excerpt);
-            let reason = escape(&entry.hit.reason);
             let code = entry.hit.rule;
+            let reason = escape(&entry.hit.reason);
+            let label = if code.starts_with("ai.") {
+                t("AI 复核结论", "AI review verdict")
+            } else {
+                t("为什么计入", "why it counts")
+            };
             let position = if entry.line == 0 {
                 t("Cursor 会话数据库", "Cursor session database").to_owned()
             } else if i18n::lang() == i18n::Lang::Zh {
@@ -271,8 +290,7 @@ impl Report {
             };
             let _ = write!(
                 html,
-                "<details class='record' data-client='{source}' data-date='{date}'><summary><span><strong>{evidence}</strong><small>{source_label} · {model} · {visible_date}</small></span></summary><div class='record-body'><p><b>{}</b>　{reason}</p><blockquote>{excerpt}</blockquote><small>{session} · {position} · {code}</small></div></details>",
-                t("为什么计入", "why it counts")
+                "<details class='record' data-client='{source}' data-date='{date}'><summary><span><strong>{evidence}</strong><small>{source_label} · {model} · {visible_date}</small></span></summary><div class='record-body'><p><b>{label}</b>　{reason}</p><blockquote>{excerpt}</blockquote><small>{session} · {position} · {code}</small></div></details>"
             );
         }
         html
@@ -691,6 +709,7 @@ fn dictionary() -> String {
         "reviewProgress": t("正在复核 · {done} / {total} 条", "reviewing · {done} / {total}"),
         "reviewStopped": t("复核已停止", "review stopped"),
         "reviewFinished": t("复核完成 · {provider}", "review finished · {provider}"),
+        "reviewSaved": t("复核完成 · 已保存结论", "review finished · verdicts saved"),
         "reviewSummary": t(
             "{reviewed} 条已复核 · {found} 条明确挨骂 · {uncertain} 条证据不足",
             "{reviewed} reviewed · {found} confirmed · {uncertain} uncertain",
@@ -741,6 +760,81 @@ fn page(content: &str, data: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn saved_reviews_rebuild_local_counts_without_changing_uploaded_counts() {
+        use crate::review_state::Verdict;
+        use std::fs;
+        use std::time::{SystemTime, UNIX_EPOCH};
+
+        let nonce = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_nanos();
+        let home = std::env::temp_dir().join(format!(
+            "malema-report-review-{}-{nonce}",
+            std::process::id()
+        ));
+        let project = home.join(".claude/projects/test");
+        fs::create_dir_all(&project).unwrap();
+        let transcript = project.join("session.jsonl");
+        let write_messages = |second: &str| {
+            let messages = [
+                "You are an idiot.",
+                second,
+                "Please review the task again.",
+                "Your code is garbage.",
+            ];
+            let text: String = messages
+                .iter()
+                .enumerate()
+                .map(|(index, message)| {
+                    serde_json::json!({
+                        "type": "user", "timestamp": format!("2026-01-01T12:00:0{index}Z"),
+                        "message": {"role": "user", "content": message}
+                    })
+                    .to_string()
+                        + "\n"
+                })
+                .collect();
+            fs::write(&transcript, text).unwrap();
+        };
+        write_messages("That answer needs another pass.");
+
+        let mut messages = Vec::new();
+        let original = build_observed(&home, false, |source, turn, rule_hit| {
+            messages.push((review_state::message_key(source, turn), rule_hit));
+        });
+        assert_eq!(original.summary()["hits"], 2);
+        assert_eq!(
+            messages.iter().map(|(_, hit)| *hit).collect::<Vec<_>>(),
+            [true, false, false, true]
+        );
+        review_state::save(
+            &home,
+            &[
+                (messages[0].0, Verdict::Excluded),
+                (messages[1].0, Verdict::Output),
+                (messages[2].0, Verdict::Direct),
+            ],
+        )
+        .unwrap();
+
+        let mut rule_hits = 0;
+        let reviewed = build_observed(&home, false, |_, _, hit| rule_hits += usize::from(hit));
+        assert_eq!(reviewed.summary()["hits"], 3);
+        assert_eq!(reviewed.summary()["turns"], 4);
+        assert_eq!(rule_hits, 2);
+        assert!(reviewed.records_html().contains("ai.output-insult"));
+        assert!(!reviewed.records_html().contains("You are an idiot."));
+        assert_eq!(build(&home, false).summary()["hits"], 3);
+
+        write_messages("I have changed my mind about the task.");
+        assert_eq!(build(&home, false).summary()["hits"], 2);
+        review_state::save(&home, &[(messages[2].0, Verdict::Excluded)]).unwrap();
+        assert_eq!(build(&home, false).summary()["hits"], 1);
+        fs::remove_dir_all(home).unwrap();
+    }
 
     #[test]
     fn desktop_shell_offers_the_language_switch_and_the_repository() {

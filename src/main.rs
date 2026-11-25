@@ -7,6 +7,7 @@ mod i18n;
 mod report;
 #[cfg(target_os = "macos")]
 mod review;
+mod review_state;
 mod sources;
 
 use std::ffi::OsString;
@@ -396,11 +397,14 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
             let home = scan_home.clone();
             let cache = cache.clone();
             std::thread::spawn(move || {
+                let review_stamp = serde_json::to_value(review_state::modified_at(&home))
+                    .unwrap_or(serde_json::Value::Null);
                 if read_cache
                     && let Ok(bytes) = std::fs::read(&cache)
                     && let Ok(data) = serde_json::from_slice::<serde_json::Value>(&bytes)
                     && data["rows"].is_array()
                     && data["clients"].is_array()
+                    && data["review_stamp"] == review_stamp
                 {
                     let _ = proxy.send_event(Action::ScanCached(data));
                 }
@@ -414,7 +418,8 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                     counts.collect(source, turn, hit);
                 });
                 let payload = show.then(|| {
-                    let data = report.data();
+                    let mut data = report.data();
+                    data["review_stamp"] = review_stamp;
                     // Keep only the statistics on disk. The records are kept in the open window.
                     if let Some(dir) = cache.parent()
                         && std::fs::create_dir_all(dir).is_ok()
@@ -465,14 +470,14 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                     latest = Some(counts);
                 }
                 let requested = std::mem::take(&mut rescan_pending);
-                if let Some((data, records)) = payload {
+                if requested {
+                    busy = true;
+                    launch_scan(true, false, contribution.since(), signature);
+                } else if let Some((data, records)) = payload {
                     if let Ok(records) = serde_json::to_string(&records) {
                         let _ =
                             webview.evaluate_script(&format!("window.scanDone({data},{records})"));
                     }
-                } else if requested {
-                    busy = true;
-                    launch_scan(true, false, contribution.since(), signature);
                 }
                 try_sync = true;
                 update = true;
@@ -561,8 +566,19 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 review_cancel = None;
                 if closing {
                     *flow = ControlFlow::Exit;
-                } else if let Ok(json) = serde_json::to_string(&outcome) {
-                    let _ = webview.evaluate_script(&format!("window.reviewDone?.({json})"));
+                } else {
+                    if outcome.saved {
+                        let _ = webview.evaluate_script("window.scanStarted?.()");
+                        if busy {
+                            rescan_pending = true;
+                        } else {
+                            busy = true;
+                            launch_scan(true, false, contribution.since(), signature);
+                        }
+                    }
+                    if let Ok(json) = serde_json::to_string(&outcome) {
+                        let _ = webview.evaluate_script(&format!("window.reviewDone?.({json})"));
+                    }
                 }
             }
             Event::UserEvent(Action::OpenRepository) => {
