@@ -43,4 +43,9 @@ jobs:
       # The bundle is committed so deploys work without a build; fail when the
       # committed copy drifts from its source.
       - run: git diff --exit-code -- public/board.js
-      - run: npx wrangler deploy --dry-run --outdir "$RUNNER_TEMP/worker"
+      - name: Check Wrangler configurations
+        run: |
+          for config in wrangler.jsonc wrangler.beta.jsonc wrangler.production.jsonc; do
+            npx --no-install wrangler deploy --config "$config" --dry-run \
+              --outdir "$RUNNER_TEMP/${config%.jsonc}"
+          done

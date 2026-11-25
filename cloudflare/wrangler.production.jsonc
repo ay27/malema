@@ -1,0 +1,48 @@
+{
+  "name": "malema-production",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-24",
+  "observability": {
+    "enabled": false
+  },
+  "workers_dev": false,
+  "preview_urls": false,
+  "assets": {
+    "directory": "./public",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "malema-production",
+      "database_id": "4ada8f19-f326-40fa-ab57-9461c3d8b59d",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "INGEST_MODE": "public"
+  },
+  "ratelimits": [
+    {
+      "name": "UPLOAD_LIMIT",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 30,
+        "period": 60
+      }
+    }
+  ],
+  "triggers": {
+    "crons": [
+      "*/10 * * * *"
+    ]
+  },
+  "routes": [
+    {
+      "pattern": "malema.app",
+      "custom_domain": true
+    }
+  ]
+}

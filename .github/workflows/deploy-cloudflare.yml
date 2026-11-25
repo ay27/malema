@@ -1,0 +1,86 @@
+name: Deploy Cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Leaderboard environment
+        required: true
+        type: choice
+        default: beta
+        options:
+          - beta
+          - production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cloudflare-${{ inputs.target }}
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+        working-directory: cloudflare
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: cloudflare/package-lock.json
+
+      - name: Select deployment target
+        id: target
+        env:
+          DEPLOY_TARGET: ${{ inputs.target }}
+        run: |
+          case "$DEPLOY_TARGET" in
+            beta) site=https://beta.malema.app ;;
+            production) site=https://malema.app ;;
+            *) exit 1 ;;
+          esac
+          echo "config=wrangler.$DEPLOY_TARGET.jsonc" >> "$GITHUB_OUTPUT"
+          echo "site=$site" >> "$GITHUB_OUTPUT"
+
+      - name: Check and build
+        env:
+          CONFIG: ${{ steps.target.outputs.config }}
+        run: |
+          npm ci
+          npm run check
+          npm test
+          npm run build
+          git diff --exit-code -- public/board.js
+          npx --no-install wrangler deploy --config "$CONFIG" --dry-run \
+            --outdir "$RUNNER_TEMP/worker"
+
+      - name: Apply migrations and deploy Worker
+        env:
+          CONFIG: ${{ steps.target.outputs.config }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          : "${CLOUDFLARE_ACCOUNT_ID:?Set the CLOUDFLARE_ACCOUNT_ID repository variable}"
+          : "${CLOUDFLARE_API_TOKEN:?Set the CLOUDFLARE_API_TOKEN repository secret}"
+          npx --no-install wrangler d1 migrations apply DB --config "$CONFIG" --remote
+          npx --no-install wrangler deploy --config "$CONFIG"
+
+      - name: Check the public site
+        env:
+          SITE: ${{ steps.target.outputs.site }}
+        run: |
+          curl --fail --silent --show-error --retry 4 --max-time 15 "$SITE/" -o /dev/null
+          for period in current previous; do
+            curl --fail --silent --show-error --retry 4 --max-time 15 \
+              "$SITE/api/v1/leaderboard?period=$period" |
+              jq -e '.entries | type == "array"' > /dev/null
+          done

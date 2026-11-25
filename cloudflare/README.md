@@ -63,39 +63,29 @@ into the "Other" family on the board instead of being dropped.
 
 ## Deploying to Cloudflare
 
-Deploy the site and API together as one Worker with Static Assets and D1. Keep
-`wrangler.jsonc` for local development. Production and beta each need their own
-Worker name and D1 database.
+| Target | Wrangler configuration | Site | Submissions |
+| --- | --- | --- | --- |
+| Beta | `wrangler.beta.jsonc` | [beta.malema.app](https://beta.malema.app) | Invite only |
+| Production | `wrangler.production.jsonc` | [malema.app](https://malema.app) | Public opt-in |
 
-1. From this directory, sign in with `npx wrangler login` and confirm the
-   intended account with `npx wrangler whoami`. The domain must be an active
-   Cloudflare zone in that account.
-2. Create the production database with `npx wrangler d1 create malema-production`.
-   In a separate `wrangler.production.jsonc`, use the production database name
-   and ID, keep the `DB` binding and Cron trigger, and set the route to
-   `{ "pattern": "malema.app", "custom_domain": true }`. Start with
-   `INGEST_MODE=closed` for a read-only launch.
-3. From the verified commit, build, migrate, and deploy.
+The two Workers use separate D1 databases. Use `wrangler.jsonc` for local
+development.
 
-   ```sh
-   npm ci
-   npm run check
-   npm test
-   npm run build
-   npx wrangler deploy --config wrangler.production.jsonc --dry-run
-   npx wrangler d1 migrations apply DB --config wrangler.production.jsonc --remote
-   npx wrangler deploy --config wrangler.production.jsonc
-   ```
+In **Settings → Secrets and variables → Actions**, add a repository variable
+named `CLOUDFLARE_ACCOUNT_ID` and a repository secret named
+`CLOUDFLARE_API_TOKEN`. Scope the token to the Cloudflare account and the
+`malema.app` zone. The workflow needs permission to deploy Workers, apply D1
+migrations, read the zone, and manage Workers routes for the custom domains.
 
-4. Check the site and both API periods on the custom domain. On a fresh
-   database the board displays a no-data state. Check that the snapshot
-   timestamp advances after the Cron trigger runs.
+Open **Actions → Deploy Cloudflare → Run workflow** and choose **beta** or
+**production** on `main`. The workflow checks and builds the web bundle, applies
+pending migrations to the selected D1, deploys the Worker, and checks the site
+and both leaderboard periods.
 
-For beta submissions, set `INGEST_MODE=invite` on the beta Worker and store
-`INGEST_INVITE` as a Worker secret. The beta app reads
-`MALEMA_LEADERBOARD_INVITE` from its environment. For a public launch,
-`INGEST_MODE=public` accepts submissions without an invite. Returning to
-`closed` stops new submissions while keeping existing snapshots readable.
+The Beta invite lives in the Worker secret `INGEST_INVITE`. The beta app reads
+the invite from `MALEMA_LEADERBOARD_INVITE`. To pause production submissions,
+set `INGEST_MODE` to `closed` in `wrangler.production.jsonc` and run the
+production deployment. Existing snapshots stay readable.
 
 Set the repository variable `MALEMA_LEADERBOARD_ENDPOINT` to
 `https://malema.app` before building a public desktop release. The beta target
