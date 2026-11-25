@@ -13,7 +13,7 @@
 ## 怎么用
 
 1. 在搭载 Apple 芯片的 Mac 上，下载 [`malema-macos-arm64.zip`](https://github.com/ay27/malema/releases/latest/download/malema-macos-arm64.zip)。
-2. 解压，把 **骂了吗.app** 拖进「应用程序」，双击打开。首次打开会自动扫描。
+2. 解压，把 **骂了吗** 拖进「应用程序」，双击打开。英文系统里会显示为 **Malema**。首次打开会自动扫描。
 3. 在「总览」里按日期和工具筛选，看看最近哪天骂得最多。侧栏可以切换中英文。
 
 也可以用 Homebrew 安装同一个正式版。

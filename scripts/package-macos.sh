@@ -34,6 +34,12 @@ notices="$app/Contents/Resources/lexicon"
 mkdir -p "$notices"
 install -m 644 "$lexicon/LICENSE-LDNOOBW.txt" "$lexicon/LICENSE-dsojevic.txt" "$lexicon/README.md" "$notices/"
 install -m 644 "$(dirname "$0")/../src/review-prompt.txt" "$app/Contents/Resources/review-prompt.txt"
+for language in en zh-Hans; do
+  localization="$app/Contents/Resources/$language.lproj"
+  mkdir -p "$localization"
+  install -m 644 "$project_dir/assets/macos/$language.lproj/InfoPlist.strings" "$localization/InfoPlist.strings"
+  plutil -lint "$localization/InfoPlist.strings"
+done
 icon_work=$(mktemp -d "${TMPDIR:-/tmp}/malema-icon.XXXXXX")
 trap 'rm -rf "$icon_work"' EXIT
 icon="$icon_work/AppIcon.png"
@@ -55,8 +61,10 @@ cat > "$app/Contents/Info.plist" <<PLIST
 <dict>
   <key>CFBundleExecutable</key><string>malema</string>
   <key>CFBundleIdentifier</key><string>local.malema.desktop</string>
+  <key>CFBundleDevelopmentRegion</key><string>en</string>
   <key>CFBundleName</key><string>骂了吗</string>
   <key>CFBundleDisplayName</key><string>骂了吗</string>
+  <key>LSHasLocalizedDisplayName</key><true/>
   <key>CFBundleIconFile</key><string>AppIcon.icns</string>
   <key>CFBundleShortVersionString</key><string>$version</string>
   <key>CFBundleVersion</key><string>$bundle_version</string>

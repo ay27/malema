@@ -13,7 +13,7 @@
 ## Get the app
 
 1. On a Mac with Apple silicon, download [`malema-macos-arm64.zip`](https://github.com/ay27/malema/releases/latest/download/malema-macos-arm64.zip).
-2. Unzip it, drag **骂了吗.app** into Applications, and open it. The first scan starts automatically.
+2. Unzip it, drag **Malema** into Applications, and open it. On a Mac set to Simplified Chinese, Finder shows it as **骂了吗**. The first scan starts automatically.
 3. Use the date and tool filters in **Overview** to explore your stats. Switch between English and Chinese from the sidebar.
 
 You can also install the same app with Homebrew.
