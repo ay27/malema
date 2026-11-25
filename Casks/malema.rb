@@ -1,6 +1,6 @@
 cask "malema" do
-  version "0.5.9"
-  sha256 "315cb9e8d4e0e9c4449dfff1d53860a6a7430b7bf2f1a3a06202965996025276"
+  version "0.5.10"
+  sha256 "f996e7596b86a1879446e5251cbfe360610adf642a381beb62413242ec69743d"
 
   url "https://github.com/ay27/malema/releases/download/v#{version}/malema-macos-arm64.zip"
   name "Malema"
