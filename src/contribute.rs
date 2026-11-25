@@ -10,9 +10,6 @@ use std::sync::OnceLock;
 use std::sync::atomic::{AtomicBool, Ordering};
 use time::OffsetDateTime;
 
-const DAY: i64 = 86_400;
-const EPOCH_MONDAY: i64 = 4;
-const MAX_TURNS: u32 = 5_000;
 /// Model names travel verbatim, so the wire format needs a shape both ends can
 /// check without knowing the model. Keep this in sync with `cloudflare/src/index.ts`.
 const MAX_NAME: usize = 64;
@@ -24,7 +21,6 @@ pub const LEADERBOARD_URL: &str = "https://malema.app";
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct Contract {
-    protocol: u32,
     ruleset: String,
     language_version: String,
 }
@@ -39,18 +35,6 @@ fn contract() -> &'static Contract {
 
 pub fn now() -> i64 {
     OffsetDateTime::now_utc().unix_timestamp()
-}
-
-fn day(timestamp: i64) -> i64 {
-    timestamp.div_euclid(DAY)
-}
-
-fn bucket(day: i64, width: i64) -> i64 {
-    day - (day - EPOCH_MONDAY).rem_euclid(width)
-}
-
-fn open(week: i64, now: i64) -> bool {
-    week <= day(now) && day(now) < bucket(week, 28) + 35
 }
 
 fn harness(source: Source) -> &'static str {
@@ -138,22 +122,18 @@ fn language(text: &str) -> Option<&'static str> {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct Weeks(BTreeMap<i64, BTreeMap<(&'static str, String, &'static str), (u32, u32)>>);
+pub struct Counts(BTreeMap<(&'static str, String, &'static str), (u64, u64)>);
 
-impl Weeks {
-    fn add(&mut self, week: i64, key: (&'static str, String, &'static str), hit: bool) {
-        let (turns, hits) = self.0.entry(week).or_default().entry(key).or_default();
-        if *turns < MAX_TURNS {
-            *turns += 1;
-            *hits += u32::from(hit);
-        }
+impl Counts {
+    fn add(&mut self, key: (&'static str, String, &'static str), hit: bool) {
+        let (turns, hits) = self.0.entry(key).or_default();
+        *turns += 1;
+        *hits += u64::from(hit);
     }
 
-    fn cells(&self, week: i64) -> Vec<Cell> {
+    fn cells(&self) -> Vec<Cell> {
         self.0
-            .get(&week)
-            .into_iter()
-            .flatten()
+            .iter()
             .map(|((harness, model, language), &(turns, hits))| Cell {
                 harness: (*harness).to_owned(),
                 model: model.clone(),
@@ -163,70 +143,37 @@ impl Weeks {
             })
             .collect()
     }
-
-    #[cfg(test)]
-    fn counts(&self) -> (u64, u64) {
-        self.0
-            .values()
-            .flat_map(|week| week.values())
-            .fold((0, 0), |(turns, hits), &(n, h)| {
-                (turns + u64::from(n), hits + u64::from(h))
-            })
-    }
 }
 
 pub struct Collection {
-    pub live: Weeks,
-    pub preview: Weeks,
-    pub preview_since: i64,
+    pub live: Counts,
     since: Option<i64>,
-    now: i64,
 }
 
 impl Collection {
-    pub fn new(now: i64, since: Option<i64>) -> Self {
+    pub fn new(_now: i64, since: Option<i64>) -> Self {
         Self {
-            live: Weeks::default(),
-            preview: Weeks::default(),
-            preview_since: (day(now) - 6) * DAY,
+            live: Counts::default(),
             since,
-            now,
         }
     }
 
     pub fn collect(&mut self, source: Source, turn: &Turn, hit: bool) {
-        let Some(timestamp) = turn.timestamp.filter(|&ts| ts <= self.now) else {
-            return;
-        };
-        let week = bucket(day(timestamp), 7);
-        let live = self.since.is_some_and(|since| timestamp >= since);
-        let preview = timestamp >= self.preview_since;
-        if !open(week, self.now) || (!live && !preview) {
-            return;
-        }
-        let Some(language) = language(&turn.text) else {
-            return;
-        };
-        let key = (harness(source), model(turn.model.as_deref()), language);
-        if live {
-            self.live.add(week, key.clone(), hit);
-        }
-        if preview {
-            self.preview.add(week, key, hit);
-        }
+        self.live.add(
+            (
+                harness(source),
+                model(turn.model.as_deref()),
+                language(&turn.text).unwrap_or("other"),
+            ),
+            hit,
+        );
     }
 
     pub fn since(&self) -> Option<i64> {
         self.since
     }
-
-    pub fn start(&mut self, since: i64, history: bool) {
+    pub fn start(&mut self, since: i64) {
         self.since = Some(since);
-        self.live = if history {
-            self.preview.clone()
-        } else {
-            Weeks::default()
-        };
     }
 }
 
@@ -235,8 +182,8 @@ pub struct Cell {
     harness: String,
     model: String,
     language: String,
-    turns: u32,
-    hits: u32,
+    turns: u64,
+    hits: u64,
 }
 
 #[derive(Clone, Deserialize, Serialize)]
@@ -273,6 +220,10 @@ struct State {
     tokens: BTreeMap<i64, String>,
     slots: BTreeMap<i64, Slot>,
     last_sync: Option<i64>,
+    #[serde(default)]
+    contributor: Option<String>,
+    #[serde(default)]
+    snapshot: Option<Slot>,
 }
 
 #[derive(Serialize)]
@@ -281,8 +232,7 @@ pub struct Batch {
     protocol: u32,
     ruleset: String,
     language_version: String,
-    season: i64,
-    week: i64,
+    replaces: Vec<String>,
     contributor: String,
     revision: u32,
     cells: Vec<Cell>,
@@ -291,7 +241,7 @@ pub struct Batch {
 #[derive(Deserialize)]
 #[serde(tag = "action", rename_all = "snake_case")]
 pub enum Request {
-    Enable { history: bool },
+    Enable,
     Disable,
     Status,
     Open,
@@ -407,12 +357,23 @@ impl Controller {
     }
 
     pub fn status(&self, ready: bool, sending: bool) -> Status {
-        let mut confirmed = None;
-        for counts in self.state.slots.values().filter_map(Slot::confirmed_counts) {
-            let total = confirmed.get_or_insert_with(ConfirmedCounts::default);
-            total.turns += counts.turns;
-            total.hits += counts.hits;
-        }
+        let confirmed = self
+            .state
+            .snapshot
+            .as_ref()
+            .and_then(Slot::confirmed_counts)
+            .or_else(|| {
+                let cells: Vec<_> = self
+                    .state
+                    .slots
+                    .values()
+                    .filter_map(Slot::confirmed_counts)
+                    .collect();
+                (!cells.is_empty()).then(|| ConfirmedCounts {
+                    turns: cells.iter().map(|c| c.turns).sum(),
+                    hits: cells.iter().map(|c| c.hits).sum(),
+                })
+            });
         Status {
             enabled: self.state.since.is_some(),
             sending,
@@ -423,85 +384,50 @@ impl Controller {
         }
     }
 
-    pub fn prepare(&mut self, counts: &Weeks, now: i64) -> io::Result<Vec<Batch>> {
+    pub fn prepare(&mut self, counts: &Counts, _now: i64) -> io::Result<Vec<Batch>> {
         if self.state.since.is_none() {
             return Ok(Vec::new());
         }
         let mut state = self.state.clone();
-        let latest_season = bucket(day(now), 28);
-        state
-            .tokens
-            .retain(|&season, _| season >= latest_season - 28);
-        state.slots.retain(|&week, _| open(week, now));
-        let mut changed = state.tokens.len() != self.state.tokens.len()
-            || state.slots.len() != self.state.slots.len();
-        for &week in counts.0.keys().filter(|&&week| open(week, now)) {
-            let cells = counts.cells(week);
-            let (revision, previous_confirmation) = match state.slots.get(&week) {
-                Some(slot) if slot.cells == cells => continue,
-                Some(slot) => (slot.revision + 1, slot.confirmed_counts()),
-                None => (1, None),
-            };
-            state.slots.insert(
-                week,
-                Slot {
-                    revision,
-                    cells,
-                    acked: false,
-                    previous_confirmation,
-                },
-            );
-            changed = true;
-        }
-        let mut batches = Vec::new();
-        let spec = contract();
-        if spec.ruleset != crate::detect::RULESET {
-            return Err(io::Error::other(
-                "leaderboard ruleset differs from local detection",
-            ));
-        }
-        for (&week, slot) in state
-            .slots
-            .iter()
-            .filter(|(week, slot)| !slot.acked && counts.0.contains_key(week))
+        let cells = counts.cells();
+        if state
+            .snapshot
+            .as_ref()
+            .is_none_or(|slot| slot.cells != cells)
         {
-            let season = bucket(week, 28);
-            if let std::collections::btree_map::Entry::Vacant(entry) = state.tokens.entry(season) {
-                entry.insert(random_token()?);
-                changed = true;
-            }
-            batches.push(Batch {
-                protocol: spec.protocol,
-                ruleset: spec.ruleset.clone(),
-                language_version: spec.language_version.clone(),
-                season,
-                week,
-                contributor: state.tokens[&season].clone(),
-                revision: slot.revision,
-                cells: slot.cells.clone(),
+            let revision = state.snapshot.as_ref().map_or(1, |slot| slot.revision + 1);
+            let previous_confirmation = state.snapshot.as_ref().and_then(Slot::confirmed_counts);
+            state.snapshot = Some(Slot {
+                revision,
+                cells,
+                acked: false,
+                previous_confirmation,
             });
         }
-        if changed {
-            self.save(state)?;
+        if state.contributor.is_none() {
+            state.contributor = Some(random_token()?);
         }
-        Ok(batches)
+        let slot = state.snapshot.as_ref().expect("prepared snapshot");
+        let batch = (!slot.acked).then(|| Batch {
+            protocol: 3,
+            ruleset: contract().ruleset.clone(),
+            language_version: contract().language_version.clone(),
+            contributor: state.contributor.clone().expect("installation token"),
+            replaces: state.tokens.values().cloned().collect(),
+            revision: slot.revision,
+            cells: slot.cells.clone(),
+        });
+        self.save(state)?;
+        Ok(batch.into_iter().collect())
     }
 
     pub fn finish(&mut self, result: SyncResult) -> io::Result<()> {
         let mut state = self.state.clone();
-        let mut confirmed = false;
-        for (week, revision) in &result.acked {
-            if let Some(slot) = state
-                .slots
-                .get_mut(week)
-                .filter(|slot| slot.revision == *revision)
-            {
-                slot.acked = true;
-                slot.previous_confirmation = None;
-                confirmed = true;
-            }
-        }
-        if confirmed {
+        if let Some(slot) = state.snapshot.as_mut()
+            && result.acked.contains(&slot.revision)
+        {
+            slot.acked = true;
+            slot.previous_confirmation = None;
             state.last_sync = Some(now());
             self.save(state)?;
         }
@@ -515,7 +441,7 @@ impl Controller {
 }
 
 pub struct SyncResult {
-    acked: Vec<(i64, u32)>,
+    acked: Vec<u32>,
     error: Option<String>,
 }
 
@@ -532,13 +458,13 @@ pub fn sync(batches: Vec<Batch>, cancelled: &AtomicBool) -> SyncResult {
             result.error = Some(error);
             break;
         }
-        result.acked.push((batch.week, batch.revision));
+        result.acked.push(batch.revision);
     }
     result
 }
 
 fn post(batch: &Batch) -> Result<(), String> {
-    let url = format!("{LEADERBOARD_URL}/api/v1/contributions");
+    let url = format!("{LEADERBOARD_URL}/api/v2/contributions");
     let mut command = Command::new("/usr/bin/curl");
     command.args([
         "--disable",
@@ -592,8 +518,8 @@ fn post(batch: &Batch) -> Result<(), String> {
     }
     Err(match status {
         "409" => i18n::pick(
-            "这周的贡献版本有冲突，请检查是否同时运行了两个副本。",
-            "this week's contribution revision conflicts; check whether two copies are running.",
+            "统计版本有冲突，请检查是否同时运行了两个副本。",
+            "the contribution revision conflicts; check whether two copies are running.",
         )
         .to_owned(),
         "400" => i18n::pick(
@@ -619,199 +545,87 @@ mod tests {
     use super::*;
 
     #[test]
-    fn receipt_keeps_confirmed_counts_while_a_replacement_is_pending() {
-        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
+    fn full_snapshot_includes_old_unknown_dates_and_other_languages() {
+        let home = std::env::temp_dir().join(format!("malema-full-{}", random_token().unwrap()));
+        let mut controller = Controller::load(&home);
         let now = now();
-        let week = bucket(day(now), 7);
-        let mut controller = Controller::load(&home);
-        let mut counts = Weeks::default();
-        let key = ("codex", "test-model".to_owned(), "en");
-        counts.add(week, key.clone(), true);
-        let batch = controller.prepare(&counts, now).unwrap().pop().unwrap();
-        assert!(controller.status(true, true).confirmed.is_none());
-        controller
-            .finish(SyncResult {
-                acked: vec![(week, batch.revision)],
-                error: None,
-            })
-            .unwrap();
-
-        counts.add(week, key, false);
-        let replacement = controller.prepare(&counts, now).unwrap().pop().unwrap();
-        let mut reloaded = Controller::load(&home);
-        let status = reloaded.status(true, true);
-        let confirmed = status.confirmed.unwrap();
-        assert_eq!((confirmed.turns, confirmed.hits), (1, 1));
-        assert!(status.last_sync.is_some());
-
-        reloaded
-            .finish(SyncResult {
-                acked: Vec::new(),
-                error: Some("retry".to_owned()),
-            })
-            .unwrap();
-        assert_eq!(reloaded.status(true, false).confirmed.unwrap().turns, 1);
-        reloaded
-            .finish(SyncResult {
-                acked: vec![(week, replacement.revision)],
-                error: None,
-            })
-            .unwrap();
-        let confirmed = reloaded.status(true, false).confirmed.unwrap();
-        assert_eq!((confirmed.turns, confirmed.hits), (2, 1));
-        fs::remove_dir_all(home).unwrap();
-    }
-
-    #[test]
-    fn changes_create_new_revisions_without_waiting_and_stale_receipts_stay_pending() {
-        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
-        let now = now();
-        let week = bucket(day(now), 7);
-        let mut controller = Controller::load(&home);
-        let mut counts = Weeks::default();
-        let key = ("codex", "test-model".to_owned(), "en");
-        counts.add(week, key.clone(), true);
-        let first = controller.prepare(&counts, now).unwrap().pop().unwrap();
-        counts.add(week, key, true);
-        let latest = controller.prepare(&counts, now).unwrap().pop().unwrap();
-        assert_eq!(latest.revision, first.revision + 1);
-        controller
-            .finish(SyncResult {
-                acked: vec![(week, first.revision)],
-                error: None,
-            })
-            .unwrap();
-        let pending = controller.prepare(&counts, now).unwrap().pop().unwrap();
-        assert_eq!(pending.revision, latest.revision);
-        assert_eq!(pending.cells[0].hits, 2);
-        controller
-            .finish(SyncResult {
-                acked: vec![(week, latest.revision)],
-                error: None,
-            })
-            .unwrap();
-        assert!(controller.prepare(&counts, now).unwrap().is_empty());
-        fs::remove_dir_all(home).unwrap();
-    }
-
-    #[test]
-    fn reporting_defaults_on_for_a_new_install_and_remembers_opt_out() {
-        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
-        let before = now();
-        let mut controller = Controller::load(&home);
-        let since = controller.since().unwrap();
-        assert!(since >= before && since <= now());
-        assert_eq!(Controller::load(&home).since(), Some(since));
-        controller.disable().unwrap();
-        assert_eq!(Controller::load(&home).since(), None);
-        fs::remove_dir_all(home).unwrap();
-    }
-
-    #[test]
-    fn upgrade_preserves_the_previous_default_off_setting() {
-        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
-        fs::create_dir_all(home.join("Library/Caches/Malema")).unwrap();
-        assert_eq!(Controller::load(&home).since(), None);
-        fs::remove_dir_all(home).unwrap();
-    }
-
-    #[test]
-    fn only_eligible_utc_messages_enter_the_contribution() {
-        let utc = (EPOCH_MONDAY + 28 * 700 + 1) * DAY;
-        let mut counts = Collection::new(utc, Some(utc - DAY));
-        let turn = |timestamp, model: &str, text: &str| Turn {
-            inferred_day: None,
-            model: Some(model.to_owned()),
-            harness_version: None,
-            date: Some("1999-01-01".to_owned()),
-            timestamp,
-            text: text.to_owned(),
-            session: "private-session".to_owned(),
-            line: 11,
-        };
-        for (time, model, message) in [
-            (Some(utc - 1), "gpt-5.6-luna", "你能看看这段代码吗"),
-            (Some(utc - 2), "gpt-5.6-luna", "You are completely useless"),
-            (
-                Some(utc - 3),
-                "secret-private-name",
-                "Please check this code",
-            ),
-            (None, "gpt-5.6-luna", "Please check this code"),
-            (Some(utc + 1), "gpt-5.6-luna", "Please check this code"),
-        ] {
+        let mut counts = Collection::new(now, controller.since());
+        for timestamp in [Some(1), None, Some(now)] {
             counts.collect(
                 Source::Codex,
-                &turn(time, model, message),
-                time == Some(utc - 2),
-            );
-        }
-        let week = bucket(day(utc), 7);
-        let payload = serde_json::to_value(counts.live.cells(week)).unwrap();
-        assert_eq!(
-            payload,
-            serde_json::json!([
-                {"harness":"codex","model":"gpt-5.6-luna","language":"en","turns":1,"hits":1},
-                {"harness":"codex","model":"gpt-5.6-luna","language":"zh","turns":1,"hits":0},
-                {"harness":"codex","model":"secret-private-name","language":"en","turns":1,"hits":0}
-            ])
-        );
-        assert_eq!(counts.preview.counts(), (3, 1));
-        counts.start(utc, false);
-        assert_eq!(counts.live.counts(), (0, 0));
-    }
-
-    #[test]
-    fn unreleased_model_names_survive_the_contract() {
-        let utc = (EPOCH_MONDAY + 28 * 700 + 1) * DAY;
-        let mut counts = Collection::new(utc, Some(utc - DAY));
-        for name in [
-            Some("gpt-7-experimental"),
-            Some("Some Vendor/Model:2026"),
-            Some("  MiXeD  "),
-            None,
-        ] {
-            counts.collect(
-                Source::Claude,
                 &Turn {
                     inferred_day: None,
-                    model: name.map(str::to_owned),
+                    model: None,
                     harness_version: None,
                     date: None,
-                    timestamp: Some(utc - 1),
-                    text: "Please look at this code".to_owned(),
-                    session: "s".to_owned(),
+                    timestamp,
+                    text: "啊".to_owned(),
+                    session: "test".to_owned(),
                     line: 1,
                 },
-                false,
+                true,
             );
         }
-        let week = bucket(day(utc), 7);
-        let models: Vec<String> = counts
-            .live
-            .cells(week)
-            .into_iter()
-            .map(|c| c.model)
-            .collect();
-        assert_eq!(
-            models,
-            vec![
-                "gpt-7-experimental".to_owned(),
-                "mixed".to_owned(),
-                "some vendor/model:2026".to_owned(),
-                UNKNOWN_MODEL.to_owned()
-            ]
-        );
+        let batch = controller
+            .prepare(&counts.live, now)
+            .unwrap()
+            .pop()
+            .unwrap();
+        assert_eq!(batch.cells[0].turns, 3);
+        assert_eq!(batch.cells[0].hits, 3);
+        assert_eq!(batch.cells[0].language, "other");
+        controller
+            .finish(SyncResult {
+                acked: vec![batch.revision],
+                error: None,
+            })
+            .unwrap();
+        assert!(controller.prepare(&counts.live, now).unwrap().is_empty());
+        let mut reopened = Controller::load(&home);
+        assert_eq!(reopened.status(true, false).confirmed.unwrap().hits, 3);
+        reopened.disable().unwrap();
+        assert!(reopened.prepare(&counts.live, now).unwrap().is_empty());
+        assert!(Controller::load(&home).since().is_none());
+        fs::remove_dir_all(home).unwrap();
     }
 
     #[test]
-    fn sample_limit_applies_to_the_numerator_and_denominator() {
-        let mut weeks = Weeks::default();
-        let key = ("codex", "gpt-5.6-luna".to_owned(), "zh");
-        for _ in 0..MAX_TURNS {
-            weeks.add(4, key.clone(), false);
-        }
-        weeks.add(4, key, true);
-        assert_eq!(weeks.counts(), (u64::from(MAX_TURNS), 0));
+    fn older_receipt_does_not_confirm_a_newer_snapshot_and_legacy_tokens_survive() {
+        let home = std::env::temp_dir().join(format!("malema-full-{}", random_token().unwrap()));
+        let mut controller = Controller::load(&home);
+        controller
+            .state
+            .tokens
+            .insert(4, "01234567890123456789012345678901".to_owned());
+        let mut counts = Counts::default();
+        counts.add(("codex", "test".to_owned(), "zh"), true);
+        let first = controller.prepare(&counts, now()).unwrap().pop().unwrap();
+        counts.add(("codex", "test".to_owned(), "zh"), true);
+        let second = controller.prepare(&counts, now()).unwrap().pop().unwrap();
+        assert_eq!(second.revision, first.revision + 1);
+        assert_eq!(second.replaces.len(), 1);
+        controller
+            .finish(SyncResult {
+                acked: vec![first.revision],
+                error: None,
+            })
+            .unwrap();
+        let mut reopened = Controller::load(&home);
+        assert_eq!(
+            reopened.prepare(&counts, now()).unwrap()[0].revision,
+            second.revision
+        );
+        reopened
+            .finish(SyncResult {
+                acked: vec![second.revision],
+                error: None,
+            })
+            .unwrap();
+        counts = Counts::default();
+        let empty = reopened.prepare(&counts, now()).unwrap().pop().unwrap();
+        assert!(empty.cells.is_empty());
+        assert_eq!(empty.contributor, first.contributor);
+        assert_eq!(reopened.status(true, false).confirmed.unwrap().hits, 2);
+        fs::remove_dir_all(home).unwrap();
     }
 }

@@ -466,15 +466,11 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 use contribute::Request;
                 update = true;
                 match request {
-                    Request::Enable { history } if contribution.since().is_none() => {
+                    Request::Enable if contribution.since().is_none() => {
                         if let Some(counts) = latest.as_mut() {
-                            let since = if history {
-                                counts.preview_since
-                            } else {
-                                contribute::now()
-                            };
+                            let since = contribute::now();
                             if contribution.enable(since).is_ok() {
-                                counts.start(since, history);
+                                counts.start(since);
                                 try_sync = true;
                             } else {
                                 contribution.message = i18n::pick(

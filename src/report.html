@@ -673,7 +673,7 @@ function init(initialData) {
       if (contributionSwitch.disabled) return;
       contributionSwitch.disabled = true;
       if (contributionSwitch.getAttribute("aria-checked") === "true") post("disable");
-      else post("enable", {history:true});
+      else post("enable");
     });
     post("status");
   }

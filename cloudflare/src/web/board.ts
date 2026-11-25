@@ -15,6 +15,7 @@ import {
   type Combination,
   type Entry,
   type Language,
+  type MessageLanguage,
   type Snapshot,
   type SortKey,
 } from "./logic";
@@ -64,6 +65,7 @@ type Copy = {
   otherUI: string;
   zhLabel: string;
   enLabel: string;
+  otherLabel: string;
 };
 
 const translations: Record<Language, Copy> = {
@@ -112,6 +114,7 @@ const translations: Record<Language, Copy> = {
     otherUI: "Switch interface to English",
     zhLabel: "中文",
     enLabel: "English",
+    otherLabel: "其他",
   },
   en: {
     brand: "Malema",
@@ -158,6 +161,7 @@ const translations: Record<Language, Copy> = {
     otherUI: "切换至中文界面",
     zhLabel: "中文",
     enLabel: "English",
+    otherLabel: "Other",
   },
 };
 
@@ -176,7 +180,7 @@ function dom<K extends keyof HTMLElementTagNameMap>(
 
 interface Ui {
   locale: Language;
-  filtering: Language | "all";
+  filtering: MessageLanguage | "all";
   key: SortKey;
   order: 1 | -1;
   state: "loading" | "ready" | "error";
@@ -211,8 +215,8 @@ const number = (value: number): string => new Intl.NumberFormat(ui.locale).forma
 const precision = (value: number): string =>
   new Intl.NumberFormat(ui.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
 const harnessName = (key: string): string => ui.data?.harnesses[key] ?? key;
-const languageLabel = (language: Language): string =>
-  language === "zh" ? copy().zhLabel : copy().enLabel;
+const languageLabel = (language: MessageLanguage): string =>
+  language === "other" ? copy().otherLabel : language === "zh" ? copy().zhLabel : copy().enLabel;
 
 const currentFilters = () => ({
   harness: ($("harness") as HTMLSelectElement).value,
@@ -245,6 +249,7 @@ function renderLanguageSegments(): void {
     all: copy().allLanguages,
     zh: copy().zhLabel,
     en: copy().enLabel,
+    other: copy().otherLabel,
   };
   for (const button of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
     const value = button.dataset.language as keyof typeof labels;
@@ -337,9 +342,10 @@ function renderBars(rows: Combination[], ranks: Map<string, number>): void {
   const top = sortCombinations(rows, "score", -1, harnessName).slice(0, 6);
   const maximum = axisMaximum(Math.max(0, ...top.flatMap(row => Object.values(row.languages).map(entry => roastIndex(entry.hits, entry.turns)))));
   renderAxis(maximum);
-  const languages: Language[] = ui.filtering === "all" ? ["zh", "en"] : [ui.filtering];
+  const languages: MessageLanguage[] = ui.filtering === "all"
+    ? ["zh", "en", ...(rows.some(row => row.languages.other) ? ["other" as const] : [])] : [ui.filtering];
 
-  const bar = (language: Language, entry: Entry | undefined): HTMLElement => {
+  const bar = (language: MessageLanguage, entry: Entry | undefined): HTMLElement => {
     const row = dom("span", "bar-line " + language);
     const track = dom("span", "track");
     track.setAttribute("aria-hidden", "true");
@@ -503,7 +509,7 @@ $("interface-language").addEventListener("click", () => {
 
 for (const button of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
   button.addEventListener("click", () => {
-    ui.filtering = button.dataset.language as Language | "all";
+    ui.filtering = button.dataset.language as MessageLanguage | "all";
     for (const other of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
       other.setAttribute("aria-pressed", String(other === button));
     }

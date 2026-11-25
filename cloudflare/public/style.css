@@ -126,6 +126,7 @@ select:hover { border-color: #bcc9dd; }
 .key { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 6px; }
 .zh { --bar: var(--zh); }
 .en { --bar: var(--en); }
+.other { --bar: #8995a8; }
 .key, .fill { background: var(--bar); }
 
 /* ------------------------------------------------------------------- chart */

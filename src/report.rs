@@ -344,8 +344,8 @@ impl Report {
                     "submit anonymously to the global leaderboard"
                 ),
                 t(
-                    "计数变化后立即上报，包含已保存的 AI 复核结论。手动开启时包含最近 7 天。",
-                    "Uploads changed counts immediately, including saved AI reviews. Turning it on manually includes the last 7 days."
+                    "全量提交本地匿名计数，包含历史记录和 AI 复核结论。",
+                    "Shares all local anonymous counts, including history and saved AI reviews."
                 ),
                 t("匿名提交", "Anonymous"),
                 t("参与全球排行", "join the leaderboard"),
@@ -703,7 +703,7 @@ fn dictionary() -> String {
         "cachedScan": t("上次结果 · 后台更新中", "previous result · updating in the background"),
         "contributionSending": t("正在上报…", "Sending counts…"),
         "contributionWaiting": t("尚无成功上报", "No confirmed uploads yet"),
-        "contributionConfirmed": t("近期已确认 {turns} 条消息 · {hits} 次挨骂", "Recently confirmed · {turns} messages · {hits} insults"),
+        "contributionConfirmed": t("已确认 {turns} 条消息 · {hits} 次挨骂", "Confirmed · {turns} messages · {hits} insults"),
         "contributionLastSync": t("最近成功 {time}", "Last successful upload {time}"),
         "endpointSystemOne": t("Jev System One 接口地址", "Jev System One endpoint"),
         "endpointChat": t("Chat Completions 接口地址", "Chat Completions endpoint"),

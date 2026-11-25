@@ -2,11 +2,12 @@
 // type-checked and unit-tested directly.
 
 export type Language = "zh" | "en";
+export type MessageLanguage = Language | "other";
 
 export interface Entry {
   harness: string;
   model: string;
-  language: Language;
+  language: MessageLanguage;
   turns: number;
   hits: number;
 }
@@ -25,13 +26,13 @@ export interface Combination {
   turns: number;
   hits: number;
   score: number;
-  languages: Partial<Record<Language, Entry>>;
+  languages: Partial<Record<MessageLanguage, Entry>>;
 }
 
 export interface Filters {
   harness: string;
   model: string;
-  language: Language | "all";
+  language: MessageLanguage | "all";
 }
 
 export type SortKey = "harness" | "model" | "turns" | "hits" | "score";

@@ -7,7 +7,7 @@ interface Statement {
 }
 
 interface Env {
-  DB: { prepare(sql: string): Statement };
+  DB: { prepare(sql: string): Statement; batch(statements: Statement[]): Promise<unknown> };
   UPLOAD_LIMIT: { limit(input: { key: string }): Promise<{ success: boolean }> };
   INGEST_MODE?: string;
 }
@@ -15,7 +15,7 @@ interface Env {
 interface Cell {
   harness: string;
   model: string;
-  language: "zh" | "en";
+  language: "zh" | "en" | "other";
   turns: number;
   hits: number;
 }
@@ -33,7 +33,7 @@ interface Contribution {
 
 const dayMs = 86_400_000;
 const monday = 4;
-const maxBytes = 65_536;
+const maxBytes = 262_144;
 const maxTurns = 5_000;
 // Harness and model names travel from the client verbatim, so the board can show
 // a tool or model the day it ships instead of waiting for a contract release.
@@ -159,125 +159,119 @@ async function intake(request: Request, env: Env, host: string): Promise<Respons
   return fail("revision_conflict", 409);
 }
 
-const snapshotSql = `
-WITH cells AS (
-  SELECT contributor,
-    json_extract(value, '$.harness') AS harness,
-    json_extract(value, '$.model') AS model,
-    json_extract(value, '$.language') AS language,
-    json_extract(value, '$.turns') AS turns,
-    json_extract(value, '$.hits') AS hits
-  FROM contributions, json_each(contributions.cells)
-  WHERE season = ?1
-),
-qualified AS (
-  SELECT harness, model, language,
-         sum(turns) AS turns, sum(hits) AS hits, count(DISTINCT contributor) AS contributors
-  FROM cells
-  GROUP BY harness, model, language
-  HAVING sum(turns) >= ?2 AND count(DISTINCT contributor) >= ?3
-)
-INSERT INTO snapshots (season, updated_at, entries)
-SELECT ?1, ?4, json_group_array(json_object(
-  'harness', harness, 'model', model, 'language', language,
-  'turns', turns, 'hits', hits, 'contributors', contributors
-))
-FROM qualified
-WHERE TRUE
-ON CONFLICT (season) DO UPDATE SET updated_at = excluded.updated_at, entries = excluded.entries
-WHERE excluded.updated_at > snapshots.updated_at
-`;
+interface FullContribution {
+  contributor: string;
+  revision: number;
+  cells: Cell[];
+  replaces: string[];
+}
 
-// Archived snapshot rows hold the final counts even after weekly uploads expire.
+function acceptedFull(value: unknown): FullContribution | null {
+  if (!hasKeys(value, "protocol", "ruleset", "languageVersion", "contributor", "revision", "cells", "replaces")
+    || value.protocol !== 3 || value.ruleset !== contract.ruleset || value.languageVersion !== contract.languageVersion
+    || typeof value.contributor !== "string" || !/^[a-f0-9]{32}$/.test(value.contributor)
+    || !integer(value.revision, 1, 1_000_000_000)
+    || !Array.isArray(value.cells) || value.cells.length > maxCells
+    || !Array.isArray(value.replaces) || value.replaces.length > 32
+    || !value.replaces.every(token => typeof token === "string" && /^[a-f0-9]{32}$/.test(token))) return null;
+  const seen = new Set<string>();
+  const cells: Cell[] = [];
+  for (const cell of value.cells) {
+    if (!hasKeys(cell, "harness", "model", "language", "turns", "hits")
+      || !name(cell.harness) || !name(cell.model)
+      || !["zh", "en", "other"].includes(String(cell.language))
+      || !integer(cell.turns, 1, Number.MAX_SAFE_INTEGER) || !integer(cell.hits, 0, cell.turns)) return null;
+    const item = cell as unknown as Cell;
+    const key = JSON.stringify([item.harness, item.model, item.language]);
+    if (seen.has(key)) return null;
+    seen.add(key);
+    cells.push(item);
+  }
+  cells.sort((a, b) => keyOf(a).localeCompare(keyOf(b)));
+  return { contributor: value.contributor, revision: value.revision, cells, replaces: value.replaces as string[] };
+}
+
+async function fullIntake(request: Request, env: Env, host: string): Promise<Response> {
+  if (env.INGEST_MODE === "local") {
+    if (host !== "127.0.0.1" && host !== "localhost") return fail("intake_closed", 503);
+  } else if (env.INGEST_MODE !== "public") return fail("intake_closed", 503);
+  const ip = request.headers.get("cf-connecting-ip");
+  if (ip && !(await env.UPLOAD_LIMIT.limit({ key: ip })).success) return fail("rate_limited", 429);
+  if (request.headers.get("content-type")?.split(";")[0]?.trim() !== "application/json") return fail("json_required", 415);
+  let raw: unknown;
+  try { raw = await readJson(request); }
+  catch (error) { return error instanceof RangeError ? fail("body_size", 413) : fail("invalid_json", 400); }
+  const batch = acceptedFull(raw);
+  if (!batch) return fail("invalid_contribution", 400);
+  const contributor = await hash(batch.contributor);
+  const cells = JSON.stringify(batch.cells);
+  const statements = [env.DB.prepare(`
+    INSERT INTO full_contributions (contributor, revision, cells, updated_at)
+    VALUES (?1, ?2, ?3, ?4)
+    ON CONFLICT (contributor) DO UPDATE SET revision=excluded.revision, cells=excluded.cells, updated_at=excluded.updated_at
+    WHERE excluded.revision > full_contributions.revision
+  `).bind(contributor, batch.revision, cells, new Date().toISOString())];
+  for (const token of new Set(batch.replaces)) {
+    statements.push(env.DB.prepare(`
+      INSERT OR IGNORE INTO replaced_contributors (legacy_contributor, contributor)
+      SELECT ?1, ?2 WHERE EXISTS (
+        SELECT 1 FROM full_contributions WHERE contributor=?2 AND revision=?3 AND cells=?4
+      )
+    `).bind(await hash(token), contributor, batch.revision, cells));
+  }
+  await env.DB.batch(statements);
+  const saved = await env.DB.prepare("SELECT revision,cells FROM full_contributions WHERE contributor=?1")
+    .bind(contributor).first<{revision: number; cells: string}>();
+  if (saved?.revision === batch.revision && saved.cells === cells) return json({status: "accepted", revision: batch.revision});
+  return json({status: saved && saved.revision > batch.revision ? "stale" : "revision_conflict", revision: saved?.revision}, 409);
+}
+
 const cumulativeSnapshotSql = `
-WITH cells AS (
+WITH uploads AS (
+  SELECT cells, updated_at FROM full_contributions
+  UNION ALL
+  SELECT cells, NULL FROM contributions
+  WHERE NOT EXISTS (SELECT 1 FROM replaced_contributors WHERE legacy_contributor=contributions.contributor)
+  UNION ALL
+  SELECT entries, updated_at FROM legacy_archive
+), cells AS (
   SELECT json_extract(value, '$.harness') AS harness,
          json_extract(value, '$.model') AS model,
          json_extract(value, '$.language') AS language,
          json_extract(value, '$.turns') AS turns,
          json_extract(value, '$.hits') AS hits
-  FROM snapshots, json_each(snapshots.entries)
+  FROM uploads, json_each(uploads.cells)
 ), totals AS (
   SELECT harness, model, language, sum(turns) AS turns, sum(hits) AS hits
-  FROM cells
-  GROUP BY harness, model, language
+  FROM cells GROUP BY harness, model, language
 )
-SELECT max(updated_at) AS updated_at,
-       min(season) FILTER (WHERE json_array_length(entries) > 0) AS first_season,
-       (SELECT json_group_array(json_object(
-          'harness', harness, 'model', model, 'language', language,
-          'turns', turns, 'hits', hits
-        )) FROM totals) AS entries
-FROM snapshots
+SELECT (SELECT max(updated_at) FROM uploads) AS updated_at,
+       json_group_array(json_object('harness',harness,'model',model,'language',language,'turns',turns,'hits',hits)) AS entries
+FROM totals
 `;
 
-async function publish(env: Env, scheduledTime: number) {
-  const day = Math.floor(scheduledTime / dayMs);
-  const current = bucket(day, 28);
-  const versionTime = new Date(scheduledTime).toISOString();
-  await env.DB.prepare(snapshotSql)
-    .bind(current, contract.minimumTurns, contract.minimumContributors, versionTime).run();
-  // A late-upload window keeps the previous season live for seven days. The
-  // first tick after the window closes freezes its final public snapshot.
-  const previous = current - 28;
-  const last = day - current >= 7
-    ? await env.DB.prepare("SELECT updated_at FROM snapshots WHERE season = ?1")
-      .bind(previous).first<{ updated_at: string }>()
-    : null;
-  if (!last || Date.parse(last.updated_at) < (current + 7) * dayMs) {
-    await env.DB.prepare(snapshotSql)
-      .bind(previous, contract.minimumTurns, contract.minimumContributors, versionTime).run();
-  }
-  await env.DB.prepare("DELETE FROM contributions WHERE season <= ?1").bind(day - 58).run();
-}
-
-async function leaderboard(env: Env, local = false): Promise<Response> {
-  const read = () => env.DB.prepare(cumulativeSnapshotSql)
-    .first<{ updated_at: string | null; first_season: number | null; entries: string }>();
-  let snapshot = await read();
-  if (local && (!snapshot?.updated_at || Date.now() - Date.parse(snapshot.updated_at) >= 600_000)) {
-    // Wrangler's local clock only executes Cron on demand. Keep the local
-    // preview live while the page is open without exposing a public refresh API.
-    await publish(env, Date.now());
-    snapshot = await read();
-  }
-  const day = today();
-  return json({
-    scope: "all",
-    start: new Date((snapshot?.first_season ?? day) * dayMs).toISOString().slice(0, 10),
-    end: new Date(day * dayMs).toISOString().slice(0, 10),
-    updatedAt: snapshot?.updated_at ?? null,
-    thresholds: { turns: contract.minimumTurns, contributors: contract.minimumContributors },
-    harnesses: contract.harnesses,
-    entries: snapshot ? JSON.parse(snapshot.entries) : []
-  }, 200, "public, max-age=60, s-maxage=60");
+async function leaderboard(env: Env): Promise<Response> {
+  const data = await env.DB.prepare(cumulativeSnapshotSql).first<{updated_at: string | null; entries: string}>();
+  return json({ scope: "all", updatedAt: data?.updated_at ?? null, harnesses: contract.harnesses,
+    entries: data ? JSON.parse(data.entries) : [] });
 }
 
 export default {
-  async fetch(request: Request, env: Env, context: { waitUntil(promise: Promise<unknown>): void }) {
+  async fetch(request: Request, env: Env, _context: { waitUntil(promise: Promise<unknown>): void }) {
     const url = new URL(request.url);
     try {
       if (url.pathname === "/api/v1/contributions" && request.method === "POST") {
         return await intake(request, env, url.hostname);
       }
+      if (url.pathname === "/api/v2/contributions" && request.method === "POST") {
+        return await fullIntake(request, env, url.hostname);
+      }
       if (url.pathname === "/api/v1/leaderboard" && request.method === "GET") {
-        if (env.INGEST_MODE === "local" && (url.hostname === "127.0.0.1" || url.hostname === "localhost")) {
-          return await leaderboard(env, true);
-        }
-        // Legacy period URLs resolve to the same cumulative board and cache entry.
-        const key = new Request(`${url.origin}${url.pathname}`);
-        const hit = await caches.default.match(key);
-        if (hit) return hit;
-        const response = await leaderboard(env);
-        if (response.ok) context.waitUntil(caches.default.put(key, response.clone()));
-        return response;
+        return await leaderboard(env);
       }
       return fail("not_found", 404);
     } catch {
       return fail("temporarily_unavailable", 503);
     }
   },
-  async scheduled(controller: { scheduledTime: number }, env: Env) {
-    await publish(env, controller.scheduledTime);
-  }
 };

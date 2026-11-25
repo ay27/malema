@@ -1,6 +1,6 @@
 # Leaderboard backend and web board
 
-A TypeScript Worker that stores anonymised weekly counters from the macOS app in
+A TypeScript Worker that stores anonymous full snapshots from the macOS app in
 D1 and serves the public board in `public/`. The client and the Worker share
 `../leaderboard-contract.json`.
 
@@ -19,39 +19,28 @@ npm run build     # esbuild → public/board.js
 
 ## Local testing
 
-Node.js 22 or newer. From this directory:
-
 ```sh
 npm ci
 npm run migrate:local
-npm run dev       # builds the bundle, then wrangler dev on 127.0.0.1:8787
+npm run dev
 ```
 
-Open `http://127.0.0.1:8787` to test the Worker and the web board directly.
-The desktop app uses [malema.app](https://malema.app) for the leaderboard and
-anonymous submissions.
-
-Wrangler refreshes the leaderboard at most every ten minutes while someone
-is watching. Trigger the cron by hand to check new data immediately:
-
-```sh
-curl 'http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*'
-```
+Open `http://127.0.0.1:8787` to test the Worker and web board. The desktop app
+uses [malema.app](https://malema.app).
 
 ## API
 
-- `POST /api/v1/contributions` takes the protocol version, ruleset version,
-  season, UTC week and counters. Each week replaces the previous submission only
-  when `revision` is higher. Every install can count at most 5,000 messages per
-  tool × model × language per week; the client caps the numerator and the
-  denominator over the same sample.
-- `GET /api/v1/leaderboard` returns all-time counts per tool, model and language.
-  Archived snapshots retain their counts after the weekly uploads expire.
+- `POST /api/v2/contributions` accepts one complete snapshot per installation,
+  grouped by tool, model and language. Higher revisions replace the previous
+  snapshot. Retrying the same snapshot is safe. An empty snapshot clears that
+  installation's counts.
+- `GET /api/v1/leaderboard` aggregates the latest installation snapshots on
+  every request. The page reloads the counts once a minute.
 
-Harness and model names are free-form strings: the Worker checks length and
-printable characters instead of an allow-list, so a client that reports a new
-tool or an unreleased model still lands in the data. Unrecognised models fall
-into the "Other" family on the board instead of being dropped.
+The v1 contribution endpoint remains available to previously released apps.
+Upgraded installations pass their old anonymous tokens so those weekly counts
+are excluded from the total after the full snapshot is received. Finalized
+historical snapshots whose source uploads expired are retained in `legacy_archive`.
 
 ## Deploying to Cloudflare
 

@@ -34,11 +34,6 @@
       }
     }
   ],
-  "triggers": {
-    "crons": [
-      "*/10 * * * *"
-    ]
-  },
   "routes": [
     {
       "pattern": "malema.app",
