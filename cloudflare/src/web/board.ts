@@ -9,7 +9,6 @@ import {
   familyOf,
   OTHER_FAMILY,
   rankByScore,
-  rankMovement,
   roastIndex,
   sortCombinations,
   totals,
@@ -24,9 +23,6 @@ type Copy = {
   brand: string;
   title: string;
   tagline: string;
-  period: string;
-  current: string;
-  previous: string;
   messageLanguage: string;
   allLanguages: string;
   harness: string;
@@ -39,7 +35,6 @@ type Copy = {
   compare: string;
   details: string;
   rank: string;
-  change: string;
   turns: string;
   hits: string;
   score: string;
@@ -64,11 +59,6 @@ type Copy = {
   topSix: string;
   updated: string;
   noSnapshot: string;
-  newEntry: string;
-  noChange: string;
-  noComparison: string;
-  climbed: (n: number) => string;
-  fell: (n: number) => string;
   count: (n: string) => string;
   ofTotal: (shown: string, all: string) => string;
   otherUI: string;
@@ -81,9 +71,6 @@ const translations: Record<Language, Copy> = {
     brand: "骂了吗",
     title: "全球挨骂榜",
     tagline: "每千条真人消息里，AI 明确挨骂几次。",
-    period: "统计期次",
-    current: "本期",
-    previous: "上期",
     messageLanguage: "消息语言",
     allLanguages: "全部",
     harness: "运行工具",
@@ -96,14 +83,13 @@ const translations: Record<Language, Copy> = {
     compare: "组合对比",
     details: "组合明细",
     rank: "名次",
-    change: "变化",
     turns: "真人消息",
     hits: "明确挨骂",
     score: "挨骂指数",
     units: "每千条消息的明确挨骂数",
     combinations: "组合",
-    messages: "真人消息",
-    insults: "明确挨骂",
+    messages: "累计真人消息",
+    insults: "累计挨骂",
     overall: "整体指数",
     top: "回到顶部 ↑",
     skip: "跳到榜单",
@@ -112,7 +98,7 @@ const translations: Record<Language, Copy> = {
     summary: "汇总",
     retry: "再试一次",
     loading: "正在读取榜单",
-    noData: "这期榜单还没有数据",
+    noData: "榜单还没有数据",
     noDataDetails: "在 App 里开启匿名提交，计数会随榜单更新显示。",
     noMatch: "没有匹配的组合",
     noMatchDetails: "试试切换语言、模型或运行工具。",
@@ -121,11 +107,6 @@ const translations: Record<Language, Copy> = {
     topSix: "前 6 组 · ",
     updated: "快照更新于 ",
     noSnapshot: "等待首份榜单快照",
-    newEntry: "新进榜",
-    noChange: "持平",
-    noComparison: "无可比期次",
-    climbed: n => `上升 ${n} 名`,
-    fell: n => `下降 ${n} 名`,
     count: n => `${n} 个组合`,
     ofTotal: (shown, all) => `显示 ${shown} / ${all}`,
     otherUI: "Switch interface to English",
@@ -136,9 +117,6 @@ const translations: Record<Language, Copy> = {
     brand: "Malema",
     title: "Global AI Roasting Board",
     tagline: "How often an AI gets explicitly insulted, per thousand human messages.",
-    period: "Reporting period",
-    current: "Current",
-    previous: "Previous",
     messageLanguage: "Message language",
     allLanguages: "All",
     harness: "Harness",
@@ -151,14 +129,13 @@ const translations: Record<Language, Copy> = {
     compare: "Top combinations",
     details: "All combinations",
     rank: "#",
-    change: "Move",
     turns: "Human messages",
     hits: "Clear insults",
     score: "Roast index",
     units: "clear insults per 1,000 messages",
     combinations: "Combinations",
-    messages: "Human messages",
-    insults: "Clear insults",
+    messages: "Total human messages",
+    insults: "Total clear insults",
     overall: "Overall index",
     top: "Back to top ↑",
     skip: "Skip to leaderboard",
@@ -167,7 +144,7 @@ const translations: Record<Language, Copy> = {
     summary: "Summary",
     retry: "Try again",
     loading: "Loading rankings",
-    noData: "No data for this period yet",
+    noData: "No leaderboard data yet",
     noDataDetails: "Enable Anonymous in the app to share counts for the next leaderboard update.",
     noMatch: "No matching combinations",
     noMatchDetails: "Try another language, model, or harness.",
@@ -176,11 +153,6 @@ const translations: Record<Language, Copy> = {
     topSix: "Top 6 · ",
     updated: "Snapshot updated ",
     noSnapshot: "Waiting for the first snapshot",
-    newEntry: "New",
-    noChange: "No change",
-    noComparison: "No period to compare",
-    climbed: n => `up ${n}`,
-    fell: n => `down ${n}`,
     count: n => `${n} combinations`,
     ofTotal: (shown, all) => `showing ${shown} of ${all}`,
     otherUI: "切换至中文界面",
@@ -209,7 +181,6 @@ interface Ui {
   order: 1 | -1;
   state: "loading" | "ready" | "error";
   data: Snapshot | null;
-  previous: Snapshot | null;
 }
 
 const languagePreference = "malema-interface-language";
@@ -231,7 +202,6 @@ const ui: Ui = {
   order: -1,
   state: "loading",
   data: null,
-  previous: null,
 };
 
 let activeRequest: AbortController | undefined;
@@ -351,33 +321,6 @@ function renderSummary(rows: Combination[]): void {
 
 /* ------------------------------------------------------------------ chart */
 
-function movementBadge(rank: number, movement: number | null | undefined): HTMLElement {
-  const badge = dom("span", "movement");
-  if (movement === undefined) {
-    badge.classList.add("unknown");
-    badge.textContent = "—";
-    badge.title = copy().noComparison;
-  } else if (movement === null) {
-    badge.classList.add("new");
-    badge.textContent = copy().newEntry;
-    badge.title = copy().newEntry;
-  } else if (movement > 0) {
-    badge.classList.add("up");
-    badge.textContent = "▲" + movement;
-    badge.title = copy().climbed(movement);
-  } else if (movement < 0) {
-    badge.classList.add("down");
-    badge.textContent = "▼" + -movement;
-    badge.title = copy().fell(-movement);
-  } else {
-    badge.classList.add("flat");
-    badge.textContent = "–";
-    badge.title = copy().noChange;
-  }
-  badge.dataset.rank = String(rank);
-  return badge;
-}
-
 function renderAxis(maximum: number): void {
   const axis = $("chart-axis");
   const ticks = axisTicks(maximum, 4);
@@ -390,7 +333,7 @@ function renderAxis(maximum: number): void {
   );
 }
 
-function renderBars(rows: Combination[], ranks: Map<string, number>, movement: Map<string, number | null>): void {
+function renderBars(rows: Combination[], ranks: Map<string, number>): void {
   const top = sortCombinations(rows, "score", -1, harnessName).slice(0, 6);
   const maximum = axisMaximum(Math.max(0, ...top.flatMap(row => Object.values(row.languages).map(entry => roastIndex(entry.hits, entry.turns)))));
   renderAxis(maximum);
@@ -428,7 +371,6 @@ function renderBars(rows: Combination[], ranks: Map<string, number>, movement: M
     title.append(
       rank ? dom("span", "bar-rank", String(rank)) : dom("span", "bar-rank", "—"),
       dom("strong", "", entry.model),
-      movementBadge(rank ?? 0, movement.get(entry.id)),
     );
     name.append(title, dom("small", "", harnessName(entry.harness)));
     const group = dom("span", "bar-group");
@@ -449,11 +391,7 @@ function renderBars(rows: Combination[], ranks: Map<string, number>, movement: M
 
 /* ------------------------------------------------------------------ table */
 
-function renderTable(
-  rows: Combination[],
-  ranks: Map<string, number>,
-  movement: Map<string, number | null>,
-): void {
+function renderTable(rows: Combination[], ranks: Map<string, number>): void {
   for (const button of document.querySelectorAll<HTMLButtonElement>("[data-sort]")) {
     const header = button.closest("th");
     const active = button.dataset.sort === ui.key;
@@ -471,13 +409,10 @@ function renderTable(
       row.tabIndex = -1;
       row.dataset.id = entry.id;
       const rankCell = dom("td", "rank", rank ? String(rank) : "—");
-      const changeCell = dom("td", "change");
-      changeCell.append(movementBadge(rank, movement.get(entry.id)));
       const modelCell = dom("td", "", entry.model);
       if (familyOf(entry.model) === OTHER_FAMILY) modelCell.classList.add("subtle");
       row.append(
         rankCell,
-        changeCell,
         dom("td", "", harnessName(entry.harness)),
         modelCell,
         dom("td", "numeric", number(entry.turns)),
@@ -495,13 +430,9 @@ function render(): void {
   const filters = currentFilters();
   const rows = combine(ui.data?.entries ?? [], filters);
   const ranks = rankByScore(rows);
-  const movement = ui.previous?.updatedAt
-    ? rankMovement(ranks, rankByScore(combine(ui.previous.entries, filters)))
-    : new Map<string, number | null>();
-
   renderSummary(rows);
-  renderBars(rows, ranks, movement);
-  renderTable(rows, ranks, movement);
+  renderBars(rows, ranks);
+  renderTable(rows, ranks);
 
   const loaded = ui.state === "ready";
   const populated = loaded && rows.length > 0;
@@ -520,7 +451,6 @@ function render(): void {
   $("empty-title").textContent = empty[0];
   $("empty-details").textContent = empty[1];
 
-  $("period-range").textContent = ui.data ? `${ui.data.start} – ${ui.data.end} UTC` : "";
   $("refresh").textContent = ui.data?.updatedAt
     ? copy().updated + new Date(ui.data.updatedAt).toLocaleString(ui.locale)
     : copy().noSnapshot;
@@ -532,14 +462,6 @@ function render(): void {
 
 /* ------------------------------------------------------------------- data */
 
-const periodValue = (): string => ($("period") as HTMLSelectElement).value;
-
-async function snapshot(period: string, signal: AbortSignal): Promise<Snapshot | null> {
-  const response = await fetch("/api/v1/leaderboard?period=" + period, { signal, cache: "no-store" });
-  if (!response.ok) return null;
-  return (await response.json()) as Snapshot;
-}
-
 async function load({ quiet = false } = {}): Promise<void> {
   activeRequest?.abort();
   const request = new AbortController();
@@ -550,15 +472,11 @@ async function load({ quiet = false } = {}): Promise<void> {
     render();
   }
   try {
-    const period = periodValue();
-    const [data, previous] = await Promise.all([
-      snapshot(period, request.signal),
-      period === "current" ? snapshot("previous", request.signal).catch(() => null) : null,
-    ]);
+    const response = await fetch("/api/v1/leaderboard", { signal: request.signal, cache: "no-store" });
+    if (!response.ok) throw new Error("snapshot unavailable");
+    const data = await response.json() as Snapshot;
     if (request.signal.aborted) return;
-    if (!data) throw new Error("snapshot unavailable");
     ui.data = data;
-    ui.previous = previous;
     ui.state = "ready";
     updateHarnesses();
     updateModels();
@@ -602,7 +520,6 @@ for (const button of document.querySelectorAll<HTMLButtonElement>("[data-sort]")
   });
 }
 
-$("period").addEventListener("change", () => void load());
 $("retry").addEventListener("click", () => void load());
 $("harness").addEventListener("change", render);
 $("model").addEventListener("change", render);

@@ -188,6 +188,29 @@ ON CONFLICT (season) DO UPDATE SET updated_at = excluded.updated_at, entries = e
 WHERE excluded.updated_at > snapshots.updated_at
 `;
 
+// Archived snapshot rows hold the final counts even after weekly uploads expire.
+const cumulativeSnapshotSql = `
+WITH cells AS (
+  SELECT json_extract(value, '$.harness') AS harness,
+         json_extract(value, '$.model') AS model,
+         json_extract(value, '$.language') AS language,
+         json_extract(value, '$.turns') AS turns,
+         json_extract(value, '$.hits') AS hits
+  FROM snapshots, json_each(snapshots.entries)
+), totals AS (
+  SELECT harness, model, language, sum(turns) AS turns, sum(hits) AS hits
+  FROM cells
+  GROUP BY harness, model, language
+)
+SELECT max(updated_at) AS updated_at,
+       min(season) FILTER (WHERE json_array_length(entries) > 0) AS first_season,
+       (SELECT json_group_array(json_object(
+          'harness', harness, 'model', model, 'language', language,
+          'turns', turns, 'hits', hits
+        )) FROM totals) AS entries
+FROM snapshots
+`;
+
 async function publish(env: Env, scheduledTime: number) {
   const day = Math.floor(scheduledTime / dayMs);
   const current = bucket(day, 28);
@@ -208,22 +231,21 @@ async function publish(env: Env, scheduledTime: number) {
   await env.DB.prepare("DELETE FROM contributions WHERE season <= ?1").bind(day - 58).run();
 }
 
-async function leaderboard(url: URL, env: Env, local = false): Promise<Response> {
-  const period = url.searchParams.get("period") ?? "current";
-  if (period !== "current" && period !== "previous") return fail("invalid_period", 400);
-  const season = bucket(today(), 28) - (period === "previous" ? 28 : 0);
-  const read = () => env.DB.prepare("SELECT updated_at, entries FROM snapshots WHERE season = ?1")
-    .bind(season).first<{ updated_at: string; entries: string }>();
+async function leaderboard(env: Env, local = false): Promise<Response> {
+  const read = () => env.DB.prepare(cumulativeSnapshotSql)
+    .first<{ updated_at: string | null; first_season: number | null; entries: string }>();
   let snapshot = await read();
-  if (local && period === "current" && (!snapshot || Date.now() - Date.parse(snapshot.updated_at) >= 600_000)) {
+  if (local && (!snapshot?.updated_at || Date.now() - Date.parse(snapshot.updated_at) >= 600_000)) {
     // Wrangler's local clock only executes Cron on demand. Keep the local
     // preview live while the page is open without exposing a public refresh API.
     await publish(env, Date.now());
     snapshot = await read();
   }
+  const day = today();
   return json({
-    start: new Date(season * dayMs).toISOString().slice(0, 10),
-    end: new Date((season + 27) * dayMs).toISOString().slice(0, 10),
+    scope: "all",
+    start: new Date((snapshot?.first_season ?? day) * dayMs).toISOString().slice(0, 10),
+    end: new Date(day * dayMs).toISOString().slice(0, 10),
     updatedAt: snapshot?.updated_at ?? null,
     thresholds: { turns: contract.minimumTurns, contributors: contract.minimumContributors },
     harnesses: contract.harnesses,
@@ -240,15 +262,13 @@ export default {
       }
       if (url.pathname === "/api/v1/leaderboard" && request.method === "GET") {
         if (env.INGEST_MODE === "local" && (url.hostname === "127.0.0.1" || url.hostname === "localhost")) {
-          return await leaderboard(url, env, true);
+          return await leaderboard(env, true);
         }
-        // Cache the two public slices, ignoring arbitrary query strings in the cache key.
-        const period = url.searchParams.get("period") ?? "current";
-        if (period !== "current" && period !== "previous") return fail("invalid_period", 400);
-        const key = new Request(`${url.origin}${url.pathname}?period=${period}`);
+        // Legacy period URLs resolve to the same cumulative board and cache entry.
+        const key = new Request(`${url.origin}${url.pathname}`);
         const hit = await caches.default.match(key);
         if (hit) return hit;
-        const response = await leaderboard(url, env);
+        const response = await leaderboard(env);
         if (response.ok) context.waitUntil(caches.default.put(key, response.clone()));
         return response;
       }

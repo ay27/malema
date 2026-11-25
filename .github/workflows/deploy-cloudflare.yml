@@ -55,8 +55,6 @@ jobs:
       - name: Check the public site
         run: |
           curl --fail --silent --show-error --retry 4 --max-time 15 "$SITE/" -o /dev/null
-          for period in current previous; do
-            curl --fail --silent --show-error --retry 4 --max-time 15 \
-              "$SITE/api/v1/leaderboard?period=$period" |
-              jq -e '.entries | type == "array"' > /dev/null
-          done
+          curl --fail --silent --show-error --retry 4 --max-time 15 \
+            "$SITE/api/v1/leaderboard" |
+            jq -e '.scope == "all" and (.entries | type == "array")' > /dev/null

@@ -9,14 +9,10 @@ export interface Entry {
   language: Language;
   turns: number;
   hits: number;
-  contributors?: number;
 }
 
 export interface Snapshot {
-  start: string;
-  end: string;
   updatedAt: string | null;
-  thresholds: { turns: number; contributors: number };
   harnesses: Record<string, string>;
   entries: Entry[];
 }
@@ -138,22 +134,6 @@ export function sortCombinations(
 export function rankByScore(rows: Combination[]): Map<string, number> {
   const ranked = sortCombinations(rows, "score", -1, id => id);
   return new Map(ranked.map((combination, index) => [combination.id, index + 1]));
-}
-
-/**
- * Movement against the previous period. Positive means the combination climbed;
- * `null` means it did not appear last period, so there is nothing to compare.
- */
-export function rankMovement(
-  current: Map<string, number>,
-  previous: Map<string, number>,
-): Map<string, number | null> {
-  const movement = new Map<string, number | null>();
-  for (const [id, rank] of current) {
-    const before = previous.get(id);
-    movement.set(id, before === undefined ? null : before - rank);
-  }
-  return movement;
 }
 
 /** A round axis maximum so bar labels stay readable. */

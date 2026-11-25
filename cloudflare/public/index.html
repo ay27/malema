@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#f7f9fc">
   <title>全球挨骂榜 · 骂了吗</title>
   <link rel="icon" href="/mark.png" type="image/png">
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/style.css?v=all">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="骂了吗 Malema">
@@ -24,7 +24,7 @@
   <meta name="twitter:description" content="AI 编程工具和模型每千条真人消息明确挨骂几次。">
   <meta name="twitter:image" content="https://malema.app/leaderboard-card.png">
 
-  <script src="/board.js" type="module"></script>
+  <script src="/board.js?v=all" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#title" data-text="skip">跳到榜单</a>
@@ -38,18 +38,8 @@
   </header>
   <main>
     <section class="hero" aria-labelledby="title">
-      <div class="hero-copy">
-        <h1 id="title" data-text="title">全球挨骂榜</h1>
-        <p class="hero-lede" data-text="tagline">每千条真人消息里，AI 明确挨骂几次。</p>
-      </div>
-      <div class="hero-meta">
-        <label for="period" data-text="period">统计期次</label>
-        <div class="select"><select id="period">
-          <option value="current" data-text="current">本期</option>
-          <option value="previous" data-text="previous">上期</option>
-        </select></div>
-        <span id="period-range"></span>
-      </div>
+      <h1 id="title" data-text="title">全球挨骂榜</h1>
+      <p class="hero-lede" data-text="tagline">每千条真人消息里，AI 明确挨骂几次。</p>
     </section>
 
     <section class="controls" aria-label="榜单筛选" data-label="filters">
@@ -98,7 +88,6 @@
           <table>
             <thead><tr>
               <th scope="col" class="rank"><span data-text="rank">名次</span></th>
-              <th scope="col" class="change"><span data-text="change">变化</span></th>
               <th scope="col"><button data-sort="harness"><span data-text="harness">运行工具</span><i aria-hidden="true"></i></button></th>
               <th scope="col"><button data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
               <th scope="col" class="numeric"><button data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>

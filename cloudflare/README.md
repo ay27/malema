@@ -31,7 +31,7 @@ Open `http://127.0.0.1:8787` to test the Worker and the web board directly.
 The desktop app uses [malema.app](https://malema.app) for the leaderboard and
 anonymous submissions.
 
-Wrangler refreshes the current snapshot at most every ten minutes while someone
+Wrangler refreshes the leaderboard at most every ten minutes while someone
 is watching. Trigger the cron by hand to check new data immediately:
 
 ```sh
@@ -45,8 +45,8 @@ curl 'http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*'
   when `revision` is higher. Every install can count at most 5,000 messages per
   tool × model × language per week; the client caps the numerator and the
   denominator over the same sample.
-- `GET /api/v1/leaderboard?period=current|previous` returns the published counts
-  for every tool, model and language combination with at least one message.
+- `GET /api/v1/leaderboard` returns all-time counts per tool, model and language.
+  Archived snapshots retain their counts after the weekly uploads expire.
 
 Harness and model names are free-form strings: the Worker checks length and
 printable characters instead of an allow-list, so a client that reports a new
@@ -66,7 +66,7 @@ migrations, read the zone, and manage Workers routes for the custom domains.
 
 Run **Actions → Deploy Cloudflare → Run workflow** on `main`. The workflow
 checks and builds the web bundle, applies pending D1 migrations, deploys the
-Worker, and checks the site and both leaderboard periods.
+Worker, and checks the site and the cumulative leaderboard.
 
 To pause submissions, set `INGEST_MODE` to `closed` in
 `wrangler.production.jsonc` and redeploy. Existing snapshots stay readable.

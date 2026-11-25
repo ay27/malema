@@ -9,7 +9,6 @@ import {
   familyOf,
   matches,
   rankByScore,
-  rankMovement,
   roastIndex,
   sortCombinations,
   totals,
@@ -100,23 +99,12 @@ test("sorting is deterministic and stable for ties", () => {
   assert.deepEqual(byHarness.map(row => row.harness), ["claude", "codex"]);
 });
 
-test("ranks are 1-based and movement compares two periods", () => {
-  const before = [entry("codex", "gpt-5.4", "zh", 100, 1), entry("claude", "claude-opus-4-5", "zh", 100, 5)];
-  const after = [entry("codex", "gpt-5.4", "zh", 100, 5), entry("claude", "claude-opus-4-5", "zh", 100, 1)];
-  const current = rankByScore(combine(after, all));
-  const previous = rankByScore(combine(before, all));
-  assert.equal(current.size, 2);
-  const movement = rankMovement(current, previous);
-  const codex = movement.get(JSON.stringify(["codex", "gpt-5.4"]));
-  const claude = movement.get(JSON.stringify(["claude", "claude-opus-4-5"]));
-  assert.equal(codex, 1);
-  assert.equal(claude, -1);
-});
-
-test("a combination with no previous period has no movement", () => {
-  const current = rankByScore(combine([entry("codex", "fresh-model", "zh", 10, 1)], all));
-  const movement = rankMovement(current, new Map());
-  assert.equal(movement.get(JSON.stringify(["codex", "fresh-model"])), null);
+test("ranks start at one and follow the cumulative score", () => {
+  const entries = [entry("claude", "claude-opus-4-5", "zh", 100, 1), entry("codex", "gpt-5.4", "zh", 100, 5)];
+  const ranks = rankByScore(combine(entries, all));
+  assert.equal(ranks.size, 2);
+  assert.equal(ranks.get(JSON.stringify(["codex", "gpt-5.4"])), 1);
+  assert.equal(ranks.get(JSON.stringify(["claude", "claude-opus-4-5"])), 2);
 });
 
 test("the language filter ranks the scores displayed in the chart and table", () => {
