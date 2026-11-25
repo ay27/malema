@@ -65,7 +65,7 @@ into the "Other" family on the board instead of being dropped.
 
 | Target | Wrangler configuration | Site | Submissions |
 | --- | --- | --- | --- |
-| Beta | `wrangler.beta.jsonc` | [beta.malema.app](https://beta.malema.app) | Invite only |
+| Beta | `wrangler.beta.jsonc` | [beta.malema.app](https://beta.malema.app) | Public opt-in |
 | Production | `wrangler.production.jsonc` | [malema.app](https://malema.app) | Public opt-in |
 
 The two Workers use separate D1 databases. Use `wrangler.jsonc` for local
@@ -82,10 +82,9 @@ Open **Actions → Deploy Cloudflare → Run workflow** and choose **beta** or
 pending migrations to the selected D1, deploys the Worker, and checks the site
 and both leaderboard periods.
 
-The Beta invite lives in the Worker secret `INGEST_INVITE`. The beta app reads
-the invite from `MALEMA_LEADERBOARD_INVITE`. To pause production submissions,
-set `INGEST_MODE` to `closed` in `wrangler.production.jsonc` and run the
-production deployment. Existing snapshots stay readable.
+Both Workers accept contributions that match the app's reporting protocol.
+To pause submissions, set `INGEST_MODE` to `closed` in the environment's Wrangler
+configuration and redeploy. Existing snapshots stay readable.
 
 Set the repository variable `MALEMA_LEADERBOARD_ENDPOINT` to
 `https://malema.app` before building a public desktop release. The beta target

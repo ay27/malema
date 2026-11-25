@@ -22,7 +22,7 @@
     }
   ],
   "vars": {
-    "INGEST_MODE": "invite"
+    "INGEST_MODE": "public"
   },
   "ratelimits": [
     {

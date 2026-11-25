@@ -10,7 +10,6 @@ interface Env {
   DB: { prepare(sql: string): Statement };
   UPLOAD_LIMIT: { limit(input: { key: string }): Promise<{ success: boolean }> };
   INGEST_MODE?: string;
-  INGEST_INVITE?: string;
 }
 
 interface Cell {
@@ -123,13 +122,6 @@ async function readJson(request: Request): Promise<unknown> {
 async function intake(request: Request, env: Env, host: string): Promise<Response> {
   if (env.INGEST_MODE === "local") {
     if (host !== "127.0.0.1" && host !== "localhost") return fail("intake_closed", 503);
-  } else if (env.INGEST_MODE === "invite") {
-    const invite = env.INGEST_INVITE;
-    const supplied = request.headers.get("authorization") ?? "";
-    if (!invite || supplied.length > 256 || !crypto.subtle.timingSafeEqual(
-      new TextEncoder().encode(await hash(supplied)),
-      new TextEncoder().encode(await hash("Bearer " + invite))
-    )) return fail("invite_required", 403);
   } else if (env.INGEST_MODE !== "public") return fail("intake_closed", 503);
 
   const ip = request.headers.get("cf-connecting-ip");

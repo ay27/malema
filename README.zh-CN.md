@@ -1,10 +1,12 @@
-<img src="cloudflare/public/mark.png" width="96" height="96" alt="骂了吗 App 图标">
+<p align="center">
+  <img src="docs/app-icon.png" width="144" height="144" alt="骂了吗 App 图标">
+</p>
 
-# 骂了吗 · Malema
+<h1 align="center">骂了吗 · Malema</h1>
 
-[English](README.md)
+<p align="center"><a href="README.md">English</a></p>
 
-平时写代码，你到底骂了 AI 多少次？打开「骂了吗」，在 Mac 上就能看到。
+<p align="center">平时写代码，你到底骂了 AI 多少次？打开「骂了吗」，在 Mac 上就能看到。</p>
 
 ![骂了吗的每日趋势、消息分布和活跃日历](docs/report.png)
 

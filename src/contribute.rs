@@ -522,18 +522,6 @@ fn post(batch: &Batch) -> Result<(), String> {
     );
     if endpoint.starts_with("http:") {
         command.args(["--noproxy", "*"]);
-    } else if let Ok(invite) = std::env::var("MALEMA_LEADERBOARD_INVITE") {
-        if !invite.is_empty()
-            && invite.len() < 240
-            && invite
-                .bytes()
-                .all(|b| b.is_ascii_alphanumeric() || b"-_".contains(&b))
-        {
-            config.push_str(&format!(
-                "header = {}\n",
-                quoted(&format!("Authorization: Bearer {invite}"))
-            ));
-        }
     }
     config.push_str(&format!(
         "data-binary = {}\n",
@@ -572,11 +560,6 @@ fn post(batch: &Batch) -> Result<(), String> {
         return Ok(());
     }
     Err(match status {
-        "403" => i18n::pick(
-            "内测服务需要有效邀请。",
-            "the beta service needs a valid invite.",
-        )
-        .to_owned(),
         "409" => i18n::pick(
             "这周的贡献版本有冲突，请检查是否同时运行了两个副本。",
             "this week's contribution revision conflicts; check whether two copies are running.",

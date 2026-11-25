@@ -1,10 +1,12 @@
-<img src="cloudflare/public/mark.png" width="96" height="96" alt="Malema app icon">
+<p align="center">
+  <img src="docs/app-icon.png" width="144" height="144" alt="Malema app icon">
+</p>
 
-# Malema · 骂了吗
+<h1 align="center">Malema · 骂了吗</h1>
 
-[简体中文](README.zh-CN.md)
+<p align="center"><a href="README.zh-CN.md">简体中文</a></p>
 
-Ever wondered how often you swear at your AI coding tools? Malema tallies it up on your Mac.
+<p align="center">Ever wondered how often you swear at your AI coding tools? Malema tallies it up on your Mac.</p>
 
 ![Malema showing the daily trend, message breakdown, and activity calendar](docs/report-en.jpg)
 
