@@ -45,8 +45,8 @@ curl 'http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*'
   when `revision` is higher. Every install can count at most 5,000 messages per
   tool × model × language per week; the client caps the numerator and the
   denominator over the same sample.
-- `GET /api/v1/leaderboard?period=current|previous` returns snapshots that
-  cleared the threshold. The total only aggregates language groups that passed.
+- `GET /api/v1/leaderboard?period=current|previous` returns the published counts
+  for every tool, model and language combination with at least one message.
 
 Harness and model names are free-form strings: the Worker checks length and
 printable characters instead of an allow-list, so a client that reports a new

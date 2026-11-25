@@ -2,8 +2,8 @@
   "protocol": 2,
   "ruleset": "zh-en-4",
   "languageVersion": "zh-en-1",
-  "minimumTurns": 300,
-  "minimumContributors": 5,
+  "minimumTurns": 1,
+  "minimumContributors": 1,
   "harnesses": {
     "codex": "Codex", "claude": "Claude Code", "deepseek": "DeepSeek Harness",
     "workbuddy": "WorkBuddy", "cursor": "Cursor", "pi": "pi"

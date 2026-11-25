@@ -56,6 +56,7 @@ type Copy = {
   retry: string;
   loading: string;
   noData: string;
+  noDataDetails: string;
   noMatch: string;
   noMatchDetails: string;
   failed: string;
@@ -68,7 +69,6 @@ type Copy = {
   noComparison: string;
   climbed: (n: number) => string;
   fell: (n: number) => string;
-  thresholds: (turns: string, contributors: string) => string;
   count: (n: string) => string;
   ofTotal: (shown: string, all: string) => string;
   otherUI: string;
@@ -112,7 +112,8 @@ const translations: Record<Language, Copy> = {
     summary: "汇总",
     retry: "再试一次",
     loading: "正在读取榜单",
-    noData: "样本还在积累",
+    noData: "这期榜单还没有数据",
+    noDataDetails: "在 App 里开启匿名提交，计数会随榜单更新显示。",
     noMatch: "没有匹配的组合",
     noMatchDetails: "试试切换语言、模型或运行工具。",
     failed: "暂时读不到榜单",
@@ -125,7 +126,6 @@ const translations: Record<Language, Copy> = {
     noComparison: "无可比期次",
     climbed: n => `上升 ${n} 名`,
     fell: n => `下降 ${n} 名`,
-    thresholds: (turns, contributors) => `同一工具、模型和语言至少有 ${turns} 条消息，来自 ${contributors} 个贡献安装。`,
     count: n => `${n} 个组合`,
     ofTotal: (shown, all) => `显示 ${shown} / ${all}`,
     otherUI: "Switch interface to English",
@@ -167,7 +167,8 @@ const translations: Record<Language, Copy> = {
     summary: "Summary",
     retry: "Try again",
     loading: "Loading rankings",
-    noData: "Still collecting samples",
+    noData: "No data for this period yet",
+    noDataDetails: "Enable Anonymous in the app to share counts for the next leaderboard update.",
     noMatch: "No matching combinations",
     noMatchDetails: "Try another language, model, or harness.",
     failed: "Could not load rankings",
@@ -180,7 +181,6 @@ const translations: Record<Language, Copy> = {
     noComparison: "No period to compare",
     climbed: n => `up ${n}`,
     fell: n => `down ${n}`,
-    thresholds: (turns, contributors) => `Each harness, model and language needs at least ${turns} messages from ${contributors} contributing installations.`,
     count: n => `${n} combinations`,
     ofTotal: (shown, all) => `showing ${shown} of ${all}`,
     otherUI: "切换至中文界面",
@@ -511,14 +511,12 @@ function render(): void {
   $("empty").hidden = populated || ui.state === "loading";
 
   $("retry").hidden = ui.state !== "error";
-  const threshold = ui.data?.thresholds ?? { turns: 300, contributors: 5 };
-  const limits = copy().thresholds(number(threshold.turns), number(threshold.contributors));
   const empty =
     ui.state === "error"
       ? [copy().failed, copy().failedDetails]
       : ui.data?.entries.length
         ? [copy().noMatch, copy().noMatchDetails]
-        : [copy().noData, limits];
+        : [copy().noData, copy().noDataDetails];
   $("empty-title").textContent = empty[0];
   $("empty-details").textContent = empty[1];
 
