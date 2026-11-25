@@ -282,7 +282,7 @@ function updateModels(): void {
   for (const name of [...models].sort(compareModels)) {
     const family = familyOf(name);
     if (!groups.has(family)) groups.set(family, []);
-    groups.get(family)!.push(new Option(name, "model:" + name));
+    groups.get(family)!.push(new Option(name === "other" ? copy().otherModels : name, "model:" + name));
   }
 
   const families = dom("optgroup");
@@ -376,7 +376,7 @@ function renderBars(rows: Combination[], ranks: Map<string, number>): void {
     const title = dom("span", "bar-title");
     title.append(
       rank ? dom("span", "bar-rank", String(rank)) : dom("span", "bar-rank", "—"),
-      dom("strong", "", entry.model),
+      dom("strong", "", entry.model === "other" ? copy().otherModels : entry.model),
     );
     name.append(title, dom("small", "", harnessName(entry.harness)));
     const group = dom("span", "bar-group");
@@ -415,7 +415,7 @@ function renderTable(rows: Combination[], ranks: Map<string, number>): void {
       row.tabIndex = -1;
       row.dataset.id = entry.id;
       const rankCell = dom("td", "rank", rank ? String(rank) : "—");
-      const modelCell = dom("td", "", entry.model);
+      const modelCell = dom("td", "", entry.model === "other" ? copy().otherModels : entry.model);
       if (familyOf(entry.model) === OTHER_FAMILY) modelCell.classList.add("subtle");
       row.append(
         rankCell,

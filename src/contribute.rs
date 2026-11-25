@@ -10,12 +10,6 @@ use std::sync::OnceLock;
 use std::sync::atomic::{AtomicBool, Ordering};
 use time::OffsetDateTime;
 
-/// Model names travel verbatim, so the wire format needs a shape both ends can
-/// check without knowing the model. Keep this in sync with `cloudflare/src/index.ts`.
-const MAX_NAME: usize = 64;
-/// Messages whose tool never logged a model are still counted. The board folds
-/// this bucket into "others" instead of hiding those tools entirely.
-const UNKNOWN_MODEL: &str = "unknown";
 pub const LEADERBOARD_URL: &str = "https://malema.app";
 
 #[derive(Deserialize)]
@@ -48,26 +42,8 @@ fn harness(source: Source) -> &'static str {
     }
 }
 
-/// Keep the reported name as the tool spelled it. Normalising to lowercase only
-/// merges case variants; it never maps an unknown model onto a known one, so a
-/// model released today shows up on the board today instead of disappearing.
-/// A message with no usable name is filed under `UNKNOWN_MODEL` rather than
-/// dropped, so a tool that does not log its model still reaches the board.
 fn model(raw: Option<&str>) -> String {
-    let name: String = raw
-        .unwrap_or_default()
-        .trim()
-        .chars()
-        .filter(|&c| !c.is_control())
-        .map(|c| c.to_ascii_lowercase())
-        .take(MAX_NAME)
-        .collect();
-    let name = name.trim_end();
-    if name.is_empty() {
-        UNKNOWN_MODEL.to_owned()
-    } else {
-        name.to_owned()
-    }
+    crate::models::normalize(raw)
 }
 
 fn language(text: &str) -> Option<&'static str> {
@@ -543,6 +519,52 @@ fn quoted(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn uploads_only_public_model_constants_and_merges_alias_counts() {
+        let home = std::env::temp_dir().join(format!("malema-models-{}", random_token().unwrap()));
+        let mut controller = Controller::load(&home);
+        let mut counts = Collection::new(now(), controller.since());
+        for name in [
+            "private-route-gpt-6.1-sol-sandbox",
+            "gpt-6.1-sol",
+            "secret-prototype",
+        ] {
+            counts.collect(
+                Source::Codex,
+                &Turn {
+                    inferred_day: None,
+                    model: Some(name.to_owned()),
+                    harness_version: None,
+                    date: None,
+                    timestamp: None,
+                    text: "hello there".to_owned(),
+                    session: "test".to_owned(),
+                    line: 1,
+                },
+                true,
+            );
+        }
+        let batch = controller
+            .prepare(&counts.live, now())
+            .unwrap()
+            .pop()
+            .unwrap();
+        assert_eq!(batch.cells.len(), 2);
+        assert_eq!(batch.cells.iter().map(|c| c.hits).sum::<u64>(), 3);
+        assert_eq!(
+            batch
+                .cells
+                .iter()
+                .find(|c| c.model == "gpt-6.1-sol")
+                .unwrap()
+                .turns,
+            2
+        );
+        let payload = serde_json::to_string(&batch).unwrap();
+        assert!(!payload.contains("private") && !payload.contains("secret"));
+        fs::remove_dir_all(home).unwrap();
+    }
 
     #[test]
     fn full_snapshot_includes_old_unknown_dates_and_other_languages() {

@@ -1,10 +1,10 @@
 [package]
 name = "malema"
-version = "0.5.11"
+version = "0.5.12"
 edition = "2024"
 
 [package.metadata.malema]
-bundle-version = 26
+bundle-version = 27
 
 [dependencies]
 regex = "1"

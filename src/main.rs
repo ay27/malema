@@ -4,6 +4,8 @@
 mod contribute;
 mod detect;
 mod i18n;
+#[cfg(target_os = "macos")]
+mod models;
 mod report;
 #[cfg(target_os = "macos")]
 mod review;

@@ -38,6 +38,12 @@ uses [malema.app](https://malema.app).
   every request. The page reloads the counts once a minute.
 
 The v1 contribution endpoint remains available to previously released apps.
+Both endpoints normalize model aliases against `../model-catalog.json` before
+storage and merge alias collisions. Unknown or ambiguous names become `other`.
+The public API repeats this normalization when reading legacy data. Migration
+`0003_public_model_names.sql` removes original routing labels from all four
+business tables while preserving their counts and revisions.
+
 Upgraded installations pass their old anonymous tokens so those weekly counts
 are excluded from the total after the full snapshot is received. Finalized
 historical snapshots whose source uploads expired are retained in `legacy_archive`.

@@ -1,4 +1,5 @@
-import contract from "../../leaderboard-contract.json";
+import contract from "../../leaderboard-contract.json" with { type: "json" };
+import { publicCells } from "./models.ts";
 
 interface Statement {
   bind(...args: (string | number)[]): Statement;
@@ -35,9 +36,7 @@ const dayMs = 86_400_000;
 const monday = 4;
 const maxBytes = 262_144;
 const maxTurns = 5_000;
-// Harness and model names travel from the client verbatim, so the board can show
-// a tool or model the day it ships instead of waiting for a contract release.
-// These caps only bound the wire format; they are not allow-lists.
+// Validate the old wire format, then discard all non-public names before storage.
 const maxName = 64;
 const maxCells = 2_048;
 const bucket = (day: number, width: number) => day - ((day - monday) % width);
@@ -90,7 +89,7 @@ function accepted(value: unknown, day: number): Contribution | null {
   cells.sort((a, b) => keyOf(a).localeCompare(keyOf(b)));
   return {
     protocol: contract.protocol, ruleset: contract.ruleset, languageVersion: contract.languageVersion,
-    season: value.season, week: value.week, contributor: value.contributor, revision: value.revision, cells
+    season: value.season, week: value.week, contributor: value.contributor, revision: value.revision, cells: publicCells(cells)
   };
 }
 
@@ -150,7 +149,7 @@ async function intake(request: Request, env: Env, host: string): Promise<Respons
   const existing = await env.DB.prepare(`
     SELECT revision, cells FROM contributions WHERE season = ?1 AND week = ?2 AND contributor = ?3
   `).bind(batch.season, batch.week, contributor).first<{ revision: number; cells: string }>();
-  if (existing?.revision === batch.revision && existing.cells === cells) {
+  if (existing?.revision === batch.revision && JSON.stringify(publicCells(JSON.parse(existing.cells))) === cells) {
     return json({ status: "duplicate", revision: existing.revision });
   }
   if (existing && existing.revision > batch.revision) {
@@ -188,7 +187,7 @@ function acceptedFull(value: unknown): FullContribution | null {
     cells.push(item);
   }
   cells.sort((a, b) => keyOf(a).localeCompare(keyOf(b)));
-  return { contributor: value.contributor, revision: value.revision, cells, replaces: value.replaces as string[] };
+  return { contributor: value.contributor, revision: value.revision, cells: publicCells(cells), replaces: value.replaces as string[] };
 }
 
 async function fullIntake(request: Request, env: Env, host: string): Promise<Response> {
@@ -222,7 +221,7 @@ async function fullIntake(request: Request, env: Env, host: string): Promise<Res
   await env.DB.batch(statements);
   const saved = await env.DB.prepare("SELECT revision,cells FROM full_contributions WHERE contributor=?1")
     .bind(contributor).first<{revision: number; cells: string}>();
-  if (saved?.revision === batch.revision && saved.cells === cells) return json({status: "accepted", revision: batch.revision});
+  if (saved?.revision === batch.revision && JSON.stringify(publicCells(JSON.parse(saved.cells))) === cells) return json({status: "accepted", revision: batch.revision});
   return json({status: saved && saved.revision > batch.revision ? "stale" : "revision_conflict", revision: saved?.revision}, 409);
 }
 
@@ -253,7 +252,7 @@ FROM totals
 async function leaderboard(env: Env): Promise<Response> {
   const data = await env.DB.prepare(cumulativeSnapshotSql).first<{updated_at: string | null; entries: string}>();
   return json({ scope: "all", updatedAt: data?.updated_at ?? null, harnesses: contract.harnesses,
-    entries: data ? JSON.parse(data.entries) : [] });
+    entries: data ? publicCells(JSON.parse(data.entries)) : [] });
 }
 
 export default {

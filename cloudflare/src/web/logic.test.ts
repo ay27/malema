@@ -33,8 +33,7 @@ test("roast index counts insults per thousand messages", () => {
 });
 
 test("unknown model names are grouped instead of dropped", () => {
-  // The board is the client's only allow-list-free surface: a model that ships
-  // tomorrow has to render today.
+  // Family detection only sorts entries that the server already sanitized.
   assert.equal(familyOf("gpt-9-omega"), "gpt");
   assert.equal(familyOf("claude-opus-9"), "anthropic");
   assert.equal(familyOf("windsurf-swe-1.7"), "other");
