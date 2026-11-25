@@ -535,7 +535,7 @@ function render(): void {
 const periodValue = (): string => ($("period") as HTMLSelectElement).value;
 
 async function snapshot(period: string, signal: AbortSignal): Promise<Snapshot | null> {
-  const response = await fetch("/api/v1/leaderboard?period=" + period, { signal });
+  const response = await fetch("/api/v1/leaderboard?period=" + period, { signal, cache: "no-store" });
   if (!response.ok) return null;
   return (await response.json()) as Snapshot;
 }
