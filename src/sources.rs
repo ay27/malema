@@ -877,40 +877,6 @@ fn read_cursor_db(
     Ok(())
 }
 
-#[cfg(target_os = "macos")]
-pub fn activity_signature(home: &Path, use_env: bool) -> u64 {
-    use std::hash::{DefaultHasher, Hash, Hasher};
-    let mut signature = DefaultHasher::new();
-    let mut add = |path: &Path| {
-        path.hash(&mut signature);
-        if let Ok(info) = path.metadata() {
-            info.len().hash(&mut signature);
-            info.modified().ok().hash(&mut signature);
-        }
-    };
-    for source in Source::ALL {
-        for root in source.roots(home, use_env) {
-            for entry in WalkDir::new(&root)
-                .sort_by_file_name()
-                .into_iter()
-                .filter_entry(|entry| keep_source_entry(entry.file_name().to_str()))
-                .filter_map(Result::ok)
-            {
-                if entry.file_type().is_file() && source.is_file(&root, entry.path()) {
-                    add(entry.path());
-                }
-            }
-            if source == Source::Claude {
-                add(&root.with_file_name("history.jsonl"));
-            }
-        }
-    }
-    let db = cursor_db(home);
-    add(&db);
-    add(&db.with_file_name("state.vscdb-wal"));
-    signature.finish()
-}
-
 fn keep_source_entry(name: Option<&str>) -> bool {
     !matches!(name, Some("subagents" | "tool-results" | "tool_outputs"))
 }

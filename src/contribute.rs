@@ -20,7 +20,6 @@ const MAX_NAME: usize = 64;
 /// this bucket into "others" instead of hiding those tools entirely.
 const UNKNOWN_MODEL: &str = "unknown";
 pub const LEADERBOARD_URL: &str = "https://malema.app";
-pub const SYNC_INTERVAL: std::time::Duration = std::time::Duration::from_secs(15 * 60);
 
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -660,6 +659,38 @@ mod tests {
             .unwrap();
         let confirmed = reloaded.status(true, false).confirmed.unwrap();
         assert_eq!((confirmed.turns, confirmed.hits), (2, 1));
+        fs::remove_dir_all(home).unwrap();
+    }
+
+    #[test]
+    fn changes_create_new_revisions_without_waiting_and_stale_receipts_stay_pending() {
+        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
+        let now = now();
+        let week = bucket(day(now), 7);
+        let mut controller = Controller::load(&home);
+        let mut counts = Weeks::default();
+        let key = ("codex", "test-model".to_owned(), "en");
+        counts.add(week, key.clone(), true);
+        let first = controller.prepare(&counts, now).unwrap().pop().unwrap();
+        counts.add(week, key, true);
+        let latest = controller.prepare(&counts, now).unwrap().pop().unwrap();
+        assert_eq!(latest.revision, first.revision + 1);
+        controller
+            .finish(SyncResult {
+                acked: vec![(week, first.revision)],
+                error: None,
+            })
+            .unwrap();
+        let pending = controller.prepare(&counts, now).unwrap().pop().unwrap();
+        assert_eq!(pending.revision, latest.revision);
+        assert_eq!(pending.cells[0].hits, 2);
+        controller
+            .finish(SyncResult {
+                acked: vec![(week, latest.revision)],
+                error: None,
+            })
+            .unwrap();
+        assert!(controller.prepare(&counts, now).unwrap().is_empty());
         fs::remove_dir_all(home).unwrap();
     }
 

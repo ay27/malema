@@ -62,7 +62,6 @@ pub fn build_observed(
     let mut totals = BTreeMap::<_, Count>::new();
     let sources = sources::scan(home, use_env, |stats, turn| {
         let rule_hit = detect::detect(&turn.text);
-        observe(stats.source, &turn, rule_hit.is_some());
         let hit = if verdicts.is_empty() {
             rule_hit
         } else {
@@ -72,6 +71,7 @@ pub fn build_observed(
                 None => rule_hit,
             }
         };
+        observe(stats.source, &turn, hit.is_some());
         let bucket = totals
             .entry((
                 stats.source.label(),
@@ -344,8 +344,8 @@ impl Report {
                     "submit anonymously to the global leaderboard"
                 ),
                 t(
-                    "上报规则扫描的匿名计数。手动开启时包含最近 7 天。",
-                    "Shares anonymous counts from the rule-based scan. Turning it on manually includes the last 7 days."
+                    "计数变化后立即上报，包含已保存的 AI 复核结论。手动开启时包含最近 7 天。",
+                    "Uploads changed counts immediately, including saved AI reviews. Turning it on manually includes the last 7 days."
                 ),
                 t("匿名提交", "Anonymous"),
                 t("参与全球排行", "join the leaderboard"),
@@ -770,7 +770,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn saved_reviews_rebuild_local_counts_without_changing_uploaded_counts() {
+    fn saved_reviews_rebuild_local_and_uploaded_counts_together() {
         use crate::review_state::Verdict;
         use std::fs;
         use std::time::{SystemTime, UNIX_EPOCH};
@@ -828,11 +828,11 @@ mod tests {
         )
         .unwrap();
 
-        let mut rule_hits = 0;
-        let reviewed = build_observed(&home, false, |_, _, hit| rule_hits += usize::from(hit));
+        let mut uploaded_hits = 0;
+        let reviewed = build_observed(&home, false, |_, _, hit| uploaded_hits += usize::from(hit));
         assert_eq!(reviewed.summary()["hits"], 3);
         assert_eq!(reviewed.summary()["turns"], 4);
-        assert_eq!(rule_hits, 2);
+        assert_eq!(uploaded_hits, 3);
         assert!(reviewed.records_html().contains("ai.output-insult"));
         assert!(!reviewed.records_html().contains("You are an idiot."));
         assert_eq!(build(&home, false).summary()["hits"], 3);

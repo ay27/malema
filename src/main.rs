@@ -307,7 +307,6 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
         Arc,
         atomic::{AtomicBool, Ordering},
     };
-    use std::time::Instant;
     use tao::dpi::{LogicalPosition, LogicalSize};
     use tao::event::{Event, StartCause, WindowEvent};
     use tao::event_loop::{ControlFlow, EventLoopBuilder};
@@ -323,7 +322,6 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
         ScanDone(
             Option<(serde_json::Value, String)>,
             Option<contribute::Collection>,
-            u64,
         ),
         Contribution(contribute::Request),
         ContributionDone(contribute::SyncResult),
@@ -381,9 +379,7 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
     let mut contribution = contribute::Controller::load(&home);
     let mut latest: Option<contribute::Collection> = None;
     let mut sent: Option<Arc<AtomicBool>> = None;
-    let mut signature = None;
-    let mut next_poll = Instant::now() + contribute::SYNC_INTERVAL;
-    let mut last_attempt: Option<Instant> = None;
+    let mut sync_pending = false;
     let scan_proxy = proxy.clone();
     let scan_home = home.clone();
     let cache = home.join("Library/Caches/Malema").join(format!(
@@ -391,88 +387,72 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
         detect::RULESET,
         if use_env { "default" } else { "custom" }
     ));
-    let launch_scan =
-        move |show: bool, read_cache: bool, since: Option<i64>, previous: Option<u64>| {
-            let proxy = scan_proxy.clone();
-            let home = scan_home.clone();
-            let cache = cache.clone();
-            std::thread::spawn(move || {
-                let review_stamp = serde_json::to_value(review_state::modified_at(&home))
-                    .unwrap_or(serde_json::Value::Null);
-                if read_cache
-                    && let Ok(bytes) = std::fs::read(&cache)
-                    && let Ok(data) = serde_json::from_slice::<serde_json::Value>(&bytes)
-                    && data["rows"].is_array()
-                    && data["clients"].is_array()
-                    && data["review_stamp"] == review_stamp
-                {
-                    let _ = proxy.send_event(Action::ScanCached(data));
-                }
-                let signature = sources::activity_signature(&home, use_env);
-                if !show && previous == Some(signature) {
-                    let _ = proxy.send_event(Action::ScanDone(None, None, signature));
-                    return;
-                }
-                let mut counts = contribute::Collection::new(contribute::now(), since);
-                let report = report::build_observed(&home, use_env, |source, turn, hit| {
-                    counts.collect(source, turn, hit);
-                });
-                let payload = show.then(|| {
-                    let mut data = report.data();
-                    data["review_stamp"] = review_stamp;
-                    // Keep only the statistics on disk. The records are kept in the open window.
-                    if let Some(dir) = cache.parent()
-                        && std::fs::create_dir_all(dir).is_ok()
-                        && let Ok(bytes) = serde_json::to_vec(&data)
-                    {
-                        let _ = private_write(&cache, &bytes);
-                    }
-                    (data, report.records_html())
-                });
-                let _ = proxy.send_event(Action::ScanDone(payload, Some(counts), signature));
+    let launch_scan = move |show: bool, read_cache: bool, since: Option<i64>| {
+        let proxy = scan_proxy.clone();
+        let home = scan_home.clone();
+        let cache = cache.clone();
+        std::thread::spawn(move || {
+            let review_stamp = serde_json::to_value(review_state::modified_at(&home))
+                .unwrap_or(serde_json::Value::Null);
+            if read_cache
+                && let Ok(bytes) = std::fs::read(&cache)
+                && let Ok(data) = serde_json::from_slice::<serde_json::Value>(&bytes)
+                && data["rows"].is_array()
+                && data["clients"].is_array()
+                && data["review_stamp"] == review_stamp
+            {
+                let _ = proxy.send_event(Action::ScanCached(data));
+            }
+            let mut counts = contribute::Collection::new(contribute::now(), since);
+            let report = report::build_observed(&home, use_env, |source, turn, hit| {
+                counts.collect(source, turn, hit);
             });
-        };
+            let payload = show.then(|| {
+                let mut data = report.data();
+                data["review_stamp"] = review_stamp;
+                // Keep only the statistics on disk. The records are kept in the open window.
+                if let Some(dir) = cache.parent()
+                    && std::fs::create_dir_all(dir).is_ok()
+                    && let Ok(bytes) = serde_json::to_vec(&data)
+                {
+                    let _ = private_write(&cache, &bytes);
+                }
+                (data, report.records_html())
+            });
+            let _ = proxy.send_event(Action::ScanDone(payload, Some(counts)));
+        });
+    };
     event_loop.run(move |event, _, flow| {
         *flow = ControlFlow::Wait;
         let mut update = false;
         let mut try_sync = false;
         match event {
             Event::NewEvents(StartCause::Init) => set_dock_icon(),
-            Event::NewEvents(StartCause::ResumeTimeReached { .. })
-                if contribution.since().is_some() =>
-            {
-                next_poll = Instant::now() + contribute::SYNC_INTERVAL;
-                if !busy && review_cancel.is_none() {
-                    busy = true;
-                    launch_scan(false, false, contribution.since(), signature);
-                }
-            }
             Event::UserEvent(Action::ReportReady) if !report_ready => {
                 report_ready = true;
                 busy = true;
-                launch_scan(true, true, contribution.since(), signature);
+                launch_scan(true, true, contribution.since());
             }
             Event::UserEvent(Action::Scan) => {
                 if busy {
                     rescan_pending = true;
                 } else {
                     busy = true;
-                    launch_scan(true, false, contribution.since(), signature);
+                    launch_scan(true, false, contribution.since());
                 }
             }
             Event::UserEvent(Action::ScanCached(data)) => {
                 let _ = webview.evaluate_script(&format!("window.scanCached({data})"));
             }
-            Event::UserEvent(Action::ScanDone(payload, counts, stamp)) => {
+            Event::UserEvent(Action::ScanDone(payload, counts)) => {
                 busy = false;
-                signature = Some(stamp);
                 if let Some(counts) = counts {
                     latest = Some(counts);
                 }
                 let requested = std::mem::take(&mut rescan_pending);
                 if requested {
                     busy = true;
-                    launch_scan(true, false, contribution.since(), signature);
+                    launch_scan(true, false, contribution.since());
                 } else if let Some((data, records)) = payload {
                     if let Ok(records) = serde_json::to_string(&records) {
                         let _ =
@@ -495,9 +475,6 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                             };
                             if contribution.enable(since).is_ok() {
                                 counts.start(since, history);
-                                last_attempt = None;
-                                signature = None;
-                                next_poll = Instant::now() + contribute::SYNC_INTERVAL;
                                 try_sync = true;
                             } else {
                                 contribution.message = i18n::pick(
@@ -538,7 +515,9 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 )
                 .to_owned();
                 }
-                try_sync = true;
+                if closing && review_cancel.is_none() {
+                    *flow = ControlFlow::Exit;
+                }
                 update = true;
             }
             Event::UserEvent(Action::Review(request)) if review_cancel.is_none() => {
@@ -565,7 +544,9 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
             Event::UserEvent(Action::ReviewDone(outcome)) => {
                 review_cancel = None;
                 if closing {
-                    *flow = ControlFlow::Exit;
+                    if sent.is_none() {
+                        *flow = ControlFlow::Exit;
+                    }
                 } else {
                     if outcome.saved {
                         let _ = webview.evaluate_script("window.scanStarted?.()");
@@ -573,7 +554,7 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                             rescan_pending = true;
                         } else {
                             busy = true;
-                            launch_scan(true, false, contribution.since(), signature);
+                            launch_scan(true, false, contribution.since());
                         }
                     }
                     if let Ok(json) = serde_json::to_string(&outcome) {
@@ -596,12 +577,12 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 event: WindowEvent::CloseRequested,
                 ..
             } => {
-                if let Some(cancel) = &sent {
-                    cancel.store(true, Ordering::Relaxed);
-                }
                 if let Some(cancel) = &review_cancel {
                     closing = true;
                     cancel.store(true, Ordering::Relaxed);
+                    window.set_visible(false);
+                } else if sent.is_some() {
+                    closing = true;
                     window.set_visible(false);
                 } else {
                     *flow = ControlFlow::Exit;
@@ -609,18 +590,18 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
             }
             _ => {}
         }
-        if try_sync
+        sync_pending |= try_sync;
+        if sync_pending
             && sent.is_none()
-            && last_attempt.is_none_or(|time| time.elapsed() >= contribute::SYNC_INTERVAL)
+            && !busy
+            && !closing
             && let Some(counts) = latest
                 .as_ref()
                 .filter(|counts| counts.since() == contribution.since())
         {
+            sync_pending = false;
             match contribution.prepare(&counts.live, contribute::now()) {
                 Ok(batches) if !batches.is_empty() => {
-                    let time = Instant::now();
-                    last_attempt = Some(time);
-                    next_poll = time + contribute::SYNC_INTERVAL;
                     let cancel = Arc::new(AtomicBool::new(false));
                     sent = Some(cancel.clone());
                     let proxy = proxy.clone();
@@ -644,9 +625,6 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 serde_json::to_string(&contribution.status(latest.is_some(), sent.is_some()))
         {
             let _ = webview.evaluate_script(&format!("window.contributionStatus?.({status})"));
-        }
-        if *flow != ControlFlow::Exit && contribution.since().is_some() {
-            *flow = ControlFlow::WaitUntil(next_poll);
         }
         let _keep_window_alive = &window;
         let _keep_updater_alive = &updater;
