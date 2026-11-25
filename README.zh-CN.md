@@ -16,6 +16,13 @@
 2. 解压，把 **骂了吗.app** 拖进「应用程序」，双击打开。首次打开会自动扫描。
 3. 在「总览」里按日期和工具筛选，看看最近哪天骂得最多。侧栏可以切换中英文。
 
+也可以用 Homebrew 安装同一个正式版。
+
+```sh
+brew tap ay27/malema https://github.com/ay27/malema
+brew install --cask ay27/malema/malema
+```
+
 ## 怎么看榜单
 
 在 App 里点「全球榜单」，或打开 [malema.app](https://malema.app)。榜单持续累加收到的计数，按每千条消息的挨骂次数排名。可以按消息语言、工具和模型筛选。

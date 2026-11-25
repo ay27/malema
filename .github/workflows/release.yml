@@ -19,6 +19,8 @@ jobs:
     timeout-minutes: 90
     permissions:
       contents: write
+    outputs:
+      archive_sha256: ${{ steps.homebrew.outputs.sha256 }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -78,3 +80,50 @@ jobs:
               dist/malema-macos-arm64.zip dist/appcast.xml
           fi
           gh release edit "$GITHUB_REF_NAME" --repo "$GITHUB_REPOSITORY" --draft=false --latest
+
+      - name: Record published archive checksum
+        id: homebrew
+        run: shasum -a 256 dist/malema-macos-arm64.zip | awk '{print "sha256=" $1}' >> "$GITHUB_OUTPUT"
+
+  update-homebrew-cask:
+    needs: release-macos
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - name: Update the Homebrew Cask on main
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARCHIVE_SHA256: ${{ needs.release-macos.outputs.archive_sha256 }}
+        run: |
+          version=${GITHUB_REF_NAME#v}
+          [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$ARCHIVE_SHA256" =~ ^[0-9a-f]{64}$ ]]
+          latest=$(gh release view --repo "$GITHUB_REPOSITORY" --json tagName --jq .tagName)
+          if [[ "$latest" != "$GITHUB_REF_NAME" ]]; then
+            echo "The tag is not the latest release."
+            exit 0
+          fi
+
+          cask_api="repos/$GITHUB_REPOSITORY/contents/Casks/malema.rb"
+          gh api "$cask_api?ref=main" > "$RUNNER_TEMP/cask.json"
+          jq -er '.content' "$RUNNER_TEMP/cask.json" | base64 --decode > "$RUNNER_TEMP/malema.rb"
+          ruby - "$RUNNER_TEMP/malema.rb" "$version" "$ARCHIVE_SHA256" > "$RUNNER_TEMP/updated.rb" <<'RUBY'
+          path, version, sha256 = ARGV
+          cask = File.read(path)
+          abort "Missing Cask version" unless cask.sub!(/^  version "[^"\n]+"$/, "  version #{version.inspect}")
+          abort "Missing Cask checksum" unless cask.sub!(/^  sha256 "[a-f0-9]{64}"$/, "  sha256 #{sha256.inspect}")
+          print cask
+          RUBY
+          ruby -c "$RUNNER_TEMP/updated.rb"
+          if cmp -s "$RUNNER_TEMP/malema.rb" "$RUNNER_TEMP/updated.rb"; then
+            exit 0
+          fi
+          encoded_cask=$(base64 < "$RUNNER_TEMP/updated.rb" | tr -d '\n')
+          cask_sha=$(jq -er '.sha' "$RUNNER_TEMP/cask.json")
+          jq -n --arg message "Update Homebrew Cask to $version" \
+            --arg content "$encoded_cask" --arg sha "$cask_sha" \
+            '{branch: "main", message: $message, content: $content, sha: $sha}' > "$RUNNER_TEMP/update.json"
+          gh api --method PUT "$cask_api" --input "$RUNNER_TEMP/update.json" --jq '.commit.sha'
