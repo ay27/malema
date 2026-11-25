@@ -1,5 +1,7 @@
 // Pure helpers behind the public board. Kept free of DOM access so they can be
 // type-checked and unit-tested directly.
+import { familyOfModel, modelFamilies } from "../families.ts";
+export { modelFamilies } from "../families.ts";
 
 export type Language = "zh" | "en";
 export type MessageLanguage = Language | "other";
@@ -37,30 +39,18 @@ export interface Filters {
 
 export type SortKey = "harness" | "model" | "turns" | "hits" | "score";
 
-const familyPrefixes: { id: string; name: string; prefix: RegExp }[] = [
-  { id: "gpt", name: "GPT", prefix: /^(?:openai[/:])?(?:gpt|o\d+)(?:[-_.]|$)/i },
-  { id: "anthropic", name: "Anthropic", prefix: /^(?:claude|anthropic)(?:[-_. /:]|$)/i },
-  { id: "hunyuan", name: "Hunyuan", prefix: /^(?:(?:tencent[/:])?hunyuan|混元)(?:[-_. /:]|$)/i },
-  { id: "glm", name: "GLM", prefix: /^(?:(?:zhipu|zai|z\.ai)[/:])?(?:glm|chatglm)(?:[-_. /:]|\d|$)/i },
-  { id: "deepseek", name: "DeepSeek", prefix: /^deepseek(?:[-_. /:]|$)/i },
-  { id: "gemini", name: "Gemini", prefix: /^(?:google[/:])?gemini(?:[-_. /:]|$)/i },
-  { id: "qwen", name: "Qwen", prefix: /^(?:(?:alibaba[/:])?qwen|通义)(?:[-_. /:]|\d|$)/i },
-];
-
 export const OTHER_FAMILY = "other";
-export const modelFamilies = familyPrefixes;
-
-/** Unknown model names fall into the catch-all family instead of being dropped. */
+/** Every stored model and every family fallback use the shared registry. */
 export function familyOf(model: string): string {
-  return familyPrefixes.find(family => family.prefix.test(model))?.id ?? OTHER_FAMILY;
+  return familyOfModel(model.toLowerCase());
 }
 
 export function familyName(id: string): string {
-  return familyPrefixes.find(family => family.id === id)?.name ?? "Other";
+  return modelFamilies.find(family => family.id === id)?.name ?? "Other";
 }
 
 export const familyOrder = new Map(
-  [...familyPrefixes.map(family => family.id), OTHER_FAMILY].map((id, index) => [id, index]),
+  [...modelFamilies.map(family => family.id), OTHER_FAMILY].map((id, index) => [id, index]),
 );
 
 const modelNames = new Intl.Collator("en", { numeric: true, sensitivity: "base" });

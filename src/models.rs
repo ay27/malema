@@ -7,6 +7,60 @@ struct Catalog {
     models: BTreeMap<String, Vec<String>>,
 }
 
+#[derive(Deserialize)]
+struct Family {
+    id: String,
+    aliases: Vec<String>,
+}
+
+#[derive(Deserialize)]
+struct Families {
+    families: Vec<Family>,
+}
+
+fn families() -> &'static Families {
+    static FAMILIES: OnceLock<Families> = OnceLock::new();
+    FAMILIES.get_or_init(|| {
+        serde_json::from_str(include_str!("../model-families.json")).expect("public model families")
+    })
+}
+
+fn family_fallback(value: &str) -> String {
+    if let Some(id) = value.strip_prefix("family:")
+        && families().families.iter().any(|family| family.id == id)
+    {
+        return value.to_owned();
+    }
+    let bytes = value.as_bytes();
+    let mut matches = Vec::new();
+    for family in &families().families {
+        for alias in &family.aliases {
+            for (start, _) in value.match_indices(alias) {
+                let end = start + alias.len();
+                if (start == 0 || !bytes[start - 1].is_ascii_alphanumeric())
+                    && (end == bytes.len() || !bytes[end].is_ascii_alphabetic())
+                {
+                    matches.push((start, end, family.id.as_str()));
+                }
+            }
+        }
+    }
+    let candidates: BTreeSet<_> = matches
+        .iter()
+        .filter(|&&(start, end, _)| {
+            !matches.iter().any(|&(left, right, _)| {
+                left <= start && right >= end && right - left > end - start
+            })
+        })
+        .map(|&(_, _, id)| id)
+        .collect();
+    if candidates.len() == 1 {
+        format!("family:{}", candidates.first().unwrap())
+    } else {
+        "other".to_owned()
+    }
+}
+
 fn catalog() -> &'static Catalog {
     static CATALOG: OnceLock<Catalog> = OnceLock::new();
     CATALOG.get_or_init(|| {
@@ -25,6 +79,9 @@ pub fn normalize(raw: Option<&str>) -> String {
     let value = raw.trim().to_ascii_lowercase().replace(['_', ' '], "-");
     if catalog().models.contains_key(&value) {
         return value;
+    }
+    if value.starts_with("family:") {
+        return family_fallback(&value);
     }
     let bytes = value.as_bytes();
     let mut matches = Vec::new();
@@ -62,7 +119,7 @@ pub fn normalize(raw: Option<&str>) -> String {
     if candidates.len() == 1 {
         candidates.first().unwrap().to_string()
     } else {
-        "other".to_owned()
+        family_fallback(&value)
     }
 }
 

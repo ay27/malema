@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import families from "../../../model-families.json" with { type: "json" };
 
 import {
   axisMaximum,
@@ -36,7 +37,7 @@ test("unknown model names are grouped instead of dropped", () => {
   // Family detection only sorts entries that the server already sanitized.
   assert.equal(familyOf("gpt-9-omega"), "gpt");
   assert.equal(familyOf("claude-opus-9"), "anthropic");
-  assert.equal(familyOf("windsurf-swe-1.7"), "other");
+  assert.equal(familyOf("windsurf-swe-1.7"), "swe");
   assert.equal(familyOf("total-nonsense"), "other");
   assert.equal(familyOf("vendor/model:2026"), "other");
 });
@@ -44,6 +45,16 @@ test("unknown model names are grouped instead of dropped", () => {
 test("models sort by family before name", () => {
   const sorted = ["zzz-unknown", "qwen3", "gpt-5.4", "gpt-10.2"].sort(compareModels);
   assert.deepEqual(sorted, ["gpt-5.4", "gpt-10.2", "qwen3", "zzz-unknown"]);
+});
+
+test("every public model and unknown-version bucket shares its catalog family", () => {
+  for (const [model, family] of Object.entries(families.models)) assert.equal(familyOf(model), family, model);
+  for (const family of families.families) assert.equal(familyOf(`family:${family.id}`), family.id);
+  for (const [model, family] of [["kimi-k3", "kimi"], ["qwen3-coder", "qwen"], ["minimax-m2.7", "minimax"], ["grok-4.7", "grok"], ["devstral-2512", "mistral"]]) {
+    assert.equal(familyOf(model), family);
+    const rows = combine([entry("codex", model, "zh", 10, 2)], { ...all, model: `family:${family}` });
+    assert.equal(totals(rows).hits, 2);
+  }
 });
 
 test("combine merges the two languages into one combination", () => {

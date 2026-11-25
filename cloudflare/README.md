@@ -39,7 +39,7 @@ uses [malema.app](https://malema.app).
 
 The v1 contribution endpoint remains available to previously released apps.
 Both endpoints normalize model aliases against `../model-catalog.json` before
-storage and merge alias collisions. Unknown or ambiguous names become `other`.
+storage and merge alias collisions. `../model-families.json` also drives the web family filters. Unlisted models in recognized families use fixed `family:<id>` buckets; unknown or conflicting families become `other`.
 The public API repeats this normalization when reading legacy data. Migration
 `0003_public_model_names.sql` removes original routing labels from all four
 business tables while preserving their counts and revisions.

@@ -1,221 +1,495 @@
 {
-  "version": 1,
+  "version": 2,
   "verifiedAt": "2026-11-25",
   "sources": [
-    "https://developers.openai.com/api/docs/models/all",
-    "https://platform.claude.com/docs/en/models/overview",
+    "https://aistudio.google.com/docs/models",
     "https://api-docs.deepseek.com/quick_start/pricing/",
+    "https://arxiv.org/abs/2308.16149",
+    "https://cognition.ai/blog/swe-1-6-preview",
+    "https://developers.openai.com/api/docs/models/all",
+    "https://docs.volcengine.com/docs/ark/model-list?lang=zh",
     "https://docs.z.ai/guides/llm/glm-5.3",
     "https://docs.z.ai/guides/vlm/glm-5.3-flash",
-    "https://aistudio.google.com/docs/models",
+    "https://github.com/meta-llama/codellama",
+    "https://github.com/mosaicml/llm-foundry",
+    "https://github.com/zai-org/CodeGeeX4",
     "https://help.aliyun.com/zh/model-studio/models",
-    "https://www.minimax.io/models/text/m27"
+    "https://huggingface.co/Dream-org/Dream-v0-Instruct-7B",
+    "https://huggingface.co/api/models?author=01-ai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=CohereLabs&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=EleutherAI&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=GSAI-ML&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=HuggingFaceH4&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=HuggingFaceTB&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=LGAI-EXAONE&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=LiquidAI&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=NousResearch&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=RWKV&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=Skywork&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=Tele-AI&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=Writer&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=XiaomiMiMo&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=Zyphra&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=ai21labs&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=allenai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=apple&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=arcee-ai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=baichuan-inc&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=baidu&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=bigcode&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=bigscience&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=deepcogito&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=h2oai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=huawei-noah&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=ibm-granite&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=inclusionAI&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=internlm&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=lmsys&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=meituan-longcat&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=microsoft&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=naver-hyperclovax&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=openbmb&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=openchat&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=sarvamai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=sensenova&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=stabilityai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=stepfun-ai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=swiss-ai&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=tencent&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=tiiuae&limit=50&sort=downloads&direction=-1",
+    "https://huggingface.co/api/models?author=upstage&limit=50&sort=downloads&direction=-1",
+    "https://openrouter.ai/api/v1/models",
+    "https://platform.claude.com/docs/en/models/overview",
+    "https://prod.cursor.com/docs/models/cursor-composer-2-5",
+    "https://www.databricks.com/blog/introducing-dbrx-new-state-art-open-llm",
+    "https://www.inceptionlabs.ai/blog/introducing-mercury-2-5",
+    "https://www.minimax.io/models/text/m27",
+    "https://www.tencentcloud.com/zh/document/product/1300/80632",
+    "https://www.xfyun.cn/doc/spark/BatchAPI.html",
+    "https://www.xfyun.cn/doc/spark/HTTP调用文档.html"
   ],
   "models": {
-    "gpt-6.2-astra": [
-      "gpt-6.2-astra"
+    "afm-4.5b": [
+      "afm-4.5b",
+      "arcee-ai/afm-4.5b"
     ],
-    "gpt-6.2-sol": [
-      "gpt-6.2-sol"
+    "afm-4.5b-base": [
+      "afm-4.5b-base",
+      "arcee-ai/afm-4.5b-base"
     ],
-    "gpt-6.1-terra": [
-      "gpt-6.1-terra"
+    "afm-4.5b-preview": [
+      "afm-4.5b-preview",
+      "arcee-ai/afm-4.5b-preview"
     ],
-    "gpt-6.1-sol": [
-      "gpt-6.1-sol"
+    "ai21-jamba-large-1.5": [
+      "ai21-jamba-large-1.5",
+      "ai21labs/ai21-jamba-large-1.5"
     ],
-    "gpt-6-astra": [
-      "gpt-6-astra"
+    "ai21-jamba-large-1.6": [
+      "ai21-jamba-large-1.6",
+      "ai21labs/ai21-jamba-large-1.6"
     ],
-    "gpt-6-sol": [
-      "gpt-6-sol"
+    "ai21-jamba-mini-1.5": [
+      "ai21-jamba-mini-1.5",
+      "ai21labs/ai21-jamba-mini-1.5"
     ],
-    "gpt-6-luna": [
-      "gpt-6-luna"
+    "ai21-jamba-mini-1.6": [
+      "ai21-jamba-mini-1.6",
+      "ai21labs/ai21-jamba-mini-1.6"
     ],
-    "gpt-5.6-sol": [
-      "gpt-5.6-sol"
+    "ai21-jamba-reasoning-3b": [
+      "ai21-jamba-reasoning-3b",
+      "ai21labs/ai21-jamba-reasoning-3b"
     ],
-    "gpt-5.6-terra": [
-      "gpt-5.6-terra"
+    "ai21-jamba2-3b": [
+      "ai21-jamba2-3b",
+      "ai21labs/ai21-jamba2-3b"
     ],
-    "gpt-5.6-luna": [
-      "gpt-5.6-luna"
+    "ai21-jamba2-mini": [
+      "ai21-jamba2-mini",
+      "ai21labs/ai21-jamba2-mini"
     ],
-    "gpt-5.5": [
-      "gpt-5.5"
+    "ai21-jamba2-mini-fp8": [
+      "ai21-jamba2-mini-fp8",
+      "ai21labs/ai21-jamba2-mini-fp8"
     ],
-    "gpt-5.5-pro": [
-      "gpt-5.5-pro"
+    "aion-2.0": [
+      "aion-2.0",
+      "aion-labs/aion-2.0"
     ],
-    "gpt-5.4": [
-      "gpt-5.4"
+    "aion-3.0": [
+      "aion-3.0",
+      "aion-labs/aion-3.0"
     ],
-    "gpt-5.4-pro": [
-      "gpt-5.4-pro"
+    "aion-3.0-mini": [
+      "aion-3.0-mini",
+      "aion-labs/aion-3.0-mini"
     ],
-    "gpt-5.4-mini": [
-      "gpt-5.4-mini"
+    "aion-3.5": [
+      "aion-3.5",
+      "aion-labs/aion-3.5"
     ],
-    "gpt-5.2": [
-      "gpt-5.2"
+    "aion-3.5-mini": [
+      "aion-3.5-mini",
+      "aion-labs/aion-3.5-mini"
     ],
-    "gpt-5.2-pro": [
-      "gpt-5.2-pro"
+    "aion-rp-llama-3.1-8b": [
+      "aion-labs/aion-rp-llama-3.1-8b",
+      "aion-rp-llama-3.1-8b"
     ],
-    "gpt-5.1": [
-      "gpt-5.1"
+    "apertus-70b-2509": [
+      "apertus-70b-2509",
+      "swiss-ai/apertus-70b-2509"
     ],
-    "gpt-5.1-codex": [
-      "gpt-5.1-codex"
+    "apertus-70b-instruct-2509": [
+      "apertus-70b-instruct-2509",
+      "swiss-ai/apertus-70b-instruct-2509"
     ],
-    "gpt-5.1-codex-max": [
-      "gpt-5.1-codex-max"
+    "apertus-8b-2509": [
+      "apertus-8b-2509",
+      "swiss-ai/apertus-8b-2509"
     ],
-    "gpt-5": [
-      "gpt-5"
+    "apertus-8b-instruct-2509": [
+      "apertus-8b-instruct-2509",
+      "swiss-ai/apertus-8b-instruct-2509"
     ],
-    "gpt-5-mini": [
-      "gpt-5-mini"
+    "apertus-v1.1-0.5b": [
+      "apertus-v1.1-0.5b",
+      "swiss-ai/apertus-v1.1-0.5b"
     ],
-    "gpt-5-nano": [
-      "gpt-5-nano"
+    "apertus-v1.1-0.5b-instruct": [
+      "apertus-v1.1-0.5b-instruct",
+      "swiss-ai/apertus-v1.1-0.5b-instruct"
     ],
-    "gpt-5-codex": [
-      "gpt-5-codex"
+    "apertus-v1.1-1.5b": [
+      "apertus-v1.1-1.5b",
+      "swiss-ai/apertus-v1.1-1.5b"
     ],
-    "gpt-4.1": [
-      "gpt-4.1"
+    "apertus-v1.1-1.5b-instruct": [
+      "apertus-v1.1-1.5b-instruct",
+      "swiss-ai/apertus-v1.1-1.5b-instruct"
     ],
-    "gpt-4.1-mini": [
-      "gpt-4.1-mini"
+    "apertus-v1.1-1.5b-instruct-vllm-nvfp4a16": [
+      "apertus-v1.1-1.5b-instruct-vllm-nvfp4a16",
+      "swiss-ai/apertus-v1.1-1.5b-instruct-vllm-nvfp4a16"
     ],
-    "gpt-4.1-nano": [
-      "gpt-4.1-nano"
+    "apertus-v1.1-4b": [
+      "apertus-v1.1-4b",
+      "swiss-ai/apertus-v1.1-4b"
     ],
-    "gpt-4o": [
-      "gpt-4o"
+    "apertus-v1.1-4b-instruct": [
+      "apertus-v1.1-4b-instruct",
+      "swiss-ai/apertus-v1.1-4b-instruct"
     ],
-    "gpt-4o-mini": [
-      "gpt-4o-mini"
+    "apertus-v1.5-70b": [
+      "apertus-v1.5-70b",
+      "swiss-ai/apertus-v1.5-70b"
     ],
-    "gpt-4-turbo": [
-      "gpt-4-turbo"
+    "apertus-v1.5-70b-base": [
+      "apertus-v1.5-70b-base",
+      "swiss-ai/apertus-v1.5-70b-base"
     ],
-    "gpt-3.5-turbo": [
-      "gpt-3.5-turbo"
+    "apertus-v1.5-70b-rl": [
+      "apertus-v1.5-70b-rl",
+      "swiss-ai/apertus-v1.5-70b-rl"
     ],
-    "o4-mini": [
-      "o4-mini"
+    "apertus-v1.5-70b-sft": [
+      "apertus-v1.5-70b-sft",
+      "swiss-ai/apertus-v1.5-70b-sft"
     ],
-    "o3": [
-      "o3"
+    "apertus-v1.5-8b": [
+      "apertus-v1.5-8b",
+      "swiss-ai/apertus-v1.5-8b"
     ],
-    "o3-mini": [
-      "o3-mini"
+    "apertus-v1.5-8b-base": [
+      "apertus-v1.5-8b-base",
+      "swiss-ai/apertus-v1.5-8b-base"
     ],
-    "o1": [
-      "o1"
+    "apertus-v1.5-8b-dpo": [
+      "apertus-v1.5-8b-dpo",
+      "swiss-ai/apertus-v1.5-8b-dpo"
     ],
-    "gpt-oss-120b": [
-      "gpt-oss-120b"
+    "apertus-v1.5-8b-rl": [
+      "apertus-v1.5-8b-rl",
+      "swiss-ai/apertus-v1.5-8b-rl"
     ],
-    "gpt-oss-20b": [
-      "gpt-oss-20b"
+    "apertus-v1.5-8b-sft": [
+      "apertus-v1.5-8b-sft",
+      "swiss-ai/apertus-v1.5-8b-sft"
     ],
-    "claude-opus-5-5": [
-      "claude-5-5-opus",
-      "claude-5.5-opus",
-      "claude-opus-5-5",
-      "claude-opus-5.5"
+    "arcee-blitz": [
+      "arcee-ai/arcee-blitz",
+      "arcee-blitz"
     ],
-    "claude-opus-5": [
-      "claude-5-opus",
-      "claude-opus-5"
+    "arcee-maestro-7b-preview": [
+      "arcee-ai/arcee-maestro-7b-preview",
+      "arcee-maestro-7b-preview"
     ],
-    "claude-opus-4-8": [
-      "claude-4-8-opus",
-      "claude-4.8-opus",
-      "claude-opus-4-8",
-      "claude-opus-4.8"
+    "arcee-spark": [
+      "arcee-ai/arcee-spark",
+      "arcee-spark"
     ],
-    "claude-opus-4-7": [
-      "claude-4-7-opus",
-      "claude-4.7-opus",
-      "claude-opus-4-7",
-      "claude-opus-4.7"
+    "arcee-supernova-v1": [
+      "arcee-ai/arcee-supernova-v1",
+      "arcee-supernova-v1"
     ],
-    "claude-opus-4-6": [
-      "claude-4-6-opus",
-      "claude-4.6-opus",
-      "claude-opus-4-6",
-      "claude-opus-4.6"
+    "arcee-vylinh": [
+      "arcee-ai/arcee-vylinh",
+      "arcee-vylinh"
     ],
-    "claude-opus-4-5": [
-      "claude-4-5-opus",
-      "claude-4.5-opus",
-      "claude-opus-4-5",
-      "claude-opus-4.5"
+    "aya-23-35b": [
+      "aya-23-35b",
+      "coherelabs/aya-23-35b"
     ],
-    "claude-opus-4-1": [
-      "claude-4-1-opus",
-      "claude-4.1-opus",
-      "claude-opus-4-1",
-      "claude-opus-4.1"
+    "aya-23-8b": [
+      "aya-23-8b",
+      "coherelabs/aya-23-8b"
     ],
-    "claude-opus-4": [
-      "claude-4-opus",
-      "claude-opus-4"
+    "aya-expanse-32b": [
+      "aya-expanse-32b",
+      "coherelabs/aya-expanse-32b"
     ],
-    "claude-sonnet-5-5": [
-      "claude-5-5-sonnet",
-      "claude-5.5-sonnet",
-      "claude-sonnet-5-5",
-      "claude-sonnet-5.5"
+    "aya-expanse-8b": [
+      "aya-expanse-8b",
+      "coherelabs/aya-expanse-8b"
     ],
-    "claude-sonnet-5": [
-      "claude-5-sonnet",
-      "claude-sonnet-5"
+    "aya-vision-32b": [
+      "aya-vision-32b",
+      "coherelabs/aya-vision-32b"
     ],
-    "claude-sonnet-4-6": [
-      "claude-4-6-sonnet",
-      "claude-4.6-sonnet",
-      "claude-sonnet-4-6",
-      "claude-sonnet-4.6"
+    "aya-vision-8b": [
+      "aya-vision-8b",
+      "coherelabs/aya-vision-8b"
     ],
-    "claude-sonnet-4-5": [
-      "claude-4-5-sonnet",
-      "claude-4.5-sonnet",
-      "claude-sonnet-4-5",
-      "claude-sonnet-4.5"
+    "baichuan-13b-base": [
+      "baichuan-13b-base",
+      "baichuan-inc/baichuan-13b-base"
     ],
-    "claude-sonnet-4": [
-      "claude-4-sonnet",
-      "claude-sonnet-4"
+    "baichuan-13b-chat": [
+      "baichuan-13b-chat",
+      "baichuan-inc/baichuan-13b-chat"
     ],
-    "claude-sonnet-3-7": [
-      "claude-3-7-sonnet",
-      "claude-3.7-sonnet",
-      "claude-sonnet-3-7",
-      "claude-sonnet-3.7"
+    "baichuan-7b": [
+      "baichuan-7b",
+      "baichuan-inc/baichuan-7b"
     ],
-    "claude-sonnet-3-5": [
-      "claude-3-5-sonnet",
-      "claude-3.5-sonnet",
-      "claude-sonnet-3-5",
-      "claude-sonnet-3.5"
+    "baichuan-m2-32b": [
+      "baichuan-inc/baichuan-m2-32b",
+      "baichuan-m2-32b"
     ],
-    "claude-haiku-5-5": [
-      "claude-5-5-haiku",
-      "claude-5.5-haiku",
-      "claude-haiku-5-5",
-      "claude-haiku-5.5"
+    "baichuan-m3-235b": [
+      "baichuan-inc/baichuan-m3-235b",
+      "baichuan-m3-235b"
     ],
-    "claude-haiku-4-5": [
-      "claude-4-5-haiku",
-      "claude-4.5-haiku",
-      "claude-haiku-4-5",
-      "claude-haiku-4.5"
+    "baichuan-m3-235b-fp8": [
+      "baichuan-inc/baichuan-m3-235b-fp8",
+      "baichuan-m3-235b-fp8"
+    ],
+    "baichuan2-13b-base": [
+      "baichuan-inc/baichuan2-13b-base",
+      "baichuan2-13b-base"
+    ],
+    "baichuan2-13b-chat": [
+      "baichuan-inc/baichuan2-13b-chat",
+      "baichuan2-13b-chat"
+    ],
+    "baichuan2-13b-chat-4bits": [
+      "baichuan-inc/baichuan2-13b-chat-4bits",
+      "baichuan2-13b-chat-4bits"
+    ],
+    "baichuan2-7b-base": [
+      "baichuan-inc/baichuan2-7b-base",
+      "baichuan2-7b-base"
+    ],
+    "baichuan2-7b-chat": [
+      "baichuan-inc/baichuan2-7b-chat",
+      "baichuan2-7b-chat"
+    ],
+    "baichuan2-7b-chat-4bits": [
+      "baichuan-inc/baichuan2-7b-chat-4bits",
+      "baichuan2-7b-chat-4bits"
+    ],
+    "beam-1.0-501b-a23b": [
+      "beam-1.0-501b-a23b",
+      "reflection/beam-1.0-501b-a23b"
+    ],
+    "bloom": [
+      "bigscience/bloom",
+      "bloom"
+    ],
+    "bloom-1b1": [
+      "bigscience/bloom-1b1",
+      "bloom-1b1"
+    ],
+    "bloom-1b1-intermediate": [
+      "bigscience/bloom-1b1-intermediate",
+      "bloom-1b1-intermediate"
+    ],
+    "bloom-1b7": [
+      "bigscience/bloom-1b7",
+      "bloom-1b7"
+    ],
+    "bloom-1b7-intermediate": [
+      "bigscience/bloom-1b7-intermediate",
+      "bloom-1b7-intermediate"
+    ],
+    "bloom-3b": [
+      "bigscience/bloom-3b",
+      "bloom-3b"
+    ],
+    "bloom-3b-intermediate": [
+      "bigscience/bloom-3b-intermediate",
+      "bloom-3b-intermediate"
+    ],
+    "bloom-560m": [
+      "bigscience/bloom-560m",
+      "bloom-560m"
+    ],
+    "bloom-560m-intermediate": [
+      "bigscience/bloom-560m-intermediate",
+      "bloom-560m-intermediate"
+    ],
+    "bloom-7b1": [
+      "bigscience/bloom-7b1",
+      "bloom-7b1"
+    ],
+    "bloom-7b1-intermediate": [
+      "bigscience/bloom-7b1-intermediate",
+      "bloom-7b1-intermediate"
+    ],
+    "bloom-7b1-petals": [
+      "bigscience/bloom-7b1-petals",
+      "bloom-7b1-petals"
+    ],
+    "bloom-intermediate": [
+      "bigscience/bloom-intermediate",
+      "bloom-intermediate"
+    ],
+    "bloom-petals": [
+      "bigscience/bloom-petals",
+      "bloom-petals"
+    ],
+    "bloomz": [
+      "bigscience/bloomz",
+      "bloomz"
+    ],
+    "bloomz-1b1": [
+      "bigscience/bloomz-1b1",
+      "bloomz-1b1"
+    ],
+    "bloomz-1b7": [
+      "bigscience/bloomz-1b7",
+      "bloomz-1b7"
+    ],
+    "bloomz-3b": [
+      "bigscience/bloomz-3b",
+      "bloomz-3b"
+    ],
+    "bloomz-560m": [
+      "bigscience/bloomz-560m",
+      "bloomz-560m"
+    ],
+    "bloomz-7b1": [
+      "bigscience/bloomz-7b1",
+      "bloomz-7b1"
+    ],
+    "bloomz-7b1-mt": [
+      "bigscience/bloomz-7b1-mt",
+      "bloomz-7b1-mt"
+    ],
+    "bloomz-7b1-p3": [
+      "bigscience/bloomz-7b1-p3",
+      "bloomz-7b1-p3"
+    ],
+    "bloomz-mt": [
+      "bigscience/bloomz-mt",
+      "bloomz-mt"
+    ],
+    "bloomz-p3": [
+      "bigscience/bloomz-p3",
+      "bloomz-p3"
+    ],
+    "bloomz-petals": [
+      "bigscience/bloomz-petals",
+      "bloomz-petals"
+    ],
+    "c4ai-command-a-03-2025": [
+      "c4ai-command-a-03-2025",
+      "coherelabs/c4ai-command-a-03-2025"
+    ],
+    "c4ai-command-r-08-2024": [
+      "c4ai-command-r-08-2024",
+      "coherelabs/c4ai-command-r-08-2024"
+    ],
+    "c4ai-command-r-plus": [
+      "c4ai-command-r-plus",
+      "coherelabs/c4ai-command-r-plus"
+    ],
+    "c4ai-command-r-plus-08-2024": [
+      "c4ai-command-r-plus-08-2024",
+      "coherelabs/c4ai-command-r-plus-08-2024"
+    ],
+    "c4ai-command-r-plus-4bit": [
+      "c4ai-command-r-plus-4bit",
+      "coherelabs/c4ai-command-r-plus-4bit"
+    ],
+    "c4ai-command-r-v01": [
+      "c4ai-command-r-v01",
+      "coherelabs/c4ai-command-r-v01"
+    ],
+    "c4ai-command-r-v01-4bit": [
+      "c4ai-command-r-v01-4bit",
+      "coherelabs/c4ai-command-r-v01-4bit"
+    ],
+    "c4ai-command-r7b-12-2024": [
+      "c4ai-command-r7b-12-2024",
+      "coherelabs/c4ai-command-r7b-12-2024"
+    ],
+    "c4ai-command-r7b-arabic-02-2025": [
+      "c4ai-command-r7b-arabic-02-2025",
+      "coherelabs/c4ai-command-r7b-arabic-02-2025"
+    ],
+    "caprl-3b": [
+      "caprl-3b",
+      "internlm/caprl-3b"
+    ],
+    "caprl-eval-3b": [
+      "caprl-eval-3b",
+      "internlm/caprl-eval-3b"
+    ],
+    "caprl-internvl3.5-8b": [
+      "caprl-internvl3.5-8b",
+      "internlm/caprl-internvl3.5-8b"
+    ],
+    "caprl-qwen3vl-4b": [
+      "caprl-qwen3vl-4b",
+      "internlm/caprl-qwen3vl-4b"
+    ],
+    "claude-fable-5": [
+      "anthropic/claude-fable-5",
+      "anthropic/claude-fable-5:batch",
+      "claude-5-fable",
+      "claude-fable-5"
+    ],
+    "claude-fable-5-1": [
+      "anthropic/claude-fable-5.1",
+      "anthropic/claude-fable-5.1:batch",
+      "claude-5-1-fable",
+      "claude-5.1-fable",
+      "claude-fable-5-1",
+      "claude-fable-5.1"
+    ],
+    "claude-fable-5-2": [
+      "anthropic/claude-fable-5.2",
+      "anthropic/claude-fable-5.2:batch",
+      "claude-5-2-fable",
+      "claude-5.2-fable",
+      "claude-fable-5-2",
+      "claude-fable-5.2"
+    ],
+    "claude-haiku-3": [
+      "claude-3-haiku",
+      "claude-haiku-3"
     ],
     "claude-haiku-3-5": [
       "claude-3-5-haiku",
@@ -223,161 +497,4462 @@
       "claude-haiku-3-5",
       "claude-haiku-3.5"
     ],
-    "claude-haiku-3": [
-      "claude-3-haiku",
-      "claude-haiku-3"
+    "claude-haiku-4-5": [
+      "anthropic/claude-haiku-4.5",
+      "anthropic/claude-haiku-4.5:batch",
+      "claude-4-5-haiku",
+      "claude-4.5-haiku",
+      "claude-haiku-4-5",
+      "claude-haiku-4.5"
     ],
-    "claude-fable-5-2": [
-      "claude-5-2-fable",
-      "claude-5.2-fable",
-      "claude-fable-5-2",
-      "claude-fable-5.2"
+    "claude-haiku-5-5": [
+      "anthropic/claude-haiku-5.5",
+      "anthropic/claude-haiku-5.5:batch",
+      "claude-5-5-haiku",
+      "claude-5.5-haiku",
+      "claude-haiku-5-5",
+      "claude-haiku-5.5"
     ],
-    "claude-fable-5-1": [
-      "claude-5-1-fable",
-      "claude-5.1-fable",
-      "claude-fable-5-1",
-      "claude-fable-5.1"
+    "claude-opus-4": [
+      "claude-4-opus",
+      "claude-opus-4"
     ],
-    "claude-fable-5": [
-      "claude-5-fable",
-      "claude-fable-5"
+    "claude-opus-4-1": [
+      "anthropic/claude-opus-4.1",
+      "anthropic/claude-opus-4.1:batch",
+      "claude-4-1-opus",
+      "claude-4.1-opus",
+      "claude-opus-4-1",
+      "claude-opus-4.1"
     ],
-    "glm-5.3": [
-      "glm-5.3"
+    "claude-opus-4-5": [
+      "anthropic/claude-opus-4.5",
+      "anthropic/claude-opus-4.5:batch",
+      "claude-4-5-opus",
+      "claude-4.5-opus",
+      "claude-opus-4-5",
+      "claude-opus-4.5"
     ],
-    "glm-5.3-flash": [
-      "glm-5.3-flash"
+    "claude-opus-4-6": [
+      "anthropic/claude-opus-4.6",
+      "anthropic/claude-opus-4.6:batch",
+      "claude-4-6-opus",
+      "claude-4.6-opus",
+      "claude-opus-4-6",
+      "claude-opus-4.6"
     ],
-    "glm-5.3-flashx": [
-      "glm-5.3-flashx"
+    "claude-opus-4-7": [
+      "anthropic/claude-opus-4.7",
+      "anthropic/claude-opus-4.7:batch",
+      "claude-4-7-opus",
+      "claude-4.7-opus",
+      "claude-opus-4-7",
+      "claude-opus-4.7"
     ],
-    "glm-5.2": [
-      "glm-5.2"
+    "claude-opus-4-8": [
+      "anthropic/claude-opus-4.8",
+      "anthropic/claude-opus-4.8:batch",
+      "claude-4-8-opus",
+      "claude-4.8-opus",
+      "claude-opus-4-8",
+      "claude-opus-4.8"
     ],
-    "glm-5.1": [
-      "glm-5.1"
+    "claude-opus-5": [
+      "anthropic/claude-opus-5",
+      "anthropic/claude-opus-5:batch",
+      "claude-5-opus",
+      "claude-opus-5"
     ],
-    "glm-5": [
-      "glm-5"
+    "claude-opus-5-5": [
+      "anthropic/claude-opus-5.5",
+      "anthropic/claude-opus-5.5:batch",
+      "claude-5-5-opus",
+      "claude-5.5-opus",
+      "claude-opus-5-5",
+      "claude-opus-5.5"
     ],
-    "glm-4.7": [
-      "glm-4.7"
+    "claude-sonnet-3-5": [
+      "claude-3-5-sonnet",
+      "claude-3.5-sonnet",
+      "claude-sonnet-3-5",
+      "claude-sonnet-3.5"
     ],
-    "glm-4.6": [
-      "glm-4.6"
+    "claude-sonnet-3-7": [
+      "claude-3-7-sonnet",
+      "claude-3.7-sonnet",
+      "claude-sonnet-3-7",
+      "claude-sonnet-3.7"
     ],
-    "glm-4.5": [
-      "glm-4.5"
+    "claude-sonnet-4": [
+      "claude-4-sonnet",
+      "claude-sonnet-4"
     ],
-    "glm-4.5-air": [
-      "glm-4.5-air"
+    "claude-sonnet-4-5": [
+      "anthropic/claude-sonnet-4.5",
+      "anthropic/claude-sonnet-4.5:batch",
+      "claude-4-5-sonnet",
+      "claude-4.5-sonnet",
+      "claude-sonnet-4-5",
+      "claude-sonnet-4.5"
     ],
-    "glm-4.5-flash": [
-      "glm-4.5-flash"
+    "claude-sonnet-4-6": [
+      "anthropic/claude-sonnet-4.6",
+      "anthropic/claude-sonnet-4.6:batch",
+      "claude-4-6-sonnet",
+      "claude-4.6-sonnet",
+      "claude-sonnet-4-6",
+      "claude-sonnet-4.6"
     ],
-    "deepseek-v4.1-flash": [
-      "deepseek-flash",
-      "deepseek-v4.1-flash"
+    "claude-sonnet-5": [
+      "anthropic/claude-sonnet-5",
+      "anthropic/claude-sonnet-5:batch",
+      "claude-5-sonnet",
+      "claude-sonnet-5"
     ],
-    "deepseek-v4-pro": [
-      "deepseek-v4-pro"
+    "claude-sonnet-5-5": [
+      "anthropic/claude-sonnet-5.5",
+      "anthropic/claude-sonnet-5.5:batch",
+      "claude-5-5-sonnet",
+      "claude-5.5-sonnet",
+      "claude-sonnet-5-5",
+      "claude-sonnet-5.5"
     ],
-    "deepseek-v4-flash": [
-      "deepseek-v4-flash"
+    "codestral-2508": [
+      "codestral-2508",
+      "mistralai/codestral-2508"
     ],
-    "deepseek-v3.2": [
-      "deepseek-v3.2"
+    "cogito-671b-v2.1": [
+      "cogito-671b-v2.1",
+      "deepcogito/cogito-671b-v2.1"
     ],
-    "deepseek-v3.1": [
-      "deepseek-v3.1"
+    "cogito-671b-v2.1-fp8": [
+      "cogito-671b-v2.1-fp8",
+      "deepcogito/cogito-671b-v2.1-fp8"
     ],
-    "deepseek-v3": [
-      "deepseek-v3"
+    "cogito-v1-preview-llama-3b": [
+      "cogito-v1-preview-llama-3b",
+      "deepcogito/cogito-v1-preview-llama-3b"
     ],
-    "deepseek-r1": [
-      "deepseek-r1"
+    "cogito-v1-preview-llama-70b": [
+      "cogito-v1-preview-llama-70b",
+      "deepcogito/cogito-v1-preview-llama-70b"
+    ],
+    "cogito-v1-preview-llama-8b": [
+      "cogito-v1-preview-llama-8b",
+      "deepcogito/cogito-v1-preview-llama-8b"
+    ],
+    "cogito-v1-preview-qwen-14b": [
+      "cogito-v1-preview-qwen-14b",
+      "deepcogito/cogito-v1-preview-qwen-14b"
+    ],
+    "cogito-v1-preview-qwen-32b": [
+      "cogito-v1-preview-qwen-32b",
+      "deepcogito/cogito-v1-preview-qwen-32b"
+    ],
+    "cogito-v2-preview-deepseek-671b-moe": [
+      "cogito-v2-preview-deepseek-671b-moe",
+      "deepcogito/cogito-v2-preview-deepseek-671b-moe"
+    ],
+    "cogito-v2-preview-deepseek-671b-moe-fp8": [
+      "cogito-v2-preview-deepseek-671b-moe-fp8",
+      "deepcogito/cogito-v2-preview-deepseek-671b-moe-fp8"
+    ],
+    "cogito-v2-preview-llama-109b-moe": [
+      "cogito-v2-preview-llama-109b-moe",
+      "deepcogito/cogito-v2-preview-llama-109b-moe"
+    ],
+    "cogito-v2-preview-llama-405b": [
+      "cogito-v2-preview-llama-405b",
+      "deepcogito/cogito-v2-preview-llama-405b"
+    ],
+    "cogito-v2-preview-llama-70b": [
+      "cogito-v2-preview-llama-70b",
+      "deepcogito/cogito-v2-preview-llama-70b"
+    ],
+    "command-a": [
+      "cohere/command-a",
+      "command-a"
+    ],
+    "command-a-plus": [
+      "cohere/command-a-plus",
+      "command-a-plus"
+    ],
+    "command-a-plus-05-2026-bf16": [
+      "coherelabs/command-a-plus-05-2026-bf16",
+      "command-a-plus-05-2026-bf16"
+    ],
+    "command-a-plus-05-2026-fp8": [
+      "coherelabs/command-a-plus-05-2026-fp8",
+      "command-a-plus-05-2026-fp8"
+    ],
+    "command-a-plus-05-2026-w4a4": [
+      "coherelabs/command-a-plus-05-2026-w4a4",
+      "command-a-plus-05-2026-w4a4"
+    ],
+    "command-a-reasoning-08-2025": [
+      "coherelabs/command-a-reasoning-08-2025",
+      "command-a-reasoning-08-2025"
+    ],
+    "command-a-translate-08-2025": [
+      "coherelabs/command-a-translate-08-2025",
+      "command-a-translate-08-2025"
+    ],
+    "command-a-vision-07-2025": [
+      "coherelabs/command-a-vision-07-2025",
+      "command-a-vision-07-2025"
+    ],
+    "command-r-08-2024": [
+      "cohere/command-r-08-2024",
+      "command-r-08-2024"
+    ],
+    "command-r-plus-08-2024": [
+      "cohere/command-r-plus-08-2024",
+      "command-r-plus-08-2024"
+    ],
+    "command-r7b-12-2024": [
+      "cohere/command-r7b-12-2024",
+      "command-r7b-12-2024"
+    ],
+    "cydonia-24b-v4.1": [
+      "cydonia-24b-v4.1",
+      "thedrummer/cydonia-24b-v4.1"
+    ],
+    "d1-2b": [
+      "d1-2b",
+      "liquidai/d1-2b"
+    ],
+    "d1-3b": [
+      "d1-3b",
+      "liquidai/d1-3b"
+    ],
+    "daisyrose-27b": [
+      "daisyrose-27b",
+      "radixark/daisyrose-27b"
+    ],
+    "deephermes-3-llama-3-8b-preview": [
+      "deephermes-3-llama-3-8b-preview",
+      "nousresearch/deephermes-3-llama-3-8b-preview"
+    ],
+    "deephermes-3-mistral-24b-preview": [
+      "deephermes-3-mistral-24b-preview",
+      "nousresearch/deephermes-3-mistral-24b-preview"
+    ],
+    "deephermes-financial-fundamentals-prediction-specialist-atropos": [
+      "deephermes-financial-fundamentals-prediction-specialist-atropos",
+      "nousresearch/deephermes-financial-fundamentals-prediction-specialist-atropos"
     ],
     "deepseek-chat": [
-      "deepseek-chat"
+      "deepseek-chat",
+      "deepseek/deepseek-chat"
+    ],
+    "deepseek-chat-v3-0324": [
+      "deepseek-chat-v3-0324",
+      "deepseek/deepseek-chat-v3-0324"
+    ],
+    "deepseek-chat-v3.1": [
+      "deepseek-chat-v3.1",
+      "deepseek/deepseek-chat-v3.1"
+    ],
+    "deepseek-r1": [
+      "deepseek-r1",
+      "deepseek-r1-0528",
+      "deepseek/deepseek-r1-0528"
+    ],
+    "deepseek-r1-bf16": [
+      "arcee-ai/deepseek-r1-bf16",
+      "deepseek-r1-bf16"
     ],
     "deepseek-reasoner": [
       "deepseek-reasoner"
     ],
-    "gemini-4-carbon": [
-      "gemini-4-carbon"
+    "deepseek-v3": [
+      "deepseek-v3"
     ],
-    "gemini-3.1-pro": [
-      "gemini-3.1-pro"
+    "deepseek-v3-0324-bf16": [
+      "arcee-ai/deepseek-v3-0324-bf16",
+      "deepseek-v3-0324-bf16"
     ],
-    "gemini-3-pro": [
-      "gemini-3-pro"
+    "deepseek-v3.1": [
+      "deepseek-v3.1"
     ],
-    "gemini-3-flash": [
-      "gemini-3-flash"
+    "deepseek-v3.1-terminus": [
+      "deepseek-v3.1-terminus",
+      "deepseek/deepseek-v3.1-terminus"
     ],
-    "gemini-2.5-pro": [
-      "gemini-2.5-pro"
+    "deepseek-v3.2": [
+      "deepseek-v3.2",
+      "deepseek/deepseek-v3.2"
     ],
-    "gemini-2.5-flash": [
-      "gemini-2.5-flash"
+    "deepseek-v3.2-exp": [
+      "deepseek-v3.2-exp",
+      "deepseek/deepseek-v3.2-exp"
     ],
-    "gemini-2.5-flash-lite": [
-      "gemini-2.5-flash-lite"
+    "deepseek-v4-flash": [
+      "deepseek-v4-flash",
+      "deepseek-v4-flash-0731",
+      "deepseek/deepseek-v4-flash",
+      "deepseek/deepseek-v4-flash-0731",
+      "deepseek/deepseek-v4-flash-0731:batch"
+    ],
+    "deepseek-v4-flash-vision-exp": [
+      "deepseek-v4-flash-vision-exp",
+      "deepseek/deepseek-v4-flash-vision-exp"
+    ],
+    "deepseek-v4-pro": [
+      "deepseek-v4-pro",
+      "deepseek-v4-pro-0813",
+      "deepseek/deepseek-v4-pro",
+      "deepseek/deepseek-v4-pro-0813"
+    ],
+    "deepseek-v4.1-flash": [
+      "deepseek-flash",
+      "deepseek-v4.1-flash",
+      "deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash",
+      "deepseek/deepseek-v4.1-flash-1017",
+      "deepseek/deepseek-v4.1-flash-1017:batch",
+      "deepseek/deepseek-v4.1-flash:batch"
+    ],
+    "devstral-2512": [
+      "devstral-2512",
+      "mistralai/devstral-2512"
+    ],
+    "distill-bloom-1b3": [
+      "bigscience/distill-bloom-1b3",
+      "distill-bloom-1b3"
+    ],
+    "distill-bloom-1b3-10x": [
+      "bigscience/distill-bloom-1b3-10x",
+      "distill-bloom-1b3-10x"
+    ],
+    "dolphin-mistral-24b-venice-edition": [
+      "cognitivecomputations/dolphin-mistral-24b-venice-edition",
+      "dolphin-mistral-24b-venice-edition"
+    ],
+    "doubao-seed-1-6": [
+      "doubao-seed-1-6"
+    ],
+    "doubao-seed-1-8": [
+      "doubao-seed-1-8"
+    ],
+    "doubao-seed-2-0-lite": [
+      "doubao-seed-2-0-lite"
+    ],
+    "doubao-seed-2-0-mini": [
+      "doubao-seed-2-0-mini"
+    ],
+    "doubao-seed-2-0-pro": [
+      "doubao-seed-2-0-pro"
+    ],
+    "doubao-seed-2-1-lite": [
+      "doubao-seed-2-1-lite"
+    ],
+    "doubao-seed-2-1-pro": [
+      "doubao-seed-2-1-pro"
+    ],
+    "doubao-seed-2-1-turbo": [
+      "doubao-seed-2-1-turbo"
+    ],
+    "doubao-seed-evolving": [
+      "doubao-seed-evolving"
+    ],
+    "dream-v0-instruct-7b": [
+      "dream-org/dream-v0-instruct-7b",
+      "dream-v0-instruct-7b"
+    ],
+    "eleutherai-pythia-6.9b-deduped--sft--tldr": [
+      "eleutherai-pythia-6.9b-deduped--sft--tldr",
+      "huggingfaceh4/eleutherai-pythia-6.9b-deduped--sft--tldr"
+    ],
+    "ember-1": [
+      "ember-1",
+      "fireworks/ember-1"
+    ],
+    "ernie-4.5-0.3b-base-paddle": [
+      "baidu/ernie-4.5-0.3b-base-paddle",
+      "ernie-4.5-0.3b-base-paddle"
+    ],
+    "ernie-4.5-0.3b-base-pt": [
+      "baidu/ernie-4.5-0.3b-base-pt",
+      "ernie-4.5-0.3b-base-pt"
+    ],
+    "ernie-4.5-0.3b-paddle": [
+      "baidu/ernie-4.5-0.3b-paddle",
+      "ernie-4.5-0.3b-paddle"
+    ],
+    "ernie-4.5-0.3b-pt": [
+      "baidu/ernie-4.5-0.3b-pt",
+      "ernie-4.5-0.3b-pt"
+    ],
+    "ernie-4.5-21b-a3b-base-paddle": [
+      "baidu/ernie-4.5-21b-a3b-base-paddle",
+      "ernie-4.5-21b-a3b-base-paddle"
+    ],
+    "ernie-4.5-21b-a3b-base-pt": [
+      "baidu/ernie-4.5-21b-a3b-base-pt",
+      "ernie-4.5-21b-a3b-base-pt"
+    ],
+    "ernie-4.5-21b-a3b-paddle": [
+      "baidu/ernie-4.5-21b-a3b-paddle",
+      "ernie-4.5-21b-a3b-paddle"
+    ],
+    "ernie-4.5-21b-a3b-pt": [
+      "baidu/ernie-4.5-21b-a3b-pt",
+      "ernie-4.5-21b-a3b-pt"
+    ],
+    "ernie-4.5-21b-a3b-thinking": [
+      "baidu/ernie-4.5-21b-a3b-thinking",
+      "ernie-4.5-21b-a3b-thinking"
+    ],
+    "ernie-4.5-300b-a47b-2bits-paddle": [
+      "baidu/ernie-4.5-300b-a47b-2bits-paddle",
+      "ernie-4.5-300b-a47b-2bits-paddle"
+    ],
+    "ernie-4.5-300b-a47b-2bits-tp2-paddle": [
+      "baidu/ernie-4.5-300b-a47b-2bits-tp2-paddle",
+      "ernie-4.5-300b-a47b-2bits-tp2-paddle"
+    ],
+    "ernie-4.5-300b-a47b-2bits-tp4-paddle": [
+      "baidu/ernie-4.5-300b-a47b-2bits-tp4-paddle",
+      "ernie-4.5-300b-a47b-2bits-tp4-paddle"
+    ],
+    "ernie-4.5-300b-a47b-base-paddle": [
+      "baidu/ernie-4.5-300b-a47b-base-paddle",
+      "ernie-4.5-300b-a47b-base-paddle"
+    ],
+    "ernie-4.5-300b-a47b-base-pt": [
+      "baidu/ernie-4.5-300b-a47b-base-pt",
+      "ernie-4.5-300b-a47b-base-pt"
+    ],
+    "ernie-4.5-300b-a47b-fp8-paddle": [
+      "baidu/ernie-4.5-300b-a47b-fp8-paddle",
+      "ernie-4.5-300b-a47b-fp8-paddle"
+    ],
+    "ernie-4.5-300b-a47b-paddle": [
+      "baidu/ernie-4.5-300b-a47b-paddle",
+      "ernie-4.5-300b-a47b-paddle"
+    ],
+    "ernie-4.5-300b-a47b-pt": [
+      "baidu/ernie-4.5-300b-a47b-pt",
+      "ernie-4.5-300b-a47b-pt"
+    ],
+    "ernie-4.5-300b-a47b-w4a8c8-tp4-paddle": [
+      "baidu/ernie-4.5-300b-a47b-w4a8c8-tp4-paddle",
+      "ernie-4.5-300b-a47b-w4a8c8-tp4-paddle"
+    ],
+    "ernie-4.5-vl-28b-a3b-base-paddle": [
+      "baidu/ernie-4.5-vl-28b-a3b-base-paddle",
+      "ernie-4.5-vl-28b-a3b-base-paddle"
+    ],
+    "ernie-4.5-vl-28b-a3b-base-pt": [
+      "baidu/ernie-4.5-vl-28b-a3b-base-pt",
+      "ernie-4.5-vl-28b-a3b-base-pt"
+    ],
+    "ernie-4.5-vl-28b-a3b-paddle": [
+      "baidu/ernie-4.5-vl-28b-a3b-paddle",
+      "ernie-4.5-vl-28b-a3b-paddle"
+    ],
+    "ernie-4.5-vl-28b-a3b-pt": [
+      "baidu/ernie-4.5-vl-28b-a3b-pt",
+      "ernie-4.5-vl-28b-a3b-pt"
+    ],
+    "ernie-4.5-vl-28b-a3b-thinking": [
+      "baidu/ernie-4.5-vl-28b-a3b-thinking",
+      "ernie-4.5-vl-28b-a3b-thinking"
+    ],
+    "ernie-4.5-vl-424b-a47b-base-paddle": [
+      "baidu/ernie-4.5-vl-424b-a47b-base-paddle",
+      "ernie-4.5-vl-424b-a47b-base-paddle"
+    ],
+    "ernie-4.5-vl-424b-a47b-base-pt": [
+      "baidu/ernie-4.5-vl-424b-a47b-base-pt",
+      "ernie-4.5-vl-424b-a47b-base-pt"
+    ],
+    "ernie-4.5-vl-424b-a47b-paddle": [
+      "baidu/ernie-4.5-vl-424b-a47b-paddle",
+      "ernie-4.5-vl-424b-a47b-paddle"
+    ],
+    "ernie-4.5-vl-424b-a47b-pt": [
+      "baidu/ernie-4.5-vl-424b-a47b-pt",
+      "ernie-4.5-vl-424b-a47b-pt"
+    ],
+    "ernie-5.5-flash-base": [
+      "baidu/ernie-5.5-flash-base",
+      "ernie-5.5-flash-base"
+    ],
+    "ernie-5.5-flash-base-bf16": [
+      "baidu/ernie-5.5-flash-base-bf16",
+      "ernie-5.5-flash-base-bf16"
+    ],
+    "ernie-5.5-flash-preview": [
+      "baidu/ernie-5.5-flash-preview",
+      "baidu/ernie-5.5-flash-preview:free",
+      "ernie-5.5-flash-preview"
+    ],
+    "ernie-5.5-flash-preview-bf16": [
+      "baidu/ernie-5.5-flash-preview-bf16",
+      "ernie-5.5-flash-preview-bf16"
+    ],
+    "ernie-5.5-flash-preview-fp8": [
+      "baidu/ernie-5.5-flash-preview-fp8",
+      "ernie-5.5-flash-preview-fp8"
+    ],
+    "ernie-light-dt-1.0-intl": [
+      "baidu/ernie-light-dt-1.0-intl",
+      "ernie-light-dt-1.0-intl"
+    ],
+    "exaone-3.0-7.8b-instruct": [
+      "exaone-3.0-7.8b-instruct",
+      "lgai-exaone/exaone-3.0-7.8b-instruct"
+    ],
+    "exaone-3.5-2.4b-instruct": [
+      "exaone-3.5-2.4b-instruct",
+      "lgai-exaone/exaone-3.5-2.4b-instruct"
+    ],
+    "exaone-3.5-32b-instruct": [
+      "exaone-3.5-32b-instruct",
+      "lgai-exaone/exaone-3.5-32b-instruct"
+    ],
+    "exaone-3.5-7.8b-instruct": [
+      "exaone-3.5-7.8b-instruct",
+      "lgai-exaone/exaone-3.5-7.8b-instruct"
+    ],
+    "exaone-4.0-1.2b": [
+      "exaone-4.0-1.2b",
+      "lgai-exaone/exaone-4.0-1.2b"
+    ],
+    "exaone-4.0-1.2b-fp8": [
+      "exaone-4.0-1.2b-fp8",
+      "lgai-exaone/exaone-4.0-1.2b-fp8"
+    ],
+    "exaone-4.0-32b": [
+      "exaone-4.0-32b",
+      "lgai-exaone/exaone-4.0-32b"
+    ],
+    "exaone-4.0-32b-fp8": [
+      "exaone-4.0-32b-fp8",
+      "lgai-exaone/exaone-4.0-32b-fp8"
+    ],
+    "exaone-4.0.1-32b": [
+      "exaone-4.0.1-32b",
+      "lgai-exaone/exaone-4.0.1-32b"
+    ],
+    "exaone-4.5-33b": [
+      "exaone-4.5-33b",
+      "lgai-exaone/exaone-4.5-33b"
+    ],
+    "exaone-4.5-33b-fp8": [
+      "exaone-4.5-33b-fp8",
+      "lgai-exaone/exaone-4.5-33b-fp8"
+    ],
+    "exaone-deep-2.4b": [
+      "exaone-deep-2.4b",
+      "lgai-exaone/exaone-deep-2.4b"
+    ],
+    "exaone-deep-32b": [
+      "exaone-deep-32b",
+      "lgai-exaone/exaone-deep-32b"
+    ],
+    "exaone-deep-7.8b": [
+      "exaone-deep-7.8b",
+      "lgai-exaone/exaone-deep-7.8b"
+    ],
+    "falcon-11b": [
+      "falcon-11b",
+      "tiiuae/falcon-11b"
+    ],
+    "falcon-40b": [
+      "falcon-40b",
+      "tiiuae/falcon-40b"
+    ],
+    "falcon-40b-instruct": [
+      "falcon-40b-instruct",
+      "tiiuae/falcon-40b-instruct"
+    ],
+    "falcon-7b": [
+      "falcon-7b",
+      "tiiuae/falcon-7b"
+    ],
+    "falcon-7b-instruct": [
+      "falcon-7b-instruct",
+      "tiiuae/falcon-7b-instruct"
+    ],
+    "falcon-e-1b-base": [
+      "falcon-e-1b-base",
+      "tiiuae/falcon-e-1b-base"
+    ],
+    "falcon-e-3b-base-prequantized": [
+      "falcon-e-3b-base-prequantized",
+      "tiiuae/falcon-e-3b-base-prequantized"
+    ],
+    "falcon-h1-0.5b-base": [
+      "falcon-h1-0.5b-base",
+      "tiiuae/falcon-h1-0.5b-base"
+    ],
+    "falcon-h1-0.5b-instruct": [
+      "falcon-h1-0.5b-instruct",
+      "tiiuae/falcon-h1-0.5b-instruct"
+    ],
+    "falcon-h1-1.5b-base": [
+      "falcon-h1-1.5b-base",
+      "tiiuae/falcon-h1-1.5b-base"
+    ],
+    "falcon-h1-1.5b-deep-instruct": [
+      "falcon-h1-1.5b-deep-instruct",
+      "tiiuae/falcon-h1-1.5b-deep-instruct"
+    ],
+    "falcon-h1-1.5b-instruct": [
+      "falcon-h1-1.5b-instruct",
+      "tiiuae/falcon-h1-1.5b-instruct"
+    ],
+    "falcon-h1-34b-instruct": [
+      "falcon-h1-34b-instruct",
+      "tiiuae/falcon-h1-34b-instruct"
+    ],
+    "falcon-h1-3b-base": [
+      "falcon-h1-3b-base",
+      "tiiuae/falcon-h1-3b-base"
+    ],
+    "falcon-h1-3b-instruct": [
+      "falcon-h1-3b-instruct",
+      "tiiuae/falcon-h1-3b-instruct"
+    ],
+    "falcon-h1-7b-base": [
+      "falcon-h1-7b-base",
+      "tiiuae/falcon-h1-7b-base"
+    ],
+    "falcon-h1-7b-instruct": [
+      "falcon-h1-7b-instruct",
+      "tiiuae/falcon-h1-7b-instruct"
+    ],
+    "falcon-h1-tiny-90m-instruct": [
+      "falcon-h1-tiny-90m-instruct",
+      "tiiuae/falcon-h1-tiny-90m-instruct"
+    ],
+    "falcon-h1-tiny-multilingual-100m-instruct": [
+      "falcon-h1-tiny-multilingual-100m-instruct",
+      "tiiuae/falcon-h1-tiny-multilingual-100m-instruct"
+    ],
+    "falcon-h1-tiny-r-0.6b": [
+      "falcon-h1-tiny-r-0.6b",
+      "tiiuae/falcon-h1-tiny-r-0.6b"
+    ],
+    "falcon-h1-tiny-r-90m": [
+      "falcon-h1-tiny-r-90m",
+      "tiiuae/falcon-h1-tiny-r-90m"
+    ],
+    "falcon-h1-tiny-tool-calling-90m": [
+      "falcon-h1-tiny-tool-calling-90m",
+      "tiiuae/falcon-h1-tiny-tool-calling-90m"
+    ],
+    "falcon-h1r-7b": [
+      "falcon-h1r-7b",
+      "tiiuae/falcon-h1r-7b"
+    ],
+    "falcon-mamba-7b": [
+      "falcon-mamba-7b",
+      "tiiuae/falcon-mamba-7b"
+    ],
+    "falcon-mamba-7b-instruct": [
+      "falcon-mamba-7b-instruct",
+      "tiiuae/falcon-mamba-7b-instruct"
+    ],
+    "falcon-mamba-tiny-dev": [
+      "falcon-mamba-tiny-dev",
+      "tiiuae/falcon-mamba-tiny-dev"
+    ],
+    "falcon-rw-1b": [
+      "falcon-rw-1b",
+      "tiiuae/falcon-rw-1b"
+    ],
+    "falcon3-10b-base": [
+      "falcon3-10b-base",
+      "tiiuae/falcon3-10b-base"
+    ],
+    "falcon3-10b-base-1.58bit-prequantized": [
+      "falcon3-10b-base-1.58bit-prequantized",
+      "tiiuae/falcon3-10b-base-1.58bit-prequantized"
+    ],
+    "falcon3-10b-instruct": [
+      "falcon3-10b-instruct",
+      "tiiuae/falcon3-10b-instruct"
+    ],
+    "falcon3-1b-base": [
+      "falcon3-1b-base",
+      "tiiuae/falcon3-1b-base"
+    ],
+    "falcon3-1b-instruct": [
+      "falcon3-1b-instruct",
+      "tiiuae/falcon3-1b-instruct"
+    ],
+    "falcon3-3b-base": [
+      "falcon3-3b-base",
+      "tiiuae/falcon3-3b-base"
+    ],
+    "falcon3-3b-instruct": [
+      "falcon3-3b-instruct",
+      "tiiuae/falcon3-3b-instruct"
+    ],
+    "falcon3-7b-base": [
+      "falcon3-7b-base",
+      "tiiuae/falcon3-7b-base"
+    ],
+    "falcon3-7b-instruct": [
+      "falcon3-7b-instruct",
+      "tiiuae/falcon3-7b-instruct"
+    ],
+    "falcon3-7b-instruct-1.58bit": [
+      "falcon3-7b-instruct-1.58bit",
+      "tiiuae/falcon3-7b-instruct-1.58bit"
+    ],
+    "flint-v1.0": [
+      "flint-v1.0",
+      "recursive/flint-v1.0:free"
+    ],
+    "fugu-max": [
+      "fugu-max",
+      "sakana/fugu-max"
+    ],
+    "fugu-ultra": [
+      "fugu-ultra",
+      "sakana/fugu-ultra"
+    ],
+    "fugu-ultra-v2": [
+      "fugu-ultra-v2",
+      "sakana/fugu-ultra-v2"
+    ],
+    "gelab-zero-4b-preview": [
+      "gelab-zero-4b-preview",
+      "stepfun-ai/gelab-zero-4b-preview"
     ],
     "gemini-2.0-flash": [
       "gemini-2.0-flash"
     ],
-    "qwen4-max": [
-      "qwen4-max"
+    "gemini-2.5-flash": [
+      "gemini-2.5-flash",
+      "google/gemini-2.5-flash"
     ],
-    "qwen3.7-plus": [
-      "qwen3.7-plus"
+    "gemini-2.5-flash-lite": [
+      "gemini-2.5-flash-lite",
+      "google/gemini-2.5-flash-lite"
     ],
-    "qwen3.8-flash": [
-      "qwen3.8-flash"
+    "gemini-2.5-pro": [
+      "gemini-2.5-pro",
+      "google/gemini-2.5-pro"
     ],
-    "qwen3-coder": [
-      "qwen3-coder"
+    "gemini-2.5-pro-preview": [
+      "gemini-2.5-pro-preview",
+      "google/gemini-2.5-pro-preview"
     ],
-    "qwen3-coder-plus": [
-      "qwen3-coder-plus"
+    "gemini-3-flash": [
+      "gemini-3-flash"
     ],
-    "qwen3-coder-flash": [
-      "qwen3-coder-flash"
+    "gemini-3-flash-preview": [
+      "gemini-3-flash-preview",
+      "google/gemini-3-flash-preview",
+      "google/gemini-3-flash-preview:batch"
     ],
-    "qwen3-max": [
-      "qwen3-max"
+    "gemini-3-pro": [
+      "gemini-3-pro"
     ],
-    "qwen-plus": [
-      "qwen-plus"
+    "gemini-3.1-flash-lite": [
+      "gemini-3.1-flash-lite",
+      "google/gemini-3.1-flash-lite",
+      "google/gemini-3.1-flash-lite:batch"
     ],
-    "qwen-turbo": [
-      "qwen-turbo"
+    "gemini-3.1-flash-lite-preview": [
+      "gemini-3.1-flash-lite-preview",
+      "google/gemini-3.1-flash-lite-preview"
+    ],
+    "gemini-3.1-pro": [
+      "gemini-3.1-pro"
+    ],
+    "gemini-3.1-pro-preview": [
+      "gemini-3.1-pro-preview",
+      "google/gemini-3.1-pro-preview",
+      "google/gemini-3.1-pro-preview:batch"
+    ],
+    "gemini-3.1-pro-preview-customtools": [
+      "gemini-3.1-pro-preview-customtools",
+      "google/gemini-3.1-pro-preview-customtools"
+    ],
+    "gemini-3.5-flash": [
+      "gemini-3.5-flash",
+      "google/gemini-3.5-flash",
+      "google/gemini-3.5-flash:batch"
+    ],
+    "gemini-3.5-flash-lite": [
+      "gemini-3.5-flash-lite",
+      "google/gemini-3.5-flash-lite",
+      "google/gemini-3.5-flash-lite:batch"
+    ],
+    "gemini-3.6-flash": [
+      "gemini-3.6-flash",
+      "google/gemini-3.6-flash",
+      "google/gemini-3.6-flash:batch"
+    ],
+    "gemini-3.7-flash": [
+      "gemini-3.7-flash",
+      "google/gemini-3.7-flash",
+      "google/gemini-3.7-flash:batch"
+    ],
+    "gemini-3.8-flash": [
+      "gemini-3.8-flash",
+      "google/gemini-3.8-flash",
+      "google/gemini-3.8-flash:batch"
+    ],
+    "gemini-4-argon": [
+      "gemini-4-argon",
+      "google/gemini-4-argon",
+      "google/gemini-4-argon:batch"
+    ],
+    "gemini-4-carbon": [
+      "gemini-4-carbon",
+      "google/gemini-4-carbon",
+      "google/gemini-4-carbon:batch"
+    ],
+    "gemini-4-hydrogen": [
+      "gemini-4-hydrogen",
+      "google/gemini-4-hydrogen",
+      "google/gemini-4-hydrogen:batch"
+    ],
+    "gemini-4-neon": [
+      "gemini-4-neon",
+      "google/gemini-4-neon",
+      "google/gemini-4-neon:batch"
+    ],
+    "gemma-2-27b-it": [
+      "gemma-2-27b-it",
+      "google/gemma-2-27b-it"
+    ],
+    "gemma-3-12b-it": [
+      "gemma-3-12b-it",
+      "google/gemma-3-12b-it"
+    ],
+    "gemma-3-27b-it": [
+      "gemma-3-27b-it",
+      "google/gemma-3-27b-it"
+    ],
+    "gemma-3-4b-it": [
+      "gemma-3-4b-it",
+      "google/gemma-3-4b-it"
+    ],
+    "gemma-4-26b-a4b-it": [
+      "gemma-4-26b-a4b-it",
+      "google/gemma-4-26b-a4b-it",
+      "google/gemma-4-26b-a4b-it:free"
+    ],
+    "gemma-4-31b-it": [
+      "gemma-4-31b-it",
+      "google/gemma-4-31b-it",
+      "google/gemma-4-31b-it:free"
+    ],
+    "glimpse": [
+      "elorian/glimpse",
+      "glimpse"
+    ],
+    "glm-4.5": [
+      "glm-4.5",
+      "z-ai/glm-4.5"
+    ],
+    "glm-4.5-air": [
+      "glm-4.5-air",
+      "z-ai/glm-4.5-air"
+    ],
+    "glm-4.5-flash": [
+      "glm-4.5-flash"
+    ],
+    "glm-4.5v": [
+      "glm-4.5v",
+      "z-ai/glm-4.5v"
+    ],
+    "glm-4.6": [
+      "glm-4.6",
+      "z-ai/glm-4.6"
+    ],
+    "glm-4.6v": [
+      "glm-4.6v",
+      "z-ai/glm-4.6v"
+    ],
+    "glm-4.7": [
+      "glm-4.7",
+      "z-ai/glm-4.7"
+    ],
+    "glm-4.7-flash": [
+      "glm-4.7-flash",
+      "z-ai/glm-4.7-flash"
+    ],
+    "glm-5": [
+      "glm-5",
+      "z-ai/glm-5"
+    ],
+    "glm-5-turbo": [
+      "glm-5-turbo",
+      "z-ai/glm-5-turbo"
+    ],
+    "glm-5.1": [
+      "glm-5.1",
+      "z-ai/glm-5.1"
+    ],
+    "glm-5.2": [
+      "glm-5.2",
+      "z-ai/glm-5.2",
+      "z-ai/glm-5.2:batch"
+    ],
+    "glm-5.3": [
+      "glm-5.3",
+      "z-ai/glm-5.3",
+      "z-ai/glm-5.3:batch"
+    ],
+    "glm-5.3-flash": [
+      "glm-5.3-flash",
+      "z-ai/glm-5.3-flash",
+      "z-ai/glm-5.3-flash:batch"
+    ],
+    "glm-5.3-flashx": [
+      "glm-5.3-flashx",
+      "z-ai/glm-5.3-flashx"
+    ],
+    "glm-5.3-flashx-legal": [
+      "glm-5.3-flashx-legal",
+      "z-ai/glm-5.3-flashx-legal"
+    ],
+    "glm-5.3-prime": [
+      "glm-5.3-prime",
+      "z-ai/glm-5.3-prime"
+    ],
+    "glm-5v-turbo": [
+      "glm-5v-turbo",
+      "z-ai/glm-5v-turbo"
+    ],
+    "gpt-3.5-turbo": [
+      "gpt-3.5-turbo",
+      "gpt-3.5-turbo-0613",
+      "openai/gpt-3.5-turbo-0613"
+    ],
+    "gpt-3.5-turbo-16k": [
+      "gpt-3.5-turbo-16k",
+      "openai/gpt-3.5-turbo-16k"
+    ],
+    "gpt-4": [
+      "gpt-4",
+      "openai/gpt-4"
+    ],
+    "gpt-4-turbo": [
+      "gpt-4-turbo",
+      "openai/gpt-4-turbo:batch"
+    ],
+    "gpt-4.1": [
+      "gpt-4.1",
+      "openai/gpt-4.1",
+      "openai/gpt-4.1:batch"
+    ],
+    "gpt-4.1-mini": [
+      "gpt-4.1-mini",
+      "openai/gpt-4.1-mini",
+      "openai/gpt-4.1-mini:batch"
+    ],
+    "gpt-4.1-nano": [
+      "gpt-4.1-nano",
+      "openai/gpt-4.1-nano",
+      "openai/gpt-4.1-nano:batch"
+    ],
+    "gpt-4o": [
+      "gpt-4o",
+      "gpt-4o-2024-05-13",
+      "gpt-4o-2024-08-06",
+      "gpt-4o-2024-11-20",
+      "openai/gpt-4o",
+      "openai/gpt-4o-2024-05-13",
+      "openai/gpt-4o-2024-08-06",
+      "openai/gpt-4o-2024-11-20",
+      "openai/gpt-4o:batch"
+    ],
+    "gpt-4o-mini": [
+      "gpt-4o-mini",
+      "gpt-4o-mini-2024-07-18",
+      "openai/gpt-4o-mini",
+      "openai/gpt-4o-mini-2024-07-18",
+      "openai/gpt-4o-mini:batch"
+    ],
+    "gpt-5": [
+      "gpt-5",
+      "openai/gpt-5",
+      "openai/gpt-5:batch"
+    ],
+    "gpt-5-codex": [
+      "gpt-5-codex"
+    ],
+    "gpt-5-mini": [
+      "gpt-5-mini",
+      "openai/gpt-5-mini",
+      "openai/gpt-5-mini:batch"
+    ],
+    "gpt-5-nano": [
+      "gpt-5-nano",
+      "openai/gpt-5-nano",
+      "openai/gpt-5-nano:batch"
+    ],
+    "gpt-5-pro": [
+      "gpt-5-pro",
+      "openai/gpt-5-pro",
+      "openai/gpt-5-pro:batch"
+    ],
+    "gpt-5.1": [
+      "gpt-5.1",
+      "openai/gpt-5.1",
+      "openai/gpt-5.1:batch"
+    ],
+    "gpt-5.1-codex": [
+      "gpt-5.1-codex",
+      "openai/gpt-5.1-codex"
+    ],
+    "gpt-5.1-codex-max": [
+      "gpt-5.1-codex-max",
+      "openai/gpt-5.1-codex-max"
+    ],
+    "gpt-5.1-codex-mini": [
+      "gpt-5.1-codex-mini",
+      "openai/gpt-5.1-codex-mini"
+    ],
+    "gpt-5.2": [
+      "gpt-5.2",
+      "openai/gpt-5.2",
+      "openai/gpt-5.2:batch"
+    ],
+    "gpt-5.2-chat": [
+      "gpt-5.2-chat",
+      "openai/gpt-5.2-chat"
+    ],
+    "gpt-5.2-codex": [
+      "gpt-5.2-codex",
+      "openai/gpt-5.2-codex"
+    ],
+    "gpt-5.2-pro": [
+      "gpt-5.2-pro",
+      "openai/gpt-5.2-pro",
+      "openai/gpt-5.2-pro:batch"
+    ],
+    "gpt-5.3-codex": [
+      "gpt-5.3-codex",
+      "openai/gpt-5.3-codex"
+    ],
+    "gpt-5.4": [
+      "gpt-5.4",
+      "openai/gpt-5.4",
+      "openai/gpt-5.4:batch"
+    ],
+    "gpt-5.4-mini": [
+      "gpt-5.4-mini",
+      "openai/gpt-5.4-mini",
+      "openai/gpt-5.4-mini:batch"
+    ],
+    "gpt-5.4-nano": [
+      "gpt-5.4-nano",
+      "openai/gpt-5.4-nano",
+      "openai/gpt-5.4-nano:batch"
+    ],
+    "gpt-5.4-pro": [
+      "gpt-5.4-pro",
+      "openai/gpt-5.4-pro",
+      "openai/gpt-5.4-pro:batch"
+    ],
+    "gpt-5.5": [
+      "gpt-5.5",
+      "openai/gpt-5.5",
+      "openai/gpt-5.5:batch"
+    ],
+    "gpt-5.5-pro": [
+      "gpt-5.5-pro",
+      "openai/gpt-5.5-pro",
+      "openai/gpt-5.5-pro:batch"
+    ],
+    "gpt-5.6-luna": [
+      "gpt-5.6-luna",
+      "openai/gpt-5.6-luna",
+      "openai/gpt-5.6-luna:batch"
+    ],
+    "gpt-5.6-luna-pro": [
+      "gpt-5.6-luna-pro",
+      "openai/gpt-5.6-luna-pro",
+      "openai/gpt-5.6-luna-pro:batch"
+    ],
+    "gpt-5.6-sol": [
+      "gpt-5.6-sol",
+      "openai/gpt-5.6-sol",
+      "openai/gpt-5.6-sol:batch"
+    ],
+    "gpt-5.6-sol-pro": [
+      "gpt-5.6-sol-pro",
+      "openai/gpt-5.6-sol-pro",
+      "openai/gpt-5.6-sol-pro:batch"
+    ],
+    "gpt-5.6-terra": [
+      "gpt-5.6-terra",
+      "openai/gpt-5.6-terra",
+      "openai/gpt-5.6-terra:batch"
+    ],
+    "gpt-5.6-terra-pro": [
+      "gpt-5.6-terra-pro",
+      "openai/gpt-5.6-terra-pro",
+      "openai/gpt-5.6-terra-pro:batch"
+    ],
+    "gpt-6-astra": [
+      "gpt-6-astra",
+      "openai/gpt-6-astra",
+      "openai/gpt-6-astra:batch"
+    ],
+    "gpt-6-astra-pro": [
+      "gpt-6-astra-pro",
+      "openai/gpt-6-astra-pro",
+      "openai/gpt-6-astra-pro:batch"
+    ],
+    "gpt-6-luna": [
+      "gpt-6-luna",
+      "openai/gpt-6-luna",
+      "openai/gpt-6-luna:batch"
+    ],
+    "gpt-6-luna-pro": [
+      "gpt-6-luna-pro",
+      "openai/gpt-6-luna-pro",
+      "openai/gpt-6-luna-pro:batch"
+    ],
+    "gpt-6-sol": [
+      "gpt-6-sol",
+      "openai/gpt-6-sol",
+      "openai/gpt-6-sol:batch"
+    ],
+    "gpt-6-sol-pro": [
+      "gpt-6-sol-pro",
+      "openai/gpt-6-sol-pro",
+      "openai/gpt-6-sol-pro:batch"
+    ],
+    "gpt-6.1-sol": [
+      "gpt-6.1-sol",
+      "openai/gpt-6.1-sol",
+      "openai/gpt-6.1-sol:batch"
+    ],
+    "gpt-6.1-sol-pro": [
+      "gpt-6.1-sol-pro",
+      "openai/gpt-6.1-sol-pro",
+      "openai/gpt-6.1-sol-pro:batch"
+    ],
+    "gpt-6.1-terra": [
+      "gpt-6.1-terra",
+      "openai/gpt-6.1-terra",
+      "openai/gpt-6.1-terra:batch"
+    ],
+    "gpt-6.1-terra-pro": [
+      "gpt-6.1-terra-pro",
+      "openai/gpt-6.1-terra-pro",
+      "openai/gpt-6.1-terra-pro:batch"
+    ],
+    "gpt-6.2-astra": [
+      "gpt-6.2-astra",
+      "openai/gpt-6.2-astra",
+      "openai/gpt-6.2-astra:batch"
+    ],
+    "gpt-6.2-astra-pro": [
+      "gpt-6.2-astra-pro",
+      "openai/gpt-6.2-astra-pro",
+      "openai/gpt-6.2-astra-pro:batch"
+    ],
+    "gpt-6.2-sol": [
+      "gpt-6.2-sol",
+      "openai/gpt-6.2-sol",
+      "openai/gpt-6.2-sol:batch"
+    ],
+    "gpt-6.2-sol-pro": [
+      "gpt-6.2-sol-pro",
+      "openai/gpt-6.2-sol-pro",
+      "openai/gpt-6.2-sol-pro:batch"
+    ],
+    "gpt-bigcode-santacoder": [
+      "bigcode/gpt-bigcode-santacoder",
+      "gpt-bigcode-santacoder"
+    ],
+    "gpt-chat-latest": [
+      "gpt-chat-latest",
+      "openai/gpt-chat-latest"
+    ],
+    "gpt-j-6b": [
+      "eleutherai/gpt-j-6b",
+      "gpt-j-6b"
+    ],
+    "gpt-neo-1.3b": [
+      "eleutherai/gpt-neo-1.3b",
+      "gpt-neo-1.3b"
+    ],
+    "gpt-neo-125m": [
+      "eleutherai/gpt-neo-125m",
+      "gpt-neo-125m"
+    ],
+    "gpt-neo-2.7b": [
+      "eleutherai/gpt-neo-2.7b",
+      "gpt-neo-2.7b"
+    ],
+    "gpt-neox-20b": [
+      "eleutherai/gpt-neox-20b",
+      "gpt-neox-20b"
+    ],
+    "gpt-oss-120b": [
+      "gpt-oss-120b",
+      "openai/gpt-oss-120b",
+      "openai/gpt-oss-120b:batch"
+    ],
+    "gpt-oss-20b": [
+      "gpt-oss-20b",
+      "openai/gpt-oss-20b",
+      "openai/gpt-oss-20b:batch"
+    ],
+    "granite-3.0-8b-instruct": [
+      "granite-3.0-8b-instruct",
+      "ibm-granite/granite-3.0-8b-instruct"
+    ],
+    "granite-3.1-2b-instruct": [
+      "granite-3.1-2b-instruct",
+      "ibm-granite/granite-3.1-2b-instruct"
+    ],
+    "granite-3.1-3b-a800m-instruct": [
+      "granite-3.1-3b-a800m-instruct",
+      "ibm-granite/granite-3.1-3b-a800m-instruct"
+    ],
+    "granite-3.1-8b-instruct": [
+      "granite-3.1-8b-instruct",
+      "ibm-granite/granite-3.1-8b-instruct"
+    ],
+    "granite-3.2-8b-instruct": [
+      "granite-3.2-8b-instruct",
+      "ibm-granite/granite-3.2-8b-instruct"
+    ],
+    "granite-3.3-2b-instruct": [
+      "granite-3.3-2b-instruct",
+      "ibm-granite/granite-3.3-2b-instruct"
+    ],
+    "granite-3.3-8b-instruct": [
+      "granite-3.3-8b-instruct",
+      "ibm-granite/granite-3.3-8b-instruct"
+    ],
+    "granite-3b-code-base-2k": [
+      "granite-3b-code-base-2k",
+      "ibm-granite/granite-3b-code-base-2k"
+    ],
+    "granite-4.0-1b": [
+      "granite-4.0-1b",
+      "ibm-granite/granite-4.0-1b"
+    ],
+    "granite-4.0-350m": [
+      "granite-4.0-350m",
+      "ibm-granite/granite-4.0-350m"
+    ],
+    "granite-4.0-h-small": [
+      "granite-4.0-h-small",
+      "ibm-granite/granite-4.0-h-small"
+    ],
+    "granite-4.0-h-tiny": [
+      "granite-4.0-h-tiny",
+      "ibm-granite/granite-4.0-h-tiny"
+    ],
+    "granite-4.0-micro": [
+      "granite-4.0-micro",
+      "ibm-granite/granite-4.0-micro"
+    ],
+    "granite-4.1-30b-fp8": [
+      "granite-4.1-30b-fp8",
+      "ibm-granite/granite-4.1-30b-fp8"
+    ],
+    "granite-4.1-3b": [
+      "granite-4.1-3b",
+      "ibm-granite/granite-4.1-3b"
+    ],
+    "granite-4.1-8b": [
+      "granite-4.1-8b",
+      "ibm-granite/granite-4.1-8b"
+    ],
+    "granite-4.2-30b": [
+      "granite-4.2-30b",
+      "ibm-granite/granite-4.2-30b"
+    ],
+    "granite-4.2-3b": [
+      "granite-4.2-3b",
+      "ibm-granite/granite-4.2-3b"
+    ],
+    "granite-4.2-8b": [
+      "granite-4.2-8b",
+      "ibm-granite/granite-4.2-8b"
+    ],
+    "granite-docling-258m": [
+      "granite-docling-258m",
+      "ibm-granite/granite-docling-258m"
+    ],
+    "granite-vision-4.1-4b": [
+      "granite-vision-4.1-4b",
+      "ibm-granite/granite-vision-4.1-4b"
+    ],
+    "grok-4.20": [
+      "grok-4.20",
+      "x-ai/grok-4.20"
+    ],
+    "grok-4.20-multi-agent": [
+      "grok-4.20-multi-agent",
+      "x-ai/grok-4.20-multi-agent"
+    ],
+    "grok-4.3": [
+      "grok-4.3",
+      "x-ai/grok-4.3",
+      "x-ai/grok-4.3:batch"
+    ],
+    "grok-4.5": [
+      "grok-4.5",
+      "x-ai/grok-4.5"
+    ],
+    "grok-4.6": [
+      "grok-4.6",
+      "x-ai/grok-4.6",
+      "x-ai/grok-4.6:batch"
+    ],
+    "grok-4.7": [
+      "grok-4.7",
+      "x-ai/grok-4.7",
+      "x-ai/grok-4.7:batch"
+    ],
+    "h2o-danube-1.8b-base": [
+      "h2o-danube-1.8b-base",
+      "h2oai/h2o-danube-1.8b-base"
+    ],
+    "h2o-danube-1.8b-chat": [
+      "h2o-danube-1.8b-chat",
+      "h2oai/h2o-danube-1.8b-chat"
+    ],
+    "h2o-danube-1.8b-sft": [
+      "h2o-danube-1.8b-sft",
+      "h2oai/h2o-danube-1.8b-sft"
+    ],
+    "h2o-danube2-1.8b-base": [
+      "h2o-danube2-1.8b-base",
+      "h2oai/h2o-danube2-1.8b-base"
+    ],
+    "h2o-danube2-1.8b-chat": [
+      "h2o-danube2-1.8b-chat",
+      "h2oai/h2o-danube2-1.8b-chat"
+    ],
+    "h2o-danube3-4b-base": [
+      "h2o-danube3-4b-base",
+      "h2oai/h2o-danube3-4b-base"
+    ],
+    "h2o-danube3-4b-chat": [
+      "h2o-danube3-4b-chat",
+      "h2oai/h2o-danube3-4b-chat"
+    ],
+    "h2o-danube3-500m-base": [
+      "h2o-danube3-500m-base",
+      "h2oai/h2o-danube3-500m-base"
+    ],
+    "h2o-danube3-500m-chat": [
+      "h2o-danube3-500m-chat",
+      "h2oai/h2o-danube3-500m-chat"
+    ],
+    "h2o-lightning-4b-nemotron-nano": [
+      "h2o-lightning-4b-nemotron-nano",
+      "h2oai/h2o-lightning-4b-nemotron-nano"
+    ],
+    "h2ogpt-4096-llama2-13b-chat": [
+      "h2oai/h2ogpt-4096-llama2-13b-chat",
+      "h2ogpt-4096-llama2-13b-chat"
+    ],
+    "h2ogpt-4096-llama2-70b-chat": [
+      "h2oai/h2ogpt-4096-llama2-70b-chat",
+      "h2ogpt-4096-llama2-70b-chat"
+    ],
+    "h2ogpt-4096-llama2-7b": [
+      "h2oai/h2ogpt-4096-llama2-7b",
+      "h2ogpt-4096-llama2-7b"
+    ],
+    "h2ogpt-4096-llama2-7b-chat": [
+      "h2oai/h2ogpt-4096-llama2-7b-chat",
+      "h2ogpt-4096-llama2-7b-chat"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-falcon-40b-v1": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-falcon-40b-v1",
+      "h2ogpt-gm-oasst1-en-2048-falcon-40b-v1"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-falcon-40b-v2": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-falcon-40b-v2",
+      "h2ogpt-gm-oasst1-en-2048-falcon-40b-v2"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-falcon-7b-v2": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-falcon-7b-v2",
+      "h2ogpt-gm-oasst1-en-2048-falcon-7b-v2"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-falcon-7b-v3": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-falcon-7b-v3",
+      "h2ogpt-gm-oasst1-en-2048-falcon-7b-v3"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-open-llama-3b": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-3b",
+      "h2ogpt-gm-oasst1-en-2048-open-llama-3b"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt",
+      "h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt"
+    ],
+    "h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt-v2": [
+      "h2oai/h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt-v2",
+      "h2ogpt-gm-oasst1-en-2048-open-llama-7b-preview-300bt-v2"
+    ],
+    "h2ogpt-oasst1-falcon-40b": [
+      "h2oai/h2ogpt-oasst1-falcon-40b",
+      "h2ogpt-oasst1-falcon-40b"
+    ],
+    "h2ogpt-research-oasst1-llama-65b": [
+      "h2oai/h2ogpt-research-oasst1-llama-65b",
+      "h2ogpt-research-oasst1-llama-65b"
+    ],
+    "hermes-2-pro-llama-3-8b": [
+      "hermes-2-pro-llama-3-8b",
+      "nousresearch/hermes-2-pro-llama-3-8b"
+    ],
+    "hermes-2-pro-mistral-7b": [
+      "hermes-2-pro-mistral-7b",
+      "nousresearch/hermes-2-pro-mistral-7b"
+    ],
+    "hermes-2-theta-llama-3-70b": [
+      "hermes-2-theta-llama-3-70b",
+      "nousresearch/hermes-2-theta-llama-3-70b"
+    ],
+    "hermes-2-theta-llama-3-8b": [
+      "hermes-2-theta-llama-3-8b",
+      "nousresearch/hermes-2-theta-llama-3-8b"
+    ],
+    "hermes-3-llama-3.1-405b": [
+      "hermes-3-llama-3.1-405b",
+      "nousresearch/hermes-3-llama-3.1-405b"
+    ],
+    "hermes-3-llama-3.1-70b": [
+      "hermes-3-llama-3.1-70b",
+      "nousresearch/hermes-3-llama-3.1-70b"
+    ],
+    "hermes-3-llama-3.1-8b": [
+      "hermes-3-llama-3.1-8b",
+      "nousresearch/hermes-3-llama-3.1-8b"
+    ],
+    "hermes-3-llama-3.2-3b": [
+      "hermes-3-llama-3.2-3b",
+      "nousresearch/hermes-3-llama-3.2-3b"
+    ],
+    "hermes-4-14b": [
+      "hermes-4-14b",
+      "nousresearch/hermes-4-14b"
+    ],
+    "hermes-4-405b": [
+      "hermes-4-405b",
+      "nousresearch/hermes-4-405b"
+    ],
+    "hermes-4-70b": [
+      "hermes-4-70b",
+      "nousresearch/hermes-4-70b"
+    ],
+    "hermes-4.3-36b": [
+      "hermes-4.3-36b",
+      "nousresearch/hermes-4.3-36b"
+    ],
+    "hunyuan-7b-instruct": [
+      "hunyuan-7b-instruct",
+      "tencent/hunyuan-7b-instruct"
+    ],
+    "hunyuan-a13b-instruct": [
+      "hunyuan-a13b-instruct",
+      "tencent/hunyuan-a13b-instruct"
+    ],
+    "hunyuan3d-part": [
+      "hunyuan3d-part",
+      "tencent/hunyuan3d-part"
+    ],
+    "hy-mt2-1.8b": [
+      "hy-mt2-1.8b",
+      "tencent/hy-mt2-1.8b"
+    ],
+    "hy-mt2-30b-a3b": [
+      "hy-mt2-30b-a3b",
+      "tencent/hy-mt2-30b-a3b"
+    ],
+    "hy-mt2-7b": [
+      "hy-mt2-7b",
+      "tencent/hy-mt2-7b"
+    ],
+    "hy3": [
+      "hy3",
+      "tencent/hy3"
+    ],
+    "hy3-fp8": [
+      "hy3-fp8",
+      "tencent/hy3-fp8"
+    ],
+    "hy3-preview": [
+      "hy3-preview",
+      "tencent/hy3-preview"
+    ],
+    "hy4": [
+      "hy4",
+      "tencent/hy4"
+    ],
+    "hy4-flash": [
+      "hy4-flash",
+      "tencent/hy4-flash"
+    ],
+    "hy4-preview": [
+      "hy4-preview",
+      "tencent/hy4-preview"
+    ],
+    "hy4-preview-fp8": [
+      "hy4-preview-fp8",
+      "tencent/hy4-preview-fp8"
+    ],
+    "hyperclovax-seed-omni-8b": [
+      "hyperclovax-seed-omni-8b",
+      "naver-hyperclovax/hyperclovax-seed-omni-8b"
+    ],
+    "hyperclovax-seed-text-instruct-0.5b": [
+      "hyperclovax-seed-text-instruct-0.5b",
+      "naver-hyperclovax/hyperclovax-seed-text-instruct-0.5b"
+    ],
+    "hyperclovax-seed-text-instruct-1.5b": [
+      "hyperclovax-seed-text-instruct-1.5b",
+      "naver-hyperclovax/hyperclovax-seed-text-instruct-1.5b"
+    ],
+    "hyperclovax-seed-think-14b": [
+      "hyperclovax-seed-think-14b",
+      "naver-hyperclovax/hyperclovax-seed-think-14b"
+    ],
+    "hyperclovax-seed-think-32b": [
+      "hyperclovax-seed-think-32b",
+      "naver-hyperclovax/hyperclovax-seed-think-32b"
+    ],
+    "hyperclovax-seed-vision-instruct-3b": [
+      "hyperclovax-seed-vision-instruct-3b",
+      "naver-hyperclovax/hyperclovax-seed-vision-instruct-3b"
+    ],
+    "inkling": [
+      "inkling",
+      "thinkingmachines/inkling"
+    ],
+    "inkling-2-mini": [
+      "inkling-2-mini",
+      "thinkingmachines/inkling-2-mini"
+    ],
+    "inkling-2-small": [
+      "inkling-2-small",
+      "thinkingmachines/inkling-2-small"
+    ],
+    "inkling-small": [
+      "inkling-small",
+      "thinkingmachines/inkling-small",
+      "thinkingmachines/inkling-small:batch"
+    ],
+    "intern-decision-0.8b": [
+      "intern-decision-0.8b",
+      "internlm/intern-decision-0.8b"
+    ],
+    "intern-decision-2b": [
+      "intern-decision-2b",
+      "internlm/intern-decision-2b"
+    ],
+    "intern-decision-4b": [
+      "intern-decision-4b",
+      "internlm/intern-decision-4b"
+    ],
+    "intern-s1": [
+      "intern-s1",
+      "internlm/intern-s1"
+    ],
+    "intern-s1-mini": [
+      "intern-s1-mini",
+      "internlm/intern-s1-mini"
+    ],
+    "intern-s1-pro": [
+      "intern-s1-pro",
+      "internlm/intern-s1-pro"
+    ],
+    "intern-s2-preview": [
+      "intern-s2-preview",
+      "internlm/intern-s2-preview"
+    ],
+    "internlm-chat-7b": [
+      "internlm-chat-7b",
+      "internlm/internlm-chat-7b"
+    ],
+    "internlm-xcomposer-7b": [
+      "internlm-xcomposer-7b",
+      "internlm/internlm-xcomposer-7b"
+    ],
+    "internlm-xcomposer2-7b": [
+      "internlm-xcomposer2-7b",
+      "internlm/internlm-xcomposer2-7b"
+    ],
+    "internlm2-1-8b": [
+      "internlm/internlm2-1-8b",
+      "internlm2-1-8b"
+    ],
+    "internlm2-20b": [
+      "internlm/internlm2-20b",
+      "internlm2-20b"
+    ],
+    "internlm2-5-1-8b": [
+      "internlm/internlm2-5-1-8b",
+      "internlm2-5-1-8b"
+    ],
+    "internlm2-5-1-8b-chat": [
+      "internlm/internlm2-5-1-8b-chat",
+      "internlm2-5-1-8b-chat"
+    ],
+    "internlm2-5-20b-chat": [
+      "internlm/internlm2-5-20b-chat",
+      "internlm2-5-20b-chat"
+    ],
+    "internlm2-5-7b": [
+      "internlm/internlm2-5-7b",
+      "internlm2-5-7b"
+    ],
+    "internlm2-5-7b-chat": [
+      "internlm/internlm2-5-7b-chat",
+      "internlm2-5-7b-chat"
+    ],
+    "internlm2-7b": [
+      "internlm/internlm2-7b",
+      "internlm2-7b"
+    ],
+    "internlm2-base-20b": [
+      "internlm/internlm2-base-20b",
+      "internlm2-base-20b"
+    ],
+    "internlm2-base-7b": [
+      "internlm/internlm2-base-7b",
+      "internlm2-base-7b"
+    ],
+    "internlm2-chat-1-8b": [
+      "internlm/internlm2-chat-1-8b",
+      "internlm2-chat-1-8b"
+    ],
+    "internlm2-chat-20b": [
+      "internlm/internlm2-chat-20b",
+      "internlm2-chat-20b"
+    ],
+    "internlm2-chat-7b": [
+      "internlm/internlm2-chat-7b",
+      "internlm2-chat-7b"
+    ],
+    "internlm2-chat-7b-sft": [
+      "internlm/internlm2-chat-7b-sft",
+      "internlm2-chat-7b-sft"
+    ],
+    "internlm2-math-plus-7b": [
+      "internlm/internlm2-math-plus-7b",
+      "internlm2-math-plus-7b"
+    ],
+    "internlm3-8b-instruct": [
+      "internlm/internlm3-8b-instruct",
+      "internlm3-8b-instruct"
+    ],
+    "jamba-v0.1": [
+      "ai21labs/jamba-v0.1",
+      "jamba-v0.1"
+    ],
+    "januscoder-14b": [
+      "internlm/januscoder-14b",
+      "januscoder-14b"
+    ],
+    "januscoderv-7b": [
+      "internlm/januscoderv-7b",
+      "januscoderv-7b"
+    ],
+    "januscoderv-8b": [
+      "internlm/januscoderv-8b",
+      "januscoderv-8b"
+    ],
+    "k-exaone-2.0-750b-a37b": [
+      "k-exaone-2.0-750b-a37b",
+      "lgai-exaone/k-exaone-2.0-750b-a37b"
+    ],
+    "k-exaone-2.0-750b-a37b-dspark": [
+      "k-exaone-2.0-750b-a37b-dspark",
+      "lgai-exaone/k-exaone-2.0-750b-a37b-dspark"
+    ],
+    "k-exaone-2.0-750b-a37b-fp8": [
+      "k-exaone-2.0-750b-a37b-fp8",
+      "lgai-exaone/k-exaone-2.0-750b-a37b-fp8"
+    ],
+    "k-exaone-2.0-750b-a37b-nvfp4": [
+      "k-exaone-2.0-750b-a37b-nvfp4",
+      "lgai-exaone/k-exaone-2.0-750b-a37b-nvfp4"
+    ],
+    "k-exaone-236b-a23b": [
+      "k-exaone-236b-a23b",
+      "lgai-exaone/k-exaone-236b-a23b"
+    ],
+    "k-exaone-236b-a23b-fp8": [
+      "k-exaone-236b-a23b-fp8",
+      "lgai-exaone/k-exaone-236b-a23b-fp8"
+    ],
+    "kimi-k2": [
+      "kimi-k2"
+    ],
+    "kimi-k2.5": [
+      "kimi-k2.5",
+      "moonshotai/kimi-k2.5"
+    ],
+    "kimi-k2.6": [
+      "kimi-k2.6",
+      "moonshotai/kimi-k2.6"
+    ],
+    "kimi-k2.7-code": [
+      "kimi-k2.7-code",
+      "moonshotai/kimi-k2.7-code"
+    ],
+    "kimi-k3": [
+      "kimi-k3",
+      "moonshotai/kimi-k3",
+      "moonshotai/kimi-k3:batch"
+    ],
+    "kimi-k3.1-pro": [
+      "kimi-k3.1-pro",
+      "moonshotai/kimi-k3.1-pro",
+      "moonshotai/kimi-k3.1-pro:batch"
+    ],
+    "l3-lunaris-8b": [
+      "l3-lunaris-8b",
+      "sao10k/l3-lunaris-8b"
+    ],
+    "l3.1-euryale-70b": [
+      "l3.1-euryale-70b",
+      "sao10k/l3.1-euryale-70b"
+    ],
+    "lfm-2.5-24b-a2b": [
+      "lfm-2.5-24b-a2b",
+      "liquid/lfm-2.5-24b-a2b"
+    ],
+    "lfm-3-1.7b": [
+      "lfm-3-1.7b",
+      "liquid/lfm-3-1.7b",
+      "liquid/lfm-3-1.7b:free"
+    ],
+    "lfm2-1.2b": [
+      "lfm2-1.2b",
+      "liquidai/lfm2-1.2b"
+    ],
+    "lfm2-350m": [
+      "lfm2-350m",
+      "liquidai/lfm2-350m"
+    ],
+    "lfm2-8b-a1b": [
+      "lfm2-8b-a1b",
+      "liquidai/lfm2-8b-a1b"
+    ],
+    "lfm2-vl-450m": [
+      "lfm2-vl-450m",
+      "liquidai/lfm2-vl-450m"
+    ],
+    "lfm2.5-1.2b-instruct": [
+      "lfm2.5-1.2b-instruct",
+      "liquidai/lfm2.5-1.2b-instruct"
+    ],
+    "lfm2.5-2.6b": [
+      "lfm2.5-2.6b",
+      "liquidai/lfm2.5-2.6b"
+    ],
+    "lfm2.5-230m": [
+      "lfm2.5-230m",
+      "liquidai/lfm2.5-230m"
+    ],
+    "lfm2.5-230m-base": [
+      "lfm2.5-230m-base",
+      "liquidai/lfm2.5-230m-base"
+    ],
+    "lfm2.5-24b-a2b": [
+      "lfm2.5-24b-a2b",
+      "liquidai/lfm2.5-24b-a2b"
+    ],
+    "lfm2.5-350m": [
+      "lfm2.5-350m",
+      "liquidai/lfm2.5-350m"
+    ],
+    "lfm2.5-8b-a1b": [
+      "lfm2.5-8b-a1b",
+      "liquidai/lfm2.5-8b-a1b"
+    ],
+    "lfm2.5-vl-3b": [
+      "lfm2.5-vl-3b",
+      "liquidai/lfm2.5-vl-3b"
+    ],
+    "lfm2.5-vl-450m": [
+      "lfm2.5-vl-450m",
+      "liquidai/lfm2.5-vl-450m"
+    ],
+    "lfm3-1.7b": [
+      "lfm3-1.7b",
+      "liquidai/lfm3-1.7b"
+    ],
+    "lfm3-1.7b-base": [
+      "lfm3-1.7b-base",
+      "liquidai/lfm3-1.7b-base"
+    ],
+    "lfm3-vl-2b": [
+      "lfm3-vl-2b",
+      "liquidai/lfm3-vl-2b"
+    ],
+    "ling-1t": [
+      "inclusionai/ling-1t",
+      "ling-1t"
+    ],
+    "ling-2.6-1t": [
+      "inclusionai/ling-2.6-1t",
+      "ling-2.6-1t"
+    ],
+    "ling-2.6-flash": [
+      "inclusionai/ling-2.6-flash",
+      "ling-2.6-flash"
+    ],
+    "ling-3.0-flash": [
+      "inclusionai/ling-3.0-flash",
+      "ling-3.0-flash"
+    ],
+    "ling-3.0-flash-fin": [
+      "inclusionai/ling-3.0-flash-fin",
+      "ling-3.0-flash-fin"
+    ],
+    "ling-3.0-flash-sante": [
+      "inclusionai/ling-3.0-flash-sante",
+      "ling-3.0-flash-sante"
+    ],
+    "ling-3.0-flash-vl": [
+      "inclusionai/ling-3.0-flash-vl",
+      "ling-3.0-flash-vl"
+    ],
+    "ling-3.0-tiny": [
+      "inclusionai/ling-3.0-tiny",
+      "ling-3.0-tiny"
+    ],
+    "ling-3.1-flash": [
+      "inclusionai/ling-3.1-flash",
+      "inclusionai/ling-3.1-flash-1019",
+      "ling-3.1-flash",
+      "ling-3.1-flash-1019"
+    ],
+    "ling-3.2-flash": [
+      "inclusionai/ling-3.2-flash:free",
+      "ling-3.2-flash"
+    ],
+    "ling-coder-lite": [
+      "inclusionai/ling-coder-lite",
+      "ling-coder-lite"
+    ],
+    "ling-flash-2.0": [
+      "inclusionai/ling-flash-2.0",
+      "ling-flash-2.0"
+    ],
+    "ling-lite": [
+      "inclusionai/ling-lite",
+      "ling-lite"
+    ],
+    "ling-mini-2.0": [
+      "inclusionai/ling-mini-2.0",
+      "ling-mini-2.0"
+    ],
+    "llada-1.5": [
+      "gsai-ml/llada-1.5",
+      "llada-1.5"
+    ],
+    "llada-8b-base": [
+      "gsai-ml/llada-8b-base",
+      "llada-8b-base"
+    ],
+    "llada-8b-instruct": [
+      "gsai-ml/llada-8b-instruct",
+      "llada-8b-instruct"
+    ],
+    "llada-o": [
+      "gsai-ml/llada-o",
+      "llada-o"
+    ],
+    "llada-v": [
+      "gsai-ml/llada-v",
+      "llada-v"
+    ],
+    "llada2.0-mini": [
+      "inclusionai/llada2.0-mini",
+      "llada2.0-mini"
+    ],
+    "llada2.1-flash": [
+      "inclusionai/llada2.1-flash",
+      "llada2.1-flash"
+    ],
+    "llada2.1-mini": [
+      "inclusionai/llada2.1-mini",
+      "llada2.1-mini"
+    ],
+    "llama-2-13b-chat-hf": [
+      "llama-2-13b-chat-hf",
+      "nousresearch/llama-2-13b-chat-hf"
+    ],
+    "llama-2-13b-hf": [
+      "llama-2-13b-hf",
+      "nousresearch/llama-2-13b-hf"
+    ],
+    "llama-2-70b-chat-hf": [
+      "llama-2-70b-chat-hf",
+      "nousresearch/llama-2-70b-chat-hf"
+    ],
+    "llama-2-70b-hf": [
+      "llama-2-70b-hf",
+      "nousresearch/llama-2-70b-hf"
+    ],
+    "llama-2-70b-instruct": [
+      "llama-2-70b-instruct",
+      "upstage/llama-2-70b-instruct"
+    ],
+    "llama-2-7b-chat-hf": [
+      "llama-2-7b-chat-hf",
+      "nousresearch/llama-2-7b-chat-hf"
+    ],
+    "llama-2-7b-hf": [
+      "llama-2-7b-hf",
+      "nousresearch/llama-2-7b-hf"
+    ],
+    "llama-3.1-70b-instruct": [
+      "llama-3.1-70b-instruct",
+      "meta-llama/llama-3.1-70b-instruct"
+    ],
+    "llama-3.1-8b-instruct": [
+      "llama-3.1-8b-instruct",
+      "meta-llama/llama-3.1-8b-instruct"
+    ],
+    "llama-3.1-supernova-lite": [
+      "arcee-ai/llama-3.1-supernova-lite",
+      "llama-3.1-supernova-lite"
+    ],
+    "llama-3.1-tulu-3-8b-dpo": [
+      "allenai/llama-3.1-tulu-3-8b-dpo",
+      "llama-3.1-tulu-3-8b-dpo"
+    ],
+    "llama-3.1-tulu-3-8b-sft": [
+      "allenai/llama-3.1-tulu-3-8b-sft",
+      "llama-3.1-tulu-3-8b-sft"
+    ],
+    "llama-3.2-1b": [
+      "llama-3.2-1b",
+      "nousresearch/llama-3.2-1b"
+    ],
+    "llama-3.2-3b-instruct": [
+      "llama-3.2-3b-instruct",
+      "meta-llama/llama-3.2-3b-instruct"
+    ],
+    "llama-3.3-70b-instruct": [
+      "llama-3.3-70b-instruct",
+      "meta-llama/llama-3.3-70b-instruct"
+    ],
+    "llama-30b-instruct": [
+      "llama-30b-instruct",
+      "upstage/llama-30b-instruct"
+    ],
+    "llama-30b-instruct-2048": [
+      "llama-30b-instruct-2048",
+      "upstage/llama-30b-instruct-2048"
+    ],
+    "llama-4-maverick": [
+      "llama-4-maverick",
+      "meta-llama/llama-4-maverick"
+    ],
+    "llama-4-scout": [
+      "llama-4-scout",
+      "meta-llama/llama-4-scout"
+    ],
+    "llama-65b-instruct": [
+      "llama-65b-instruct",
+      "upstage/llama-65b-instruct"
+    ],
+    "llama2-0b-unit-test": [
+      "h2oai/llama2-0b-unit-test",
+      "llama2-0b-unit-test"
+    ],
+    "longcat-2.0": [
+      "longcat-2.0",
+      "meituan-longcat/longcat-2.0"
+    ],
+    "longcat-2.0-fp8": [
+      "longcat-2.0-fp8",
+      "meituan-longcat/longcat-2.0-fp8"
+    ],
+    "longcat-2.0-int8": [
+      "longcat-2.0-int8",
+      "meituan-longcat/longcat-2.0-int8"
+    ],
+    "longcat-2.5": [
+      "longcat-2.5",
+      "meituan-longcat/longcat-2.5"
+    ],
+    "longcat-2.5-w4a4": [
+      "longcat-2.5-w4a4",
+      "meituan-longcat/longcat-2.5-w4a4"
+    ],
+    "longcat-flash-chat": [
+      "longcat-flash-chat",
+      "meituan-longcat/longcat-flash-chat"
+    ],
+    "longcat-flash-chat-fp8": [
+      "longcat-flash-chat-fp8",
+      "meituan-longcat/longcat-flash-chat-fp8"
+    ],
+    "longcat-flash-lite": [
+      "longcat-flash-lite",
+      "meituan-longcat/longcat-flash-lite"
+    ],
+    "longcat-flash-lite-fp8": [
+      "longcat-flash-lite-fp8",
+      "meituan-longcat/longcat-flash-lite-fp8"
+    ],
+    "longcat-flash-lite-sparse": [
+      "longcat-flash-lite-sparse",
+      "meituan-longcat/longcat-flash-lite-sparse"
+    ],
+    "longcat-flash-omni-fp8": [
+      "longcat-flash-omni-fp8",
+      "meituan-longcat/longcat-flash-omni-fp8"
+    ],
+    "longcat-flash-prover": [
+      "longcat-flash-prover",
+      "meituan-longcat/longcat-flash-prover"
+    ],
+    "longcat-flash-thinking": [
+      "longcat-flash-thinking",
+      "longcat-flash-thinking-2601",
+      "meituan-longcat/longcat-flash-thinking",
+      "meituan-longcat/longcat-flash-thinking-2601"
+    ],
+    "longcat-flash-thinking-2601-fp8": [
+      "longcat-flash-thinking-2601-fp8",
+      "meituan-longcat/longcat-flash-thinking-2601-fp8"
+    ],
+    "longcat-flash-thinking-fp8": [
+      "longcat-flash-thinking-fp8",
+      "meituan-longcat/longcat-flash-thinking-fp8"
+    ],
+    "longcat-flash-thinking-zigzag": [
+      "longcat-flash-thinking-zigzag",
+      "meituan-longcat/longcat-flash-thinking-zigzag"
+    ],
+    "longcat-heavymode-summary": [
+      "longcat-heavymode-summary",
+      "meituan-longcat/longcat-heavymode-summary"
+    ],
+    "magnum-v4-72b": [
+      "anthracite-org/magnum-v4-72b",
+      "magnum-v4-72b"
+    ],
+    "meta-llama-3-70b": [
+      "meta-llama-3-70b",
+      "nousresearch/meta-llama-3-70b"
+    ],
+    "meta-llama-3-70b-instruct": [
+      "meta-llama-3-70b-instruct",
+      "nousresearch/meta-llama-3-70b-instruct"
+    ],
+    "meta-llama-3-8b": [
+      "meta-llama-3-8b",
+      "nousresearch/meta-llama-3-8b"
+    ],
+    "meta-llama-3-8b-instruct": [
+      "meta-llama-3-8b-instruct",
+      "nousresearch/meta-llama-3-8b-instruct"
+    ],
+    "meta-llama-3.1-70b-instruct": [
+      "meta-llama-3.1-70b-instruct",
+      "nousresearch/meta-llama-3.1-70b-instruct"
+    ],
+    "meta-llama-3.1-8b": [
+      "meta-llama-3.1-8b",
+      "nousresearch/meta-llama-3.1-8b"
+    ],
+    "meta-llama-3.1-8b-instruct": [
+      "meta-llama-3.1-8b-instruct",
+      "nousresearch/meta-llama-3.1-8b-instruct"
+    ],
+    "midm-k-3.0-pro": [
+      "kt/midm-k-3.0-pro",
+      "midm-k-3.0-pro"
+    ],
+    "mimo-7b-base": [
+      "mimo-7b-base",
+      "xiaomimimo/mimo-7b-base"
+    ],
+    "mimo-7b-rl": [
+      "mimo-7b-rl",
+      "mimo-7b-rl-0530",
+      "xiaomimimo/mimo-7b-rl",
+      "xiaomimimo/mimo-7b-rl-0530"
+    ],
+    "mimo-7b-rl-zero": [
+      "mimo-7b-rl-zero",
+      "xiaomimimo/mimo-7b-rl-zero"
+    ],
+    "mimo-7b-sft": [
+      "mimo-7b-sft",
+      "xiaomimimo/mimo-7b-sft"
+    ],
+    "mimo-embodied-7b": [
+      "mimo-embodied-7b",
+      "xiaomimimo/mimo-embodied-7b"
+    ],
+    "mimo-v2-flash": [
+      "mimo-v2-flash",
+      "xiaomimimo/mimo-v2-flash"
+    ],
+    "mimo-v2-flash-base": [
+      "mimo-v2-flash-base",
+      "xiaomimimo/mimo-v2-flash-base"
+    ],
+    "mimo-v2.5": [
+      "mimo-v2.5",
+      "xiaomimimo/mimo-v2.5"
+    ],
+    "mimo-v2.5-base": [
+      "mimo-v2.5-base",
+      "xiaomimimo/mimo-v2.5-base"
+    ],
+    "mimo-v2.5-pro": [
+      "mimo-v2.5-pro",
+      "xiaomimimo/mimo-v2.5-pro"
+    ],
+    "mimo-v2.5-pro-base": [
+      "mimo-v2.5-pro-base",
+      "xiaomimimo/mimo-v2.5-pro-base"
+    ],
+    "mimo-v2.5-pro-fp4-dflash": [
+      "mimo-v2.5-pro-fp4-dflash",
+      "xiaomimimo/mimo-v2.5-pro-fp4-dflash"
+    ],
+    "mimo-v2.6-distill-qwen-9b": [
+      "mimo-v2.6-distill-qwen-9b",
+      "xiaomimimo/mimo-v2.6-distill-qwen-9b"
+    ],
+    "mimo-v2.6-flash": [
+      "mimo-v2.6-flash",
+      "xiaomi/mimo-v2.6-flash"
+    ],
+    "mimo-v2.6-flash-mopd": [
+      "mimo-v2.6-flash-mopd",
+      "xiaomi/mimo-v2.6-flash-mopd",
+      "xiaomimimo/mimo-v2.6-flash-mopd"
+    ],
+    "mimo-v2.6-flash-rl": [
+      "mimo-v2.6-flash-rl",
+      "xiaomimimo/mimo-v2.6-flash-rl"
+    ],
+    "mimo-v2.6-pro": [
+      "mimo-v2.6-pro",
+      "xiaomi/mimo-v2.6-pro"
+    ],
+    "mimo-v2.6-pro-mopd": [
+      "mimo-v2.6-pro-mopd",
+      "xiaomimimo/mimo-v2.6-pro-mopd"
+    ],
+    "mimo-v2.6-pro-rl": [
+      "mimo-v2.6-pro-rl",
+      "xiaomimimo/mimo-v2.6-pro-rl"
+    ],
+    "mimo-v2.6-pro-ultraspeed": [
+      "mimo-v2.6-pro-ultraspeed",
+      "xiaomi/mimo-v2.6-pro-ultraspeed"
+    ],
+    "mimo-vl-7b-rl": [
+      "mimo-vl-7b-rl",
+      "xiaomimimo/mimo-vl-7b-rl"
+    ],
+    "mimo-vl-7b-rl-2508": [
+      "mimo-vl-7b-rl-2508",
+      "xiaomimimo/mimo-vl-7b-rl-2508"
+    ],
+    "mimo-vl-7b-sft": [
+      "mimo-vl-7b-sft",
+      "xiaomimimo/mimo-vl-7b-sft"
+    ],
+    "mimo-vl-7b-sft-2508": [
+      "mimo-vl-7b-sft-2508",
+      "xiaomimimo/mimo-vl-7b-sft-2508"
+    ],
+    "mindlink-32b-0801": [
+      "mindlink-32b-0801",
+      "skywork/mindlink-32b-0801"
+    ],
+    "mindlink-72b-0801": [
+      "mindlink-72b-0801",
+      "skywork/mindlink-72b-0801"
+    ],
+    "minicpm-2b-sft-bf16": [
+      "minicpm-2b-sft-bf16",
+      "openbmb/minicpm-2b-sft-bf16"
+    ],
+    "minicpm-v-2-6": [
+      "minicpm-v-2-6",
+      "openbmb/minicpm-v-2-6"
+    ],
+    "minicpm-v-4": [
+      "minicpm-v-4",
+      "openbmb/minicpm-v-4"
+    ],
+    "minicpm-v-4-5": [
+      "minicpm-v-4-5",
+      "openbmb/minicpm-v-4-5"
+    ],
+    "minicpm-v-4.6": [
+      "minicpm-v-4.6",
+      "openbmb/minicpm-v-4.6"
+    ],
+    "minicpm-v-4.6-bnb": [
+      "minicpm-v-4.6-bnb",
+      "openbmb/minicpm-v-4.6-bnb"
+    ],
+    "minicpm-v-4.6-thinking": [
+      "minicpm-v-4.6-thinking",
+      "openbmb/minicpm-v-4.6-thinking"
+    ],
+    "minicpm-v-4.6-thinking-bnb": [
+      "minicpm-v-4.6-thinking-bnb",
+      "openbmb/minicpm-v-4.6-thinking-bnb"
+    ],
+    "minicpm-v-4.7-1b": [
+      "minicpm-v-4.7-1b",
+      "openbmb/minicpm-v-4.7-1b"
+    ],
+    "minicpm-v-4.7-1b-dspark": [
+      "minicpm-v-4.7-1b-dspark",
+      "openbmb/minicpm-v-4.7-1b-dspark"
+    ],
+    "minicpm-v-4.7-1b-int4": [
+      "minicpm-v-4.7-1b-int4",
+      "openbmb/minicpm-v-4.7-1b-int4"
+    ],
+    "minicpm-v-4.7-35b-a3b": [
+      "minicpm-v-4.7-35b-a3b",
+      "openbmb/minicpm-v-4.7-35b-a3b"
+    ],
+    "minicpm-v-4.7-35b-a3b-dspark": [
+      "minicpm-v-4.7-35b-a3b-dspark",
+      "openbmb/minicpm-v-4.7-35b-a3b-dspark"
+    ],
+    "minicpm-v-4.7-35b-a3b-fp8": [
+      "minicpm-v-4.7-35b-a3b-fp8",
+      "openbmb/minicpm-v-4.7-35b-a3b-fp8"
+    ],
+    "minicpm-v-4.7-35b-a3b-int4": [
+      "minicpm-v-4.7-35b-a3b-int4",
+      "openbmb/minicpm-v-4.7-35b-a3b-int4"
+    ],
+    "minicpm5-1b": [
+      "minicpm5-1b",
+      "openbmb/minicpm5-1b"
+    ],
+    "minicpm5-2b": [
+      "minicpm5-2b",
+      "openbmb/minicpm5-2b"
+    ],
+    "minicpm5-2b-dspark": [
+      "minicpm5-2b-dspark",
+      "openbmb/minicpm5-2b-dspark"
+    ],
+    "minimax-m2.5": [
+      "minimax-m2.5",
+      "minimax/minimax-m2.5"
+    ],
+    "minimax-m2.7": [
+      "minimax-m2.7",
+      "minimax/minimax-m2.7"
+    ],
+    "minimax-m3": [
+      "minimax-m3",
+      "minimax/minimax-m3",
+      "minimax/minimax-m3:batch"
+    ],
+    "minimax-m3.1-flash": [
+      "minimax-m3.1-flash",
+      "minimax/minimax-m3.1-flash"
+    ],
+    "ministral-14b-2512": [
+      "ministral-14b-2512",
+      "mistralai/ministral-14b-2512"
+    ],
+    "ministral-3b-2512": [
+      "ministral-3b-2512",
+      "mistralai/ministral-3b-2512"
+    ],
+    "ministral-8b-2512": [
+      "ministral-8b-2512",
+      "mistralai/ministral-8b-2512"
+    ],
+    "mistral-7b-anthropic": [
+      "huggingfaceh4/mistral-7b-anthropic",
+      "mistral-7b-anthropic"
+    ],
+    "mistral-7b-grok": [
+      "huggingfaceh4/mistral-7b-grok",
+      "mistral-7b-grok"
+    ],
+    "mistral-7b-instruct-v0.2-sliced-24-layer": [
+      "arcee-ai/mistral-7b-instruct-v0.2-sliced-24-layer",
+      "mistral-7b-instruct-v0.2-sliced-24-layer"
+    ],
+    "mistral-7b-sft-alpha": [
+      "huggingfaceh4/mistral-7b-sft-alpha",
+      "mistral-7b-sft-alpha"
+    ],
+    "mistral-7b-sft-beta": [
+      "huggingfaceh4/mistral-7b-sft-beta",
+      "mistral-7b-sft-beta"
+    ],
+    "mistral-large": [
+      "mistral-large",
+      "mistralai/mistral-large"
+    ],
+    "mistral-large-2407": [
+      "mistral-large-2407",
+      "mistralai/mistral-large-2407"
+    ],
+    "mistral-large-2512": [
+      "mistral-large-2512",
+      "mistralai/mistral-large-2512"
+    ],
+    "mistral-large-4-0": [
+      "mistral-large-4-0",
+      "mistralai/mistral-large-4-0"
+    ],
+    "mistral-medium-3-5": [
+      "mistral-medium-3-5",
+      "mistralai/mistral-medium-3-5",
+      "mistralai/mistral-medium-3-5:batch"
+    ],
+    "mistral-nemo": [
+      "mistral-nemo",
+      "mistralai/mistral-nemo"
+    ],
+    "mistral-saba": [
+      "mistral-saba",
+      "mistralai/mistral-saba"
+    ],
+    "mistral-small-24b-instruct-2501": [
+      "mistral-small-24b-instruct-2501",
+      "mistralai/mistral-small-24b-instruct-2501"
+    ],
+    "mistral-small-2603": [
+      "mistral-small-2603",
+      "mistralai/mistral-small-2603"
+    ],
+    "mistral-small-3.1-24b-instruct": [
+      "mistral-small-3.1-24b-instruct",
+      "mistralai/mistral-small-3.1-24b-instruct"
+    ],
+    "mistral-small-3.2-24b-instruct": [
+      "mistral-small-3.2-24b-instruct",
+      "mistralai/mistral-small-3.2-24b-instruct"
+    ],
+    "mixtral-8x22b-instruct": [
+      "mistralai/mixtral-8x22b-instruct",
+      "mixtral-8x22b-instruct"
+    ],
+    "molmo-7b-d-0924": [
+      "allenai/molmo-7b-d-0924",
+      "molmo-7b-d-0924"
+    ],
+    "molmo2-4b": [
+      "allenai/molmo2-4b",
+      "molmo2-4b"
+    ],
+    "molmo2-8b": [
+      "allenai/molmo2-8b",
+      "molmo2-8b"
+    ],
+    "molmo2-o-7b": [
+      "allenai/molmo2-o-7b",
+      "molmo2-o-7b"
+    ],
+    "morph-v3-fast": [
+      "morph-v3-fast",
+      "morph/morph-v3-fast",
+      "morph/morph-v3-fast:batch"
+    ],
+    "morph-v3-large": [
+      "morph-v3-large",
+      "morph/morph-v3-large",
+      "morph/morph-v3-large:batch"
+    ],
+    "motif-3": [
+      "motif-3",
+      "motif-technologies/motif-3"
+    ],
+    "muse-ember": [
+      "meta/muse-ember",
+      "muse-ember"
+    ],
+    "muse-glimmer-30b": [
+      "meta/muse-glimmer-30b",
+      "meta/muse-glimmer-30b:batch",
+      "muse-glimmer-30b"
+    ],
+    "muse-spark-1.1": [
+      "meta/muse-spark-1.1",
+      "muse-spark-1.1"
+    ],
+    "muse-spark-1.2": [
+      "meta/muse-spark-1.2",
+      "muse-spark-1.2"
+    ],
+    "muse-spark-1.2-contributor": [
+      "meta/muse-spark-1.2-contributor",
+      "muse-spark-1.2-contributor"
+    ],
+    "muse-spark-1.3": [
+      "meta/muse-spark-1.3",
+      "muse-spark-1.3"
+    ],
+    "muse-spark-1.3-contributor": [
+      "meta/muse-spark-1.3-contributor",
+      "muse-spark-1.3-contributor"
+    ],
+    "muse-spark-open": [
+      "meta/muse-spark-open",
+      "muse-spark-open"
+    ],
+    "muse-wonder": [
+      "meta/muse-wonder",
+      "muse-wonder"
+    ],
+    "mythomax-l2-13b": [
+      "gryphe/mythomax-l2-13b",
+      "mythomax-l2-13b"
+    ],
+    "nemotron-3-nano-30b-a3b": [
+      "nemotron-3-nano-30b-a3b",
+      "nvidia/nemotron-3-nano-30b-a3b"
+    ],
+    "nemotron-3-nano-omni-30b-a3b-reasoning": [
+      "nemotron-3-nano-omni-30b-a3b-reasoning",
+      "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+    ],
+    "nemotron-3-super-120b-a12b": [
+      "nemotron-3-super-120b-a12b",
+      "nvidia/nemotron-3-super-120b-a12b"
+    ],
+    "nemotron-3-ultra-550b-a55b": [
+      "nemotron-3-ultra-550b-a55b",
+      "nvidia/nemotron-3-ultra-550b-a55b",
+      "nvidia/nemotron-3-ultra-550b-a55b:free"
+    ],
+    "nemotron-3.5-lightning": [
+      "nemotron-3.5-lightning",
+      "nvidia/nemotron-3.5-lightning",
+      "nvidia/nemotron-3.5-lightning:free"
+    ],
+    "nemotron-3.5-super-vl": [
+      "nemotron-3.5-super-vl",
+      "nvidia/nemotron-3.5-super-vl",
+      "nvidia/nemotron-3.5-super-vl:free"
+    ],
+    "nex-n2.5-mini": [
+      "nex-agi/nex-n2.5-mini",
+      "nex-n2.5-mini"
+    ],
+    "nex-n2.5-pro": [
+      "nex-agi/nex-n2.5-pro",
+      "nex-n2.5-pro"
+    ],
+    "nex-n2.6": [
+      "nex-agi/nex-n2.6",
+      "nex-n2.6"
+    ],
+    "nous-hermes-2-mixtral-8x7b-dpo": [
+      "nous-hermes-2-mixtral-8x7b-dpo",
+      "nousresearch/nous-hermes-2-mixtral-8x7b-dpo"
+    ],
+    "nous-hermes-2-solar-10.7b": [
+      "nous-hermes-2-solar-10.7b",
+      "nousresearch/nous-hermes-2-solar-10.7b"
+    ],
+    "nous-hermes-2-yi-34b": [
+      "nous-hermes-2-yi-34b",
+      "nousresearch/nous-hermes-2-yi-34b"
+    ],
+    "nous-hermes-llama2-13b": [
+      "nous-hermes-llama2-13b",
+      "nousresearch/nous-hermes-llama2-13b"
+    ],
+    "nova-2-lite-v1": [
+      "amazon/nova-2-lite-v1",
+      "nova-2-lite-v1"
+    ],
+    "nova-lite-v1": [
+      "amazon/nova-lite-v1",
+      "nova-lite-v1"
+    ],
+    "nova-micro-v1": [
+      "amazon/nova-micro-v1",
+      "nova-micro-v1"
+    ],
+    "nova-premier-v1": [
+      "amazon/nova-premier-v1",
+      "nova-premier-v1"
+    ],
+    "nova-pro-v1": [
+      "amazon/nova-pro-v1",
+      "nova-pro-v1"
+    ],
+    "o1": [
+      "o1"
+    ],
+    "o3": [
+      "o3",
+      "openai/o3",
+      "openai/o3:batch"
+    ],
+    "o3-mini": [
+      "o3-mini",
+      "openai/o3-mini:batch"
+    ],
+    "o3-pro": [
+      "o3-pro",
+      "openai/o3-pro"
+    ],
+    "o4-mini": [
+      "o4-mini",
+      "openai/o4-mini:batch"
+    ],
+    "olmo-1b-hf": [
+      "allenai/olmo-1b-hf",
+      "olmo-1b-hf"
+    ],
+    "olmo-2-0325-32b-instruct": [
+      "allenai/olmo-2-0325-32b-instruct",
+      "olmo-2-0325-32b-instruct"
+    ],
+    "olmo-2-0425-1b": [
+      "allenai/olmo-2-0425-1b",
+      "olmo-2-0425-1b"
+    ],
+    "olmo-2-0425-1b-instruct": [
+      "allenai/olmo-2-0425-1b-instruct",
+      "olmo-2-0425-1b-instruct"
+    ],
+    "olmo-2-0425-1b-sft": [
+      "allenai/olmo-2-0425-1b-sft",
+      "olmo-2-0425-1b-sft"
+    ],
+    "olmo-2-1124-13b-instruct": [
+      "allenai/olmo-2-1124-13b-instruct",
+      "olmo-2-1124-13b-instruct"
+    ],
+    "olmo-2-1124-7b-instruct": [
+      "allenai/olmo-2-1124-7b-instruct",
+      "olmo-2-1124-7b-instruct"
+    ],
+    "olmo-3-1025-7b": [
+      "allenai/olmo-3-1025-7b",
+      "olmo-3-1025-7b"
+    ],
+    "olmo-3-1125-32b": [
+      "allenai/olmo-3-1125-32b",
+      "olmo-3-1125-32b"
+    ],
+    "olmo-3-32b-think": [
+      "allenai/olmo-3-32b-think",
+      "olmo-3-32b-think"
+    ],
+    "olmo-3-7b-instruct": [
+      "allenai/olmo-3-7b-instruct",
+      "olmo-3-7b-instruct"
+    ],
+    "olmo-3-7b-instruct-dpo": [
+      "allenai/olmo-3-7b-instruct-dpo",
+      "olmo-3-7b-instruct-dpo"
+    ],
+    "olmo-3-7b-instruct-sft": [
+      "allenai/olmo-3-7b-instruct-sft",
+      "olmo-3-7b-instruct-sft"
+    ],
+    "olmo-3-7b-think": [
+      "allenai/olmo-3-7b-think",
+      "olmo-3-7b-think"
+    ],
+    "olmo-3-7b-think-dpo": [
+      "allenai/olmo-3-7b-think-dpo",
+      "olmo-3-7b-think-dpo"
+    ],
+    "olmo-3-7b-think-sft": [
+      "allenai/olmo-3-7b-think-sft",
+      "olmo-3-7b-think-sft"
+    ],
+    "olmo-3.1-32b-instruct": [
+      "allenai/olmo-3.1-32b-instruct",
+      "olmo-3.1-32b-instruct"
+    ],
+    "olmo-3.1-32b-instruct-dpo": [
+      "allenai/olmo-3.1-32b-instruct-dpo",
+      "olmo-3.1-32b-instruct-dpo"
+    ],
+    "olmo-hybrid-7b": [
+      "allenai/olmo-hybrid-7b",
+      "olmo-hybrid-7b"
+    ],
+    "openchat": [
+      "openchat",
+      "openchat/openchat"
+    ],
+    "openchat-3.5": [
+      "openchat-3.5",
+      "openchat/openchat-3.5"
+    ],
+    "openchat-3.5-0106": [
+      "openchat-3.5-0106",
+      "openchat/openchat-3.5-0106"
+    ],
+    "openchat-3.5-0106-gemma": [
+      "openchat-3.5-0106-gemma",
+      "openchat/openchat-3.5-0106-gemma"
+    ],
+    "openchat-3.5-1210": [
+      "openchat-3.5-1210",
+      "openchat/openchat-3.5-1210"
+    ],
+    "openchat-3.6-8b-20240522": [
+      "openchat-3.6-8b-20240522",
+      "openchat/openchat-3.6-8b-20240522"
+    ],
+    "openchat-8192": [
+      "openchat-8192",
+      "openchat/openchat-8192"
+    ],
+    "openchat-v2": [
+      "openchat-v2",
+      "openchat/openchat-v2"
+    ],
+    "openchat-v2-openorca-preview": [
+      "openchat-v2-openorca-preview",
+      "openchat/openchat-v2-openorca-preview"
+    ],
+    "openchat-v2-w": [
+      "openchat-v2-w",
+      "openchat/openchat-v2-w"
+    ],
+    "openchat-v3.1": [
+      "openchat-v3.1",
+      "openchat/openchat-v3.1"
+    ],
+    "openchat-v3.2": [
+      "openchat-v3.2",
+      "openchat/openchat-v3.2"
+    ],
+    "openchat-v3.2-super": [
+      "openchat-v3.2-super",
+      "openchat/openchat-v3.2-super"
+    ],
+    "opencoderplus": [
+      "openchat/opencoderplus",
+      "opencoderplus"
+    ],
+    "openelm-1-1b": [
+      "apple/openelm-1-1b",
+      "openelm-1-1b"
+    ],
+    "openelm-1-1b-instruct": [
+      "apple/openelm-1-1b-instruct",
+      "openelm-1-1b-instruct"
+    ],
+    "openelm-270m": [
+      "apple/openelm-270m",
+      "openelm-270m"
+    ],
+    "openelm-270m-instruct": [
+      "apple/openelm-270m-instruct",
+      "openelm-270m-instruct"
+    ],
+    "openelm-3b": [
+      "apple/openelm-3b",
+      "openelm-3b"
+    ],
+    "openelm-3b-instruct": [
+      "apple/openelm-3b-instruct",
+      "openelm-3b-instruct"
+    ],
+    "openelm-450m": [
+      "apple/openelm-450m",
+      "openelm-450m"
+    ],
+    "openelm-450m-instruct": [
+      "apple/openelm-450m-instruct",
+      "openelm-450m-instruct"
+    ],
+    "oreal-7b": [
+      "internlm/oreal-7b",
+      "oreal-7b"
+    ],
+    "oreal-7b-sft": [
+      "internlm/oreal-7b-sft",
+      "oreal-7b-sft"
+    ],
+    "oreal-deepseek-r1-distill-qwen-7b": [
+      "internlm/oreal-deepseek-r1-distill-qwen-7b",
+      "oreal-deepseek-r1-distill-qwen-7b"
+    ],
+    "pacore-8b": [
+      "pacore-8b",
+      "stepfun-ai/pacore-8b"
+    ],
+    "palmyra-20b-chat": [
+      "palmyra-20b-chat",
+      "writer/palmyra-20b-chat"
+    ],
+    "palmyra-3b": [
+      "palmyra-3b",
+      "writer/palmyra-3b"
+    ],
+    "palmyra-56b-instruct": [
+      "palmyra-56b-instruct",
+      "writer/palmyra-56b-instruct"
+    ],
+    "palmyra-base": [
+      "palmyra-base",
+      "writer/palmyra-base"
+    ],
+    "palmyra-fin-70b-32k": [
+      "palmyra-fin-70b-32k",
+      "writer/palmyra-fin-70b-32k"
+    ],
+    "palmyra-large": [
+      "palmyra-large",
+      "writer/palmyra-large"
+    ],
+    "palmyra-med-20b": [
+      "palmyra-med-20b",
+      "writer/palmyra-med-20b"
+    ],
+    "palmyra-med-70b": [
+      "palmyra-med-70b",
+      "writer/palmyra-med-70b"
+    ],
+    "palmyra-med-70b-32k": [
+      "palmyra-med-70b-32k",
+      "writer/palmyra-med-70b-32k"
+    ],
+    "palmyra-mini": [
+      "palmyra-mini",
+      "writer/palmyra-mini"
+    ],
+    "palmyra-mini-thinking-a": [
+      "palmyra-mini-thinking-a",
+      "writer/palmyra-mini-thinking-a"
+    ],
+    "palmyra-mini-thinking-b": [
+      "palmyra-mini-thinking-b",
+      "writer/palmyra-mini-thinking-b"
+    ],
+    "palmyra-small": [
+      "palmyra-small",
+      "writer/palmyra-small"
+    ],
+    "palmyra-vision": [
+      "palmyra-vision",
+      "writer/palmyra-vision"
+    ],
+    "palmyra-x5": [
+      "palmyra-x5",
+      "writer/palmyra-x5"
+    ],
+    "pangu-codeclm-300m": [
+      "huawei-noah/pangu-codeclm-300m",
+      "pangu-codeclm-300m"
+    ],
+    "pangu-codeclm-full-300m": [
+      "huawei-noah/pangu-codeclm-full-300m",
+      "pangu-codeclm-full-300m"
+    ],
+    "pangu-codeclm-partial-300m": [
+      "huawei-noah/pangu-codeclm-partial-300m",
+      "pangu-codeclm-partial-300m"
+    ],
+    "pareto-26.10": [
+      "pareto-26.10",
+      "unbiased/pareto-26.10"
+    ],
+    "pareto-26.10-preview": [
+      "pareto-26.10-preview",
+      "unbiased/pareto-26.10-preview"
+    ],
+    "pareto-26.9": [
+      "pareto-26.9",
+      "unbiased/pareto-26.9"
+    ],
+    "particle-1": [
+      "particle-1",
+      "particle-ai/particle-1",
+      "particle-ai/particle-1:free"
+    ],
+    "perceptron-mk1": [
+      "perceptron-mk1",
+      "perceptron/perceptron-mk1"
+    ],
+    "perceptron-mk1.5": [
+      "perceptron-mk1.5",
+      "perceptron/perceptron-mk1.5"
+    ],
+    "phi-2": [
+      "microsoft/phi-2",
+      "phi-2"
+    ],
+    "phi-3-mini-128k-instruct": [
+      "microsoft/phi-3-mini-128k-instruct",
+      "phi-3-mini-128k-instruct"
+    ],
+    "phi-3-mini-4k-instruct": [
+      "microsoft/phi-3-mini-4k-instruct",
+      "phi-3-mini-4k-instruct"
+    ],
+    "phi-3.5-mini-instruct": [
+      "microsoft/phi-3.5-mini-instruct",
+      "phi-3.5-mini-instruct"
+    ],
+    "phi-3.5-vision-instruct": [
+      "microsoft/phi-3.5-vision-instruct",
+      "phi-3.5-vision-instruct"
+    ],
+    "phi-4": [
+      "microsoft/phi-4",
+      "phi-4"
+    ],
+    "phi-4-mini-instruct": [
+      "microsoft/phi-4-mini-instruct",
+      "phi-4-mini-instruct"
+    ],
+    "pixtral-large-2502": [
+      "mistralai/pixtral-large-2502",
+      "pixtral-large-2502"
+    ],
+    "pref-models-mistral-7b-dpo": [
+      "huggingfaceh4/pref-models-mistral-7b-dpo",
+      "pref-models-mistral-7b-dpo"
+    ],
+    "pythia-1.4b": [
+      "eleutherai/pythia-1.4b",
+      "pythia-1.4b"
+    ],
+    "pythia-1.4b-deduped": [
+      "eleutherai/pythia-1.4b-deduped",
+      "pythia-1.4b-deduped"
+    ],
+    "pythia-12b": [
+      "eleutherai/pythia-12b",
+      "pythia-12b"
+    ],
+    "pythia-12b-deduped": [
+      "eleutherai/pythia-12b-deduped",
+      "pythia-12b-deduped"
+    ],
+    "pythia-14m": [
+      "eleutherai/pythia-14m",
+      "pythia-14m"
+    ],
+    "pythia-14m-deduped": [
+      "eleutherai/pythia-14m-deduped",
+      "pythia-14m-deduped"
+    ],
+    "pythia-14m-seed1": [
+      "eleutherai/pythia-14m-seed1",
+      "pythia-14m-seed1"
+    ],
+    "pythia-14m-seed2": [
+      "eleutherai/pythia-14m-seed2",
+      "pythia-14m-seed2"
+    ],
+    "pythia-14m-seed3": [
+      "eleutherai/pythia-14m-seed3",
+      "pythia-14m-seed3"
+    ],
+    "pythia-14m-seed4": [
+      "eleutherai/pythia-14m-seed4",
+      "pythia-14m-seed4"
+    ],
+    "pythia-14m-seed5": [
+      "eleutherai/pythia-14m-seed5",
+      "pythia-14m-seed5"
+    ],
+    "pythia-160m": [
+      "eleutherai/pythia-160m",
+      "pythia-160m"
+    ],
+    "pythia-160m-deduped": [
+      "eleutherai/pythia-160m-deduped",
+      "pythia-160m-deduped"
+    ],
+    "pythia-160m-seed1": [
+      "eleutherai/pythia-160m-seed1",
+      "pythia-160m-seed1"
+    ],
+    "pythia-160m-seed2": [
+      "eleutherai/pythia-160m-seed2",
+      "pythia-160m-seed2"
+    ],
+    "pythia-160m-seed3": [
+      "eleutherai/pythia-160m-seed3",
+      "pythia-160m-seed3"
+    ],
+    "pythia-160m-seed4": [
+      "eleutherai/pythia-160m-seed4",
+      "pythia-160m-seed4"
+    ],
+    "pythia-160m-seed5": [
+      "eleutherai/pythia-160m-seed5",
+      "pythia-160m-seed5"
+    ],
+    "pythia-160m-seed7": [
+      "eleutherai/pythia-160m-seed7",
+      "pythia-160m-seed7"
+    ],
+    "pythia-160m-seed9": [
+      "eleutherai/pythia-160m-seed9",
+      "pythia-160m-seed9"
+    ],
+    "pythia-1b": [
+      "eleutherai/pythia-1b",
+      "pythia-1b"
+    ],
+    "pythia-1b-deduped": [
+      "eleutherai/pythia-1b-deduped",
+      "pythia-1b-deduped"
+    ],
+    "pythia-2.8b": [
+      "eleutherai/pythia-2.8b",
+      "pythia-2.8b"
+    ],
+    "pythia-2.8b-deduped": [
+      "eleutherai/pythia-2.8b-deduped",
+      "pythia-2.8b-deduped"
+    ],
+    "pythia-31m": [
+      "eleutherai/pythia-31m",
+      "pythia-31m"
+    ],
+    "pythia-31m-seed1": [
+      "eleutherai/pythia-31m-seed1",
+      "pythia-31m-seed1"
+    ],
+    "pythia-31m-seed2": [
+      "eleutherai/pythia-31m-seed2",
+      "pythia-31m-seed2"
+    ],
+    "pythia-410m": [
+      "eleutherai/pythia-410m",
+      "pythia-410m"
+    ],
+    "pythia-410m-deduped": [
+      "eleutherai/pythia-410m-deduped",
+      "pythia-410m-deduped"
+    ],
+    "pythia-410m-seed1": [
+      "eleutherai/pythia-410m-seed1",
+      "pythia-410m-seed1"
+    ],
+    "pythia-410m-seed2": [
+      "eleutherai/pythia-410m-seed2",
+      "pythia-410m-seed2"
+    ],
+    "pythia-410m-seed3": [
+      "eleutherai/pythia-410m-seed3",
+      "pythia-410m-seed3"
+    ],
+    "pythia-410m-seed4": [
+      "eleutherai/pythia-410m-seed4",
+      "pythia-410m-seed4"
+    ],
+    "pythia-6.9b": [
+      "eleutherai/pythia-6.9b",
+      "pythia-6.9b"
+    ],
+    "pythia-6.9b-deduped": [
+      "eleutherai/pythia-6.9b-deduped",
+      "pythia-6.9b-deduped"
+    ],
+    "pythia-70m": [
+      "eleutherai/pythia-70m",
+      "pythia-70m"
+    ],
+    "pythia-70m-deduped": [
+      "eleutherai/pythia-70m-deduped",
+      "pythia-70m-deduped"
+    ],
+    "pythia-70m-seed1": [
+      "eleutherai/pythia-70m-seed1",
+      "pythia-70m-seed1"
+    ],
+    "pythia-70m-seed2": [
+      "eleutherai/pythia-70m-seed2",
+      "pythia-70m-seed2"
+    ],
+    "pythia-70m-seed3": [
+      "eleutherai/pythia-70m-seed3",
+      "pythia-70m-seed3"
+    ],
+    "pythia-70m-seed4": [
+      "eleutherai/pythia-70m-seed4",
+      "pythia-70m-seed4"
+    ],
+    "pythia-70m-seed5": [
+      "eleutherai/pythia-70m-seed5",
+      "pythia-70m-seed5"
+    ],
+    "pythia-70m-seed6": [
+      "eleutherai/pythia-70m-seed6",
+      "pythia-70m-seed6"
+    ],
+    "pythia-70m-v0": [
+      "eleutherai/pythia-70m-v0",
+      "pythia-70m-v0"
     ],
     "qwen-max": [
       "qwen-max"
     ],
-    "minimax-m2.7": [
-      "minimax-m2.7"
+    "qwen-plus": [
+      "qwen-plus",
+      "qwen/qwen-plus"
     ],
-    "minimax-m2.5": [
-      "minimax-m2.5"
+    "qwen-turbo": [
+      "qwen-turbo"
     ],
-    "minimax-m3": [
-      "minimax-m3"
+    "qwen2.5-1.5b-instruct-gkd": [
+      "huggingfaceh4/qwen2.5-1.5b-instruct-gkd",
+      "qwen2.5-1.5b-instruct-gkd"
     ],
-    "minimax-m3.1-flash": [
-      "minimax-m3.1-flash"
+    "qwen2.5-72b-instruct": [
+      "qwen-2.5-72b-instruct",
+      "qwen/qwen-2.5-72b-instruct",
+      "qwen2.5-72b-instruct"
     ],
-    "kimi-k3": [
-      "kimi-k3"
+    "qwen2.5-coder-32b-instruct": [
+      "qwen-2.5-coder-32b-instruct",
+      "qwen/qwen-2.5-coder-32b-instruct",
+      "qwen2.5-coder-32b-instruct"
     ],
-    "kimi-k2.5": [
-      "kimi-k2.5"
+    "qwen2.5-vl-72b-instruct": [
+      "qwen/qwen2.5-vl-72b-instruct",
+      "qwen2.5-vl-72b-instruct"
     ],
-    "kimi-k2": [
-      "kimi-k2"
+    "qwen3-1.7b-gsm8k-sft": [
+      "huggingfacetb/qwen3-1.7b-gsm8k-sft",
+      "qwen3-1.7b-gsm8k-sft"
+    ],
+    "qwen3-14b": [
+      "qwen/qwen3-14b",
+      "qwen3-14b"
+    ],
+    "qwen3-235b-a22b-2507": [
+      "qwen/qwen3-235b-a22b-2507",
+      "qwen3-235b-a22b-2507"
+    ],
+    "qwen3-235b-a22b-thinking-2507": [
+      "qwen/qwen3-235b-a22b-thinking-2507",
+      "qwen3-235b-a22b-thinking-2507"
+    ],
+    "qwen3-30b-a3b": [
+      "qwen/qwen3-30b-a3b",
+      "qwen3-30b-a3b"
+    ],
+    "qwen3-30b-a3b-instruct-2507": [
+      "qwen/qwen3-30b-a3b-instruct-2507",
+      "qwen3-30b-a3b-instruct-2507"
+    ],
+    "qwen3-32b": [
+      "qwen/qwen3-32b",
+      "qwen3-32b"
+    ],
+    "qwen3-4b-thinking-2507-sft-tr5": [
+      "huggingfaceh4/qwen3-4b-thinking-2507-sft-tr5",
+      "qwen3-4b-thinking-2507-sft-tr5"
+    ],
+    "qwen3-coder": [
+      "qwen/qwen3-coder",
+      "qwen3-coder"
+    ],
+    "qwen3-coder-30b-a3b-instruct": [
+      "qwen/qwen3-coder-30b-a3b-instruct",
+      "qwen3-coder-30b-a3b-instruct"
+    ],
+    "qwen3-coder-flash": [
+      "qwen/qwen3-coder-flash",
+      "qwen3-coder-flash"
+    ],
+    "qwen3-coder-next": [
+      "qwen/qwen3-coder-next",
+      "qwen3-coder-next"
+    ],
+    "qwen3-coder-plus": [
+      "qwen3-coder-plus"
+    ],
+    "qwen3-max": [
+      "qwen3-max"
+    ],
+    "qwen3-next-80b-a3b-instruct": [
+      "qwen/qwen3-next-80b-a3b-instruct",
+      "qwen3-next-80b-a3b-instruct"
+    ],
+    "qwen3-vl-235b-a22b-instruct": [
+      "qwen/qwen3-vl-235b-a22b-instruct",
+      "qwen3-vl-235b-a22b-instruct"
+    ],
+    "qwen3-vl-30b-a3b-instruct": [
+      "qwen/qwen3-vl-30b-a3b-instruct",
+      "qwen3-vl-30b-a3b-instruct"
+    ],
+    "qwen3-vl-8b-instruct": [
+      "qwen/qwen3-vl-8b-instruct",
+      "qwen3-vl-8b-instruct"
+    ],
+    "qwen3.5-122b-a10b": [
+      "qwen/qwen3.5-122b-a10b",
+      "qwen3.5-122b-a10b"
+    ],
+    "qwen3.5-27b": [
+      "qwen/qwen3.5-27b",
+      "qwen3.5-27b"
+    ],
+    "qwen3.5-35b-a3b": [
+      "qwen/qwen3.5-35b-a3b",
+      "qwen3.5-35b-a3b"
+    ],
+    "qwen3.5-397b-a17b": [
+      "qwen/qwen3.5-397b-a17b",
+      "qwen3.5-397b-a17b"
+    ],
+    "qwen3.5-397b-a17b-dflash": [
+      "lmsys/qwen3.5-397b-a17b-dflash",
+      "qwen3.5-397b-a17b-dflash"
+    ],
+    "qwen3.5-9b": [
+      "qwen/qwen3.5-9b",
+      "qwen3.5-9b"
+    ],
+    "qwen3.5-flash-02-23": [
+      "qwen/qwen3.5-flash-02-23",
+      "qwen3.5-flash-02-23"
+    ],
+    "qwen3.5-plus-02-15": [
+      "qwen/qwen3.5-plus-02-15",
+      "qwen3.5-plus-02-15"
+    ],
+    "qwen3.5-plus-20260420": [
+      "qwen/qwen3.5-plus-20260420",
+      "qwen3.5-plus-20260420"
+    ],
+    "qwen3.6-27b": [
+      "qwen/qwen3.6-27b",
+      "qwen3.6-27b"
+    ],
+    "qwen3.6-35b-a3b": [
+      "qwen/qwen3.6-35b-a3b",
+      "qwen3.6-35b-a3b"
+    ],
+    "qwen3.6-flash": [
+      "qwen/qwen3.6-flash",
+      "qwen3.6-flash"
+    ],
+    "qwen3.6-plus": [
+      "qwen/qwen3.6-plus",
+      "qwen3.6-plus"
+    ],
+    "qwen3.7-flash": [
+      "qwen/qwen3.7-flash",
+      "qwen3.7-flash"
+    ],
+    "qwen3.7-max": [
+      "qwen/qwen3.7-max",
+      "qwen3.7-max"
+    ],
+    "qwen3.7-plus": [
+      "qwen/qwen3.7-plus",
+      "qwen/qwen3.7-plus:batch",
+      "qwen3.7-plus"
+    ],
+    "qwen3.8-2.4t-a95b": [
+      "qwen/qwen3.8-2.4t-a95b",
+      "qwen3.8-2.4t-a95b"
+    ],
+    "qwen3.8-27b": [
+      "qwen/qwen3.8-27b",
+      "qwen/qwen3.8-27b:batch",
+      "qwen3.8-27b"
+    ],
+    "qwen3.8-27b-dspine-b16": [
+      "qwen3.8-27b-dspine-b16",
+      "tencent/qwen3.8-27b-dspine-b16"
+    ],
+    "qwen3.8-flash": [
+      "qwen/qwen3.8-flash",
+      "qwen3.8-flash"
+    ],
+    "qwen3.8-max-0902": [
+      "qwen/qwen3.8-max-0902",
+      "qwen/qwen3.8-max-0902:batch",
+      "qwen3.8-max-0902"
+    ],
+    "qwen3.8-max-prime": [
+      "qwen/qwen3.8-max-prime",
+      "qwen3.8-max-prime"
+    ],
+    "qwen3.8-omni-flash": [
+      "qwen/qwen3.8-omni-flash",
+      "qwen3.8-omni-flash"
+    ],
+    "qwen4-max": [
+      "qwen/qwen4-max",
+      "qwen4-max"
+    ],
+    "reka-edge": [
+      "reka-edge",
+      "rekaai/reka-edge"
+    ],
+    "reka-flash-3": [
+      "reka-flash-3",
+      "rekaai/reka-flash-3"
+    ],
+    "relace-apply-3": [
+      "relace-apply-3",
+      "relace/relace-apply-3"
+    ],
+    "relace-search": [
+      "relace-search",
+      "relace/relace-search"
+    ],
+    "remm-slerp-l2-13b": [
+      "remm-slerp-l2-13b",
+      "undi95/remm-slerp-l2-13b"
+    ],
+    "ring-2.6-1t": [
+      "inclusionai/ring-2.6-1t",
+      "ring-2.6-1t"
+    ],
+    "ring-mini-2.0": [
+      "inclusionai/ring-mini-2.0",
+      "ring-mini-2.0"
+    ],
+    "ripple-65b-preview": [
+      "ricursiveai/ripple-65b-preview",
+      "ripple-65b-preview"
+    ],
+    "rlvr-8b-0926": [
+      "rlvr-8b-0926",
+      "stepfun-ai/rlvr-8b-0926"
+    ],
+    "rwkv-4-14b-pile": [
+      "rwkv-4-14b-pile",
+      "rwkv/rwkv-4-14b-pile"
+    ],
+    "rwkv-4-169m-pile": [
+      "rwkv-4-169m-pile",
+      "rwkv/rwkv-4-169m-pile"
+    ],
+    "rwkv-4-1b5-pile": [
+      "rwkv-4-1b5-pile",
+      "rwkv/rwkv-4-1b5-pile"
+    ],
+    "rwkv-4-3b-pile": [
+      "rwkv-4-3b-pile",
+      "rwkv/rwkv-4-3b-pile"
+    ],
+    "rwkv-4-430m-pile": [
+      "rwkv-4-430m-pile",
+      "rwkv/rwkv-4-430m-pile"
+    ],
+    "rwkv-4-7b-pile": [
+      "rwkv-4-7b-pile",
+      "rwkv/rwkv-4-7b-pile"
+    ],
+    "rwkv-5-world-1b5": [
+      "rwkv-5-world-1b5",
+      "rwkv/rwkv-5-world-1b5"
+    ],
+    "rwkv-5-world-3b": [
+      "rwkv-5-world-3b",
+      "rwkv/rwkv-5-world-3b"
+    ],
+    "rwkv-5-world-all-pth": [
+      "rwkv-5-world-all-pth",
+      "rwkv/rwkv-5-world-all-pth"
+    ],
+    "rwkv-6-world-1b6": [
+      "rwkv-6-world-1b6",
+      "rwkv/rwkv-6-world-1b6"
+    ],
+    "rwkv-6-world-3b": [
+      "rwkv-6-world-3b",
+      "rwkv/rwkv-6-world-3b"
+    ],
+    "rwkv-6-world-7b": [
+      "rwkv-6-world-7b",
+      "rwkv/rwkv-6-world-7b"
+    ],
+    "rwkv-raven-14b": [
+      "rwkv-raven-14b",
+      "rwkv/rwkv-raven-14b"
+    ],
+    "rwkv-raven-1b5": [
+      "rwkv-raven-1b5",
+      "rwkv/rwkv-raven-1b5"
+    ],
+    "rwkv-raven-3b": [
+      "rwkv-raven-3b",
+      "rwkv/rwkv-raven-3b"
+    ],
+    "rwkv-raven-7b": [
+      "rwkv-raven-7b",
+      "rwkv/rwkv-raven-7b"
+    ],
+    "rwkv7-1.5b-20260805": [
+      "rwkv/rwkv7-1.5b-20260805",
+      "rwkv7-1.5b-20260805"
+    ],
+    "rwkv7-13.3b-20260805": [
+      "rwkv/rwkv7-13.3b-20260805",
+      "rwkv7-13.3b-20260805"
+    ],
+    "rwkv7-2.9b-20260805": [
+      "rwkv/rwkv7-2.9b-20260805",
+      "rwkv7-2.9b-20260805"
+    ],
+    "rwkv7-7.2b-20260805": [
+      "rwkv/rwkv7-7.2b-20260805",
+      "rwkv7-7.2b-20260805"
+    ],
+    "rwkv7-g1j-1.5b-20260831": [
+      "rwkv/rwkv7-g1j-1.5b-20260831",
+      "rwkv7-g1j-1.5b-20260831"
+    ],
+    "rwkv7-g1j-13.3b-20260831": [
+      "rwkv/rwkv7-g1j-13.3b-20260831",
+      "rwkv7-g1j-13.3b-20260831"
+    ],
+    "rwkv7-g1j-2.9b-20260831": [
+      "rwkv/rwkv7-g1j-2.9b-20260831",
+      "rwkv7-g1j-2.9b-20260831"
+    ],
+    "rwkv7-g1j-7.2b-20260831": [
+      "rwkv/rwkv7-g1j-7.2b-20260831",
+      "rwkv7-g1j-7.2b-20260831"
+    ],
+    "rwkv7-g1k-1.5b-20260930": [
+      "rwkv/rwkv7-g1k-1.5b-20260930",
+      "rwkv7-g1k-1.5b-20260930"
+    ],
+    "rwkv7-g1k-13.3b-20260930": [
+      "rwkv/rwkv7-g1k-13.3b-20260930",
+      "rwkv7-g1k-13.3b-20260930"
+    ],
+    "rwkv7-g1k-2.9b-20260930": [
+      "rwkv/rwkv7-g1k-2.9b-20260930",
+      "rwkv7-g1k-2.9b-20260930"
+    ],
+    "rwkv7-g1k-7.2b-20260930": [
+      "rwkv/rwkv7-g1k-7.2b-20260930",
+      "rwkv7-g1k-7.2b-20260930"
+    ],
+    "rwkv7-g1l-1.5b-20261031": [
+      "rwkv/rwkv7-g1l-1.5b-20261031",
+      "rwkv7-g1l-1.5b-20261031"
+    ],
+    "rwkv7-g1l-13.3b-20261031": [
+      "rwkv/rwkv7-g1l-13.3b-20261031",
+      "rwkv7-g1l-13.3b-20261031"
+    ],
+    "rwkv7-g1l-2.9b-20261031": [
+      "rwkv/rwkv7-g1l-2.9b-20261031",
+      "rwkv7-g1l-2.9b-20261031"
+    ],
+    "rwkv7-g1l-7.2b-20261031": [
+      "rwkv/rwkv7-g1l-7.2b-20261031",
+      "rwkv7-g1l-7.2b-20261031"
+    ],
+    "rwkv7-goose-pile-1.47b-hf": [
+      "rwkv/rwkv7-goose-pile-1.47b-hf",
+      "rwkv7-goose-pile-1.47b-hf"
+    ],
+    "rwkv7-goose-pile-421m-hf": [
+      "rwkv/rwkv7-goose-pile-421m-hf",
+      "rwkv7-goose-pile-421m-hf"
+    ],
+    "rwkv7-goose-world-pth": [
+      "rwkv/rwkv7-goose-world-pth",
+      "rwkv7-goose-world-pth"
+    ],
+    "rwkv7-goose-world2.8-0.1b-hf": [
+      "rwkv/rwkv7-goose-world2.8-0.1b-hf",
+      "rwkv7-goose-world2.8-0.1b-hf"
+    ],
+    "rwkv7-goose-world2.9-0.4b-hf": [
+      "rwkv/rwkv7-goose-world2.9-0.4b-hf",
+      "rwkv7-goose-world2.9-0.4b-hf"
+    ],
+    "rwkv7-goose-world3-1.5b-hf": [
+      "rwkv/rwkv7-goose-world3-1.5b-hf",
+      "rwkv7-goose-world3-1.5b-hf"
+    ],
+    "rwkv7-goose-world3-2.9b-hf": [
+      "rwkv/rwkv7-goose-world3-2.9b-hf",
+      "rwkv7-goose-world3-2.9b-hf"
+    ],
+    "sakana-namazu": [
+      "sakana-namazu",
+      "sakana/sakana-namazu"
+    ],
+    "sarvam-1": [
+      "sarvam-1",
+      "sarvamai/sarvam-1"
+    ],
+    "sarvam-1-v0.5": [
+      "sarvam-1-v0.5",
+      "sarvamai/sarvam-1-v0.5"
+    ],
+    "sarvam-105b": [
+      "sarvam-105b",
+      "sarvam-105b-1711",
+      "sarvamai/sarvam-105b",
+      "sarvamai/sarvam-105b-1711"
+    ],
+    "sarvam-105b-1711-bf16": [
+      "sarvam-105b-1711-bf16",
+      "sarvamai/sarvam-105b-1711-bf16"
+    ],
+    "sarvam-105b-fp8": [
+      "sarvam-105b-fp8",
+      "sarvamai/sarvam-105b-fp8"
+    ],
+    "sarvam-30b": [
+      "sarvam-30b",
+      "sarvamai/sarvam-30b"
+    ],
+    "sarvam-30b-fp8": [
+      "sarvam-30b-fp8",
+      "sarvamai/sarvam-30b-fp8"
+    ],
+    "sarvam-m": [
+      "sarvam-m",
+      "sarvamai/sarvam-m"
+    ],
+    "schematron-v2-small": [
+      "inference-net/schematron-v2-small",
+      "schematron-v2-small"
+    ],
+    "schematron-v2-turbo": [
+      "inference-net/schematron-v2-turbo",
+      "schematron-v2-turbo"
+    ],
+    "seed-2-1-turbo": [
+      "bytedance-seed/seed-2-1-turbo",
+      "seed-2-1-turbo"
+    ],
+    "seed-2.0-lite": [
+      "bytedance-seed/seed-2.0-lite",
+      "seed-2.0-lite"
+    ],
+    "seed-2.0-mini": [
+      "bytedance-seed/seed-2.0-mini",
+      "seed-2.0-mini"
+    ],
+    "sensenova-loop-9b": [
+      "sensenova-loop-9b",
+      "sensenova/sensenova-loop-9b"
+    ],
+    "sensenova-loop-9b-preview": [
+      "sensenova-loop-9b-preview",
+      "sensenova/sensenova-loop-9b-preview"
+    ],
+    "sensenova-mars-32b": [
+      "sensenova-mars-32b",
+      "sensenova/sensenova-mars-32b"
+    ],
+    "sensenova-mars-8b": [
+      "sensenova-mars-8b",
+      "sensenova/sensenova-mars-8b"
+    ],
+    "sensenova-si-1.1-bagel-7b-mot": [
+      "sensenova-si-1.1-bagel-7b-mot",
+      "sensenova/sensenova-si-1.1-bagel-7b-mot"
+    ],
+    "sensenova-si-1.1-internvl3-2b": [
+      "sensenova-si-1.1-internvl3-2b",
+      "sensenova/sensenova-si-1.1-internvl3-2b"
+    ],
+    "sensenova-si-1.1-internvl3-8b": [
+      "sensenova-si-1.1-internvl3-8b",
+      "sensenova/sensenova-si-1.1-internvl3-8b"
+    ],
+    "sensenova-si-1.1-internvl3-8b-800k": [
+      "sensenova-si-1.1-internvl3-8b-800k",
+      "sensenova/sensenova-si-1.1-internvl3-8b-800k"
+    ],
+    "sensenova-si-1.1-qwen2.5-vl-3b": [
+      "sensenova-si-1.1-qwen2.5-vl-3b",
+      "sensenova/sensenova-si-1.1-qwen2.5-vl-3b"
+    ],
+    "sensenova-si-1.1-qwen2.5-vl-7b": [
+      "sensenova-si-1.1-qwen2.5-vl-7b",
+      "sensenova/sensenova-si-1.1-qwen2.5-vl-7b"
+    ],
+    "sensenova-si-1.1-qwen3-vl-8b": [
+      "sensenova-si-1.1-qwen3-vl-8b",
+      "sensenova/sensenova-si-1.1-qwen3-vl-8b"
+    ],
+    "sensenova-si-1.2-internvl3-8b": [
+      "sensenova-si-1.2-internvl3-8b",
+      "sensenova/sensenova-si-1.2-internvl3-8b"
+    ],
+    "sensenova-si-1.3-internvl3-8b": [
+      "sensenova-si-1.3-internvl3-8b",
+      "sensenova/sensenova-si-1.3-internvl3-8b"
+    ],
+    "sensenova-si-1.3-qwen3-vl-8b": [
+      "sensenova-si-1.3-qwen3-vl-8b",
+      "sensenova/sensenova-si-1.3-qwen3-vl-8b"
+    ],
+    "sensenova-si-1.4-internvl3-8b": [
+      "sensenova-si-1.4-internvl3-8b",
+      "sensenova/sensenova-si-1.4-internvl3-8b"
+    ],
+    "sensenova-si-1.5-internvl3-8b": [
+      "sensenova-si-1.5-internvl3-8b",
+      "sensenova/sensenova-si-1.5-internvl3-8b"
+    ],
+    "skyfall-36b-v2": [
+      "skyfall-36b-v2",
+      "thedrummer/skyfall-36b-v2"
+    ],
+    "skywork-13b-base": [
+      "skywork-13b-base",
+      "skywork/skywork-13b-base"
+    ],
+    "skywork-13b-base-3.1tb": [
+      "skywork-13b-base-3.1tb",
+      "skywork/skywork-13b-base-3.1tb"
+    ],
+    "skywork-critic-llama-3.1-8b": [
+      "skywork-critic-llama-3.1-8b",
+      "skywork/skywork-critic-llama-3.1-8b"
+    ],
+    "skywork-moe-base": [
+      "skywork-moe-base",
+      "skywork/skywork-moe-base"
+    ],
+    "skywork-moe-base-fp8": [
+      "skywork-moe-base-fp8",
+      "skywork/skywork-moe-base-fp8"
+    ],
+    "skywork-o1-open-llama-3.1-8b": [
+      "skywork-o1-open-llama-3.1-8b",
+      "skywork/skywork-o1-open-llama-3.1-8b"
+    ],
+    "skywork-or1-32b": [
+      "skywork-or1-32b",
+      "skywork/skywork-or1-32b"
+    ],
+    "skywork-or1-7b": [
+      "skywork-or1-7b",
+      "skywork/skywork-or1-7b"
+    ],
+    "skywork-or1-math-7b": [
+      "skywork-or1-math-7b",
+      "skywork/skywork-or1-math-7b"
+    ],
+    "skywork-r1v-38b": [
+      "skywork-r1v-38b",
+      "skywork/skywork-r1v-38b"
+    ],
+    "skywork-r1v2-38b": [
+      "skywork-r1v2-38b",
+      "skywork/skywork-r1v2-38b"
+    ],
+    "skywork-r1v3-38b": [
+      "skywork-r1v3-38b",
+      "skywork/skywork-r1v3-38b"
+    ],
+    "skywork-swe-32b": [
+      "skywork-swe-32b",
+      "skywork/skywork-swe-32b"
+    ],
+    "skyworkvl-38b": [
+      "skywork/skyworkvl-38b",
+      "skyworkvl-38b"
+    ],
+    "smollm-1.7b": [
+      "huggingfacetb/smollm-1.7b",
+      "smollm-1.7b"
+    ],
+    "smollm-1.7b-instruct": [
+      "huggingfacetb/smollm-1.7b-instruct",
+      "smollm-1.7b-instruct"
+    ],
+    "smollm-135m": [
+      "huggingfacetb/smollm-135m",
+      "smollm-135m"
+    ],
+    "smollm-135m-instruct": [
+      "huggingfacetb/smollm-135m-instruct",
+      "smollm-135m-instruct"
+    ],
+    "smollm-360m": [
+      "huggingfacetb/smollm-360m",
+      "smollm-360m"
+    ],
+    "smollm-360m-instruct": [
+      "huggingfacetb/smollm-360m-instruct",
+      "smollm-360m-instruct"
+    ],
+    "smollm2-1.7b": [
+      "huggingfacetb/smollm2-1.7b",
+      "smollm2-1.7b"
+    ],
+    "smollm2-1.7b-instruct": [
+      "huggingfacetb/smollm2-1.7b-instruct",
+      "smollm2-1.7b-instruct"
+    ],
+    "smollm2-1.7b-instruct-16k": [
+      "huggingfacetb/smollm2-1.7b-instruct-16k",
+      "smollm2-1.7b-instruct-16k"
+    ],
+    "smollm2-135m": [
+      "huggingfacetb/smollm2-135m",
+      "smollm2-135m"
+    ],
+    "smollm2-135m-instruct": [
+      "huggingfacetb/smollm2-135m-instruct",
+      "smollm2-135m-instruct"
+    ],
+    "smollm2-360m": [
+      "huggingfacetb/smollm2-360m",
+      "smollm2-360m"
+    ],
+    "smollm2-360m-instruct": [
+      "huggingfacetb/smollm2-360m-instruct",
+      "smollm2-360m-instruct"
+    ],
+    "smollm3-3b": [
+      "huggingfacetb/smollm3-3b",
+      "smollm3-3b"
+    ],
+    "smollm3-3b-base": [
+      "huggingfacetb/smollm3-3b-base",
+      "smollm3-3b-base"
+    ],
+    "smollm3-3b-gsm8k-sft": [
+      "huggingfacetb/smollm3-3b-gsm8k-sft",
+      "smollm3-3b-gsm8k-sft"
+    ],
+    "smollm3-3b-qat-baseline-q": [
+      "huggingfaceh4/smollm3-3b-qat-baseline-q",
+      "smollm3-3b-qat-baseline-q"
+    ],
+    "smolvlm-256m-base": [
+      "huggingfacetb/smolvlm-256m-base",
+      "smolvlm-256m-base"
+    ],
+    "smolvlm-256m-instruct": [
+      "huggingfacetb/smolvlm-256m-instruct",
+      "smolvlm-256m-instruct"
+    ],
+    "smolvlm-500m-base": [
+      "huggingfacetb/smolvlm-500m-base",
+      "smolvlm-500m-base"
+    ],
+    "smolvlm-500m-instruct": [
+      "huggingfacetb/smolvlm-500m-instruct",
+      "smolvlm-500m-instruct"
+    ],
+    "smolvlm-base": [
+      "huggingfacetb/smolvlm-base",
+      "smolvlm-base"
+    ],
+    "smolvlm-instruct": [
+      "huggingfacetb/smolvlm-instruct",
+      "smolvlm-instruct"
+    ],
+    "smolvlm2-2.2b-base": [
+      "huggingfacetb/smolvlm2-2.2b-base",
+      "smolvlm2-2.2b-base"
+    ],
+    "smolvlm2-2.2b-instruct": [
+      "huggingfacetb/smolvlm2-2.2b-instruct",
+      "smolvlm2-2.2b-instruct"
+    ],
+    "smolvlm2-256m-video-instruct": [
+      "huggingfacetb/smolvlm2-256m-video-instruct",
+      "smolvlm2-256m-video-instruct"
+    ],
+    "smolvlm2-500m-video-instruct": [
+      "huggingfacetb/smolvlm2-500m-video-instruct",
+      "smolvlm2-500m-video-instruct"
+    ],
+    "solar-0-70b-16bit": [
+      "solar-0-70b-16bit",
+      "upstage/solar-0-70b-16bit"
+    ],
+    "solar-0-70b-8bit": [
+      "solar-0-70b-8bit",
+      "upstage/solar-0-70b-8bit"
+    ],
+    "solar-10.7b-instruct-v1.0": [
+      "solar-10.7b-instruct-v1.0",
+      "upstage/solar-10.7b-instruct-v1.0"
+    ],
+    "solar-10.7b-v1.0": [
+      "solar-10.7b-v1.0",
+      "upstage/solar-10.7b-v1.0"
+    ],
+    "solar-mini-4-5": [
+      "solar-mini-4-5",
+      "upstage/solar-mini-4-5"
+    ],
+    "solar-mini4": [
+      "solar-mini4",
+      "upstage/solar-mini4"
+    ],
+    "solar-open-100b": [
+      "solar-open-100b",
+      "upstage/solar-open-100b"
+    ],
+    "solar-open2-250b": [
+      "solar-open2-250b",
+      "upstage/solar-open2-250b"
+    ],
+    "solar-pro-4-contributor": [
+      "solar-pro-4-contributor",
+      "upstage/solar-pro-4-contributor"
+    ],
+    "solar-pro-preview-instruct": [
+      "solar-pro-preview-instruct",
+      "upstage/solar-pro-preview-instruct"
+    ],
+    "solar-pro-preview-pretrained": [
+      "solar-pro-preview-pretrained",
+      "upstage/solar-pro-preview-pretrained"
+    ],
+    "solar-pro4": [
+      "solar-pro4",
+      "upstage/solar-pro4"
+    ],
+    "sonar": [
+      "perplexity/sonar",
+      "sonar"
+    ],
+    "sonar-deep-research": [
+      "perplexity/sonar-deep-research",
+      "sonar-deep-research"
+    ],
+    "sonar-pro": [
+      "perplexity/sonar-pro",
+      "sonar-pro"
+    ],
+    "sonar-pro-search": [
+      "perplexity/sonar-pro-search",
+      "sonar-pro-search"
+    ],
+    "sonar-reasoning-pro": [
+      "perplexity/sonar-reasoning-pro",
+      "sonar-reasoning-pro"
+    ],
+    "spark-max": [
+      "generalv3.5",
+      "spark-max"
+    ],
+    "spark-x": [
+      "spark-x"
+    ],
+    "spatial-ssrl-7b": [
+      "internlm/spatial-ssrl-7b",
+      "spatial-ssrl-7b"
+    ],
+    "stable-code-3b": [
+      "stabilityai/stable-code-3b",
+      "stable-code-3b"
+    ],
+    "stable-code-instruct-3b": [
+      "stabilityai/stable-code-instruct-3b",
+      "stable-code-instruct-3b"
+    ],
+    "stablelm-2-1-6b": [
+      "stabilityai/stablelm-2-1-6b",
+      "stablelm-2-1-6b"
+    ],
+    "stablelm-2-1-6b-chat": [
+      "stabilityai/stablelm-2-1-6b-chat",
+      "stablelm-2-1-6b-chat"
+    ],
+    "stablelm-2-zephyr-1-6b": [
+      "stabilityai/stablelm-2-zephyr-1-6b",
+      "stablelm-2-zephyr-1-6b"
+    ],
+    "stablelm-3b-4e1t": [
+      "stabilityai/stablelm-3b-4e1t",
+      "stablelm-3b-4e1t"
+    ],
+    "stablelm-base-alpha-3b": [
+      "stabilityai/stablelm-base-alpha-3b",
+      "stablelm-base-alpha-3b"
+    ],
+    "stablelm-tuned-alpha-3b": [
+      "stabilityai/stablelm-tuned-alpha-3b",
+      "stablelm-tuned-alpha-3b"
+    ],
+    "stablelm-tuned-alpha-7b": [
+      "stabilityai/stablelm-tuned-alpha-7b",
+      "stablelm-tuned-alpha-7b"
+    ],
+    "stablelm-zephyr-3b": [
+      "stabilityai/stablelm-zephyr-3b",
+      "stablelm-zephyr-3b"
+    ],
+    "starchat-alpha": [
+      "huggingfaceh4/starchat-alpha",
+      "starchat-alpha"
+    ],
+    "starchat-beta": [
+      "huggingfaceh4/starchat-beta",
+      "starchat-beta"
+    ],
+    "starchat2-15b-sft-v0.1": [
+      "huggingfaceh4/starchat2-15b-sft-v0.1",
+      "starchat2-15b-sft-v0.1"
+    ],
+    "starchat2-15b-v0.1": [
+      "huggingfaceh4/starchat2-15b-v0.1",
+      "starchat2-15b-v0.1"
+    ],
+    "starcoder": [
+      "bigcode/starcoder",
+      "starcoder"
+    ],
+    "starcoder-co-format": [
+      "bigcode/starcoder-co-format",
+      "starcoder-co-format"
+    ],
+    "starcoder-co-manual": [
+      "bigcode/starcoder-co-manual",
+      "starcoder-co-manual"
+    ],
+    "starcoder-co-target": [
+      "bigcode/starcoder-co-target",
+      "starcoder-co-target"
+    ],
+    "starcoder-cxo": [
+      "bigcode/starcoder-cxo",
+      "starcoder-cxo"
+    ],
+    "starcoder-cxso": [
+      "bigcode/starcoder-cxso",
+      "starcoder-cxso"
+    ],
+    "starcoder-o": [
+      "bigcode/starcoder-o",
+      "starcoder-o"
+    ],
+    "starcoder-xo": [
+      "bigcode/starcoder-xo",
+      "starcoder-xo"
+    ],
+    "starcoder2-15b": [
+      "bigcode/starcoder2-15b",
+      "starcoder2-15b"
+    ],
+    "starcoder2-15b-instruct-v0.1": [
+      "bigcode/starcoder2-15b-instruct-v0.1",
+      "starcoder2-15b-instruct-v0.1"
+    ],
+    "starcoder2-3b": [
+      "bigcode/starcoder2-3b",
+      "starcoder2-3b"
+    ],
+    "starcoder2-7b": [
+      "bigcode/starcoder2-7b",
+      "starcoder2-7b"
+    ],
+    "starcoderbase": [
+      "bigcode/starcoderbase",
+      "starcoderbase"
+    ],
+    "starcoderbase-1b": [
+      "bigcode/starcoderbase-1b",
+      "starcoderbase-1b"
+    ],
+    "starcoderbase-3b": [
+      "bigcode/starcoderbase-3b",
+      "starcoderbase-3b"
+    ],
+    "starcoderbase-7b": [
+      "bigcode/starcoderbase-7b",
+      "starcoderbase-7b"
+    ],
+    "step-3.5-flash": [
+      "step-3.5-flash",
+      "stepfun-ai/step-3.5-flash"
+    ],
+    "step-3.5-flash-base": [
+      "step-3.5-flash-base",
+      "stepfun-ai/step-3.5-flash-base"
+    ],
+    "step-3.5-flash-base-midtrain": [
+      "step-3.5-flash-base-midtrain",
+      "stepfun-ai/step-3.5-flash-base-midtrain"
+    ],
+    "step-3.5-flash-fp8": [
+      "step-3.5-flash-fp8",
+      "stepfun-ai/step-3.5-flash-fp8"
+    ],
+    "step-3.7-flash": [
+      "step-3.7-flash",
+      "stepfun-ai/step-3.7-flash",
+      "stepfun/step-3.7-flash"
+    ],
+    "step-3.7-flash-fp8": [
+      "step-3.7-flash-fp8",
+      "stepfun-ai/step-3.7-flash-fp8"
+    ],
+    "step-3.7-flash-nvfp4": [
+      "step-3.7-flash-nvfp4",
+      "stepfun-ai/step-3.7-flash-nvfp4"
+    ],
+    "step-5-preview": [
+      "step-5-preview",
+      "stepfun/step-5-preview"
+    ],
+    "step3": [
+      "step3",
+      "stepfun-ai/step3"
+    ],
+    "step3-fp8": [
+      "step3-fp8",
+      "stepfun-ai/step3-fp8"
+    ],
+    "step3-vl-10b": [
+      "step3-vl-10b",
+      "stepfun-ai/step3-vl-10b"
+    ],
+    "step3-vl-10b-base": [
+      "step3-vl-10b-base",
+      "stepfun-ai/step3-vl-10b-base"
+    ],
+    "step3-vl-10b-fp8": [
+      "step3-vl-10b-fp8",
+      "stepfun-ai/step3-vl-10b-fp8"
+    ],
+    "stepfun-formalizer-32b": [
+      "stepfun-ai/stepfun-formalizer-32b",
+      "stepfun-formalizer-32b"
+    ],
+    "stepfun-formalizer-7b": [
+      "stepfun-ai/stepfun-formalizer-7b",
+      "stepfun-formalizer-7b"
+    ],
+    "stepfun-prover-preview-32b": [
+      "stepfun-ai/stepfun-prover-preview-32b",
+      "stepfun-prover-preview-32b"
+    ],
+    "stepfun-prover-preview-7b": [
+      "stepfun-ai/stepfun-prover-preview-7b",
+      "stepfun-prover-preview-7b"
+    ],
+    "swe-fixer-retriever-7b": [
+      "internlm/swe-fixer-retriever-7b",
+      "swe-fixer-retriever-7b"
+    ],
+    "telechat-12b": [
+      "tele-ai/telechat-12b",
+      "telechat-12b"
+    ],
+    "telechat-12b-int4": [
+      "tele-ai/telechat-12b-int4",
+      "telechat-12b-int4"
+    ],
+    "telechat-12b-int8": [
+      "tele-ai/telechat-12b-int8",
+      "telechat-12b-int8"
+    ],
+    "telechat-12b-v2": [
+      "tele-ai/telechat-12b-v2",
+      "telechat-12b-v2"
+    ],
+    "telechat-1b": [
+      "tele-ai/telechat-1b",
+      "telechat-1b"
+    ],
+    "telechat-52b": [
+      "tele-ai/telechat-52b",
+      "telechat-52b"
+    ],
+    "telechat-7b": [
+      "tele-ai/telechat-7b",
+      "telechat-7b"
+    ],
+    "telechat-7b-int4": [
+      "tele-ai/telechat-7b-int4",
+      "telechat-7b-int4"
+    ],
+    "telechat-7b-int8": [
+      "tele-ai/telechat-7b-int8",
+      "telechat-7b-int8"
+    ],
+    "telechat2-115b": [
+      "tele-ai/telechat2-115b",
+      "telechat2-115b"
+    ],
+    "telechat2-3b": [
+      "tele-ai/telechat2-3b",
+      "telechat2-3b"
+    ],
+    "telechat2-7b-32k": [
+      "tele-ai/telechat2-7b-32k",
+      "telechat2-7b-32k"
+    ],
+    "telechat2.5-115b": [
+      "tele-ai/telechat2.5-115b",
+      "telechat2.5-115b"
+    ],
+    "telechat2.5-35b": [
+      "tele-ai/telechat2.5-35b",
+      "telechat2.5-35b"
+    ],
+    "telechat3-36b-thinking": [
+      "tele-ai/telechat3-36b-thinking",
+      "telechat3-36b-thinking"
+    ],
+    "telechat3-coder-36b-thinking": [
+      "tele-ai/telechat3-coder-36b-thinking",
+      "telechat3-coder-36b-thinking"
+    ],
+    "tencent-hunyuan-large": [
+      "tencent-hunyuan-large",
+      "tencent/tencent-hunyuan-large"
+    ],
+    "ternary-bonsai-2-27b": [
+      "prism-ml/ternary-bonsai-2-27b",
+      "ternary-bonsai-2-27b"
+    ],
+    "ternary-bonsai-2-9b": [
+      "prism-ml/ternary-bonsai-2-9b",
+      "ternary-bonsai-2-9b"
+    ],
+    "tiny-aya-base": [
+      "coherelabs/tiny-aya-base",
+      "tiny-aya-base"
+    ],
+    "tiny-aya-base-32k": [
+      "coherelabs/tiny-aya-base-32k",
+      "tiny-aya-base-32k"
+    ],
+    "tiny-aya-earth": [
+      "coherelabs/tiny-aya-earth",
+      "tiny-aya-earth"
+    ],
+    "tiny-aya-en-thinker": [
+      "coherelabs/tiny-aya-en-thinker",
+      "tiny-aya-en-thinker"
+    ],
+    "tiny-aya-fire": [
+      "coherelabs/tiny-aya-fire",
+      "tiny-aya-fire"
+    ],
+    "tiny-aya-global": [
+      "coherelabs/tiny-aya-global",
+      "tiny-aya-global"
+    ],
+    "tiny-aya-l2-thinker": [
+      "coherelabs/tiny-aya-l2-thinker",
+      "tiny-aya-l2-thinker"
+    ],
+    "tiny-aya-water": [
+      "coherelabs/tiny-aya-water",
+      "tiny-aya-water"
+    ],
+    "tiny-processor-apertus1p5": [
+      "swiss-ai/tiny-processor-apertus1p5",
+      "tiny-processor-apertus1p5"
+    ],
+    "tiny-starcoder-py": [
+      "bigcode/tiny-starcoder-py",
+      "tiny-starcoder-py"
+    ],
+    "trinity-large-base": [
+      "arcee-ai/trinity-large-base",
+      "trinity-large-base"
+    ],
+    "trinity-large-preview": [
+      "arcee-ai/trinity-large-preview",
+      "trinity-large-preview"
+    ],
+    "trinity-large-thinking": [
+      "arcee-ai/trinity-large-thinking",
+      "trinity-large-thinking"
+    ],
+    "trinity-large-truebase": [
+      "arcee-ai/trinity-large-truebase",
+      "trinity-large-truebase"
+    ],
+    "trinity-mini": [
+      "arcee-ai/trinity-mini",
+      "trinity-mini"
+    ],
+    "trinity-mini-base": [
+      "arcee-ai/trinity-mini-base",
+      "trinity-mini-base"
+    ],
+    "trinity-nano-base": [
+      "arcee-ai/trinity-nano-base",
+      "trinity-nano-base"
+    ],
+    "trinity-nano-preview": [
+      "arcee-ai/trinity-nano-preview",
+      "trinity-nano-preview"
+    ],
+    "ui-tars-1.5-7b": [
+      "bytedance/ui-tars-1.5-7b",
+      "ui-tars-1.5-7b"
+    ],
+    "unslopnemo-12b": [
+      "thedrummer/unslopnemo-12b",
+      "unslopnemo-12b"
+    ],
+    "v5-eagle-7b-hf": [
+      "rwkv/v5-eagle-7b-hf",
+      "v5-eagle-7b-hf"
+    ],
+    "v5-eaglex-v2-7b-hf": [
+      "rwkv/v5-eaglex-v2-7b-hf",
+      "v5-eaglex-v2-7b-hf"
+    ],
+    "v6-finch-14b-hf": [
+      "rwkv/v6-finch-14b-hf",
+      "v6-finch-14b-hf"
+    ],
+    "v6-finch-1b6-hf": [
+      "rwkv/v6-finch-1b6-hf",
+      "v6-finch-1b6-hf"
+    ],
+    "v6-finch-3b-hf": [
+      "rwkv/v6-finch-3b-hf",
+      "v6-finch-3b-hf"
+    ],
+    "v6-finch-7b-hf": [
+      "rwkv/v6-finch-7b-hf",
+      "v6-finch-7b-hf"
+    ],
+    "vicuna-13b-delta-v0": [
+      "lmsys/vicuna-13b-delta-v0",
+      "vicuna-13b-delta-v0"
+    ],
+    "vicuna-13b-delta-v1.1": [
+      "lmsys/vicuna-13b-delta-v1.1",
+      "vicuna-13b-delta-v1.1"
+    ],
+    "vicuna-13b-v1.1": [
+      "lmsys/vicuna-13b-v1.1",
+      "vicuna-13b-v1.1"
+    ],
+    "vicuna-13b-v1.3": [
+      "lmsys/vicuna-13b-v1.3",
+      "vicuna-13b-v1.3"
+    ],
+    "vicuna-13b-v1.5": [
+      "lmsys/vicuna-13b-v1.5",
+      "vicuna-13b-v1.5"
+    ],
+    "vicuna-13b-v1.5-16k": [
+      "lmsys/vicuna-13b-v1.5-16k",
+      "vicuna-13b-v1.5-16k"
+    ],
+    "vicuna-33b-v1.3": [
+      "lmsys/vicuna-33b-v1.3",
+      "vicuna-33b-v1.3"
+    ],
+    "vicuna-7b-delta-v0": [
+      "lmsys/vicuna-7b-delta-v0",
+      "vicuna-7b-delta-v0"
+    ],
+    "vicuna-7b-delta-v1.1": [
+      "lmsys/vicuna-7b-delta-v1.1",
+      "vicuna-7b-delta-v1.1"
+    ],
+    "vicuna-7b-v1.1": [
+      "lmsys/vicuna-7b-v1.1",
+      "vicuna-7b-v1.1"
+    ],
+    "vicuna-7b-v1.3": [
+      "lmsys/vicuna-7b-v1.3",
+      "vicuna-7b-v1.3"
+    ],
+    "vicuna-7b-v1.5": [
+      "lmsys/vicuna-7b-v1.5",
+      "vicuna-7b-v1.5"
+    ],
+    "vicuna-7b-v1.5-16k": [
+      "lmsys/vicuna-7b-v1.5-16k",
+      "vicuna-7b-v1.5-16k"
+    ],
+    "virtuoso-large": [
+      "arcee-ai/virtuoso-large",
+      "virtuoso-large"
+    ],
+    "virtuoso-lite": [
+      "arcee-ai/virtuoso-lite",
+      "virtuoso-lite"
+    ],
+    "virtuoso-medium-v2": [
+      "arcee-ai/virtuoso-medium-v2",
+      "virtuoso-medium-v2"
+    ],
+    "virtuoso-small-v2": [
+      "arcee-ai/virtuoso-small-v2",
+      "virtuoso-small-v2"
+    ],
+    "weaver": [
+      "mancer/weaver",
+      "weaver"
+    ],
+    "yarn-llama-2-7b-128k": [
+      "nousresearch/yarn-llama-2-7b-128k",
+      "yarn-llama-2-7b-128k"
+    ],
+    "yi-1.5-34b": [
+      "01-ai/yi-1.5-34b",
+      "yi-1.5-34b"
+    ],
+    "yi-1.5-34b-32k": [
+      "01-ai/yi-1.5-34b-32k",
+      "yi-1.5-34b-32k"
+    ],
+    "yi-1.5-34b-chat": [
+      "01-ai/yi-1.5-34b-chat",
+      "yi-1.5-34b-chat"
+    ],
+    "yi-1.5-34b-chat-16k": [
+      "01-ai/yi-1.5-34b-chat-16k",
+      "yi-1.5-34b-chat-16k"
+    ],
+    "yi-1.5-6b": [
+      "01-ai/yi-1.5-6b",
+      "yi-1.5-6b"
+    ],
+    "yi-1.5-6b-chat": [
+      "01-ai/yi-1.5-6b-chat",
+      "yi-1.5-6b-chat"
+    ],
+    "yi-1.5-9b": [
+      "01-ai/yi-1.5-9b",
+      "yi-1.5-9b"
+    ],
+    "yi-1.5-9b-32k": [
+      "01-ai/yi-1.5-9b-32k",
+      "yi-1.5-9b-32k"
+    ],
+    "yi-1.5-9b-chat": [
+      "01-ai/yi-1.5-9b-chat",
+      "yi-1.5-9b-chat"
+    ],
+    "yi-1.5-9b-chat-16k": [
+      "01-ai/yi-1.5-9b-chat-16k",
+      "yi-1.5-9b-chat-16k"
+    ],
+    "yi-34b": [
+      "01-ai/yi-34b",
+      "yi-34b"
+    ],
+    "yi-34b-200k": [
+      "01-ai/yi-34b-200k",
+      "yi-34b-200k"
+    ],
+    "yi-34b-chat": [
+      "01-ai/yi-34b-chat",
+      "yi-34b-chat"
+    ],
+    "yi-34b-chat-4bits": [
+      "01-ai/yi-34b-chat-4bits",
+      "yi-34b-chat-4bits"
+    ],
+    "yi-34b-chat-8bits": [
+      "01-ai/yi-34b-chat-8bits",
+      "yi-34b-chat-8bits"
+    ],
+    "yi-6b": [
+      "01-ai/yi-6b",
+      "yi-6b"
+    ],
+    "yi-6b-200k": [
+      "01-ai/yi-6b-200k",
+      "yi-6b-200k"
+    ],
+    "yi-6b-chat": [
+      "01-ai/yi-6b-chat",
+      "yi-6b-chat"
+    ],
+    "yi-6b-chat-4bits": [
+      "01-ai/yi-6b-chat-4bits",
+      "yi-6b-chat-4bits"
+    ],
+    "yi-6b-chat-8bits": [
+      "01-ai/yi-6b-chat-8bits",
+      "yi-6b-chat-8bits"
+    ],
+    "yi-9b": [
+      "01-ai/yi-9b",
+      "yi-9b"
+    ],
+    "yi-9b-200k": [
+      "01-ai/yi-9b-200k",
+      "yi-9b-200k"
+    ],
+    "yi-coder-1.5b-chat": [
+      "01-ai/yi-coder-1.5b-chat",
+      "yi-coder-1.5b-chat"
+    ],
+    "yi-coder-9b": [
+      "01-ai/yi-coder-9b",
+      "yi-coder-9b"
+    ],
+    "yi-coder-9b-chat": [
+      "01-ai/yi-coder-9b-chat",
+      "yi-coder-9b-chat"
+    ],
+    "yi-vl-34b": [
+      "01-ai/yi-vl-34b",
+      "yi-vl-34b"
+    ],
+    "yi-vl-6b": [
+      "01-ai/yi-vl-6b",
+      "yi-vl-6b"
+    ],
+    "zamba-7b-v1": [
+      "zamba-7b-v1",
+      "zyphra/zamba-7b-v1"
+    ],
+    "zamba-7b-v1-phase1": [
+      "zamba-7b-v1-phase1",
+      "zyphra/zamba-7b-v1-phase1"
+    ],
+    "zamba2-1.2b": [
+      "zamba2-1.2b",
+      "zyphra/zamba2-1.2b"
+    ],
+    "zamba2-1.2b-instruct": [
+      "zamba2-1.2b-instruct",
+      "zyphra/zamba2-1.2b-instruct"
+    ],
+    "zamba2-1.2b-instruct-v2": [
+      "zamba2-1.2b-instruct-v2",
+      "zyphra/zamba2-1.2b-instruct-v2"
+    ],
+    "zamba2-2.7b": [
+      "zamba2-2.7b",
+      "zyphra/zamba2-2.7b"
+    ],
+    "zamba2-2.7b-instruct": [
+      "zamba2-2.7b-instruct",
+      "zyphra/zamba2-2.7b-instruct"
+    ],
+    "zamba2-2.7b-instruct-v2": [
+      "zamba2-2.7b-instruct-v2",
+      "zyphra/zamba2-2.7b-instruct-v2"
+    ],
+    "zamba2-7b": [
+      "zamba2-7b",
+      "zyphra/zamba2-7b"
+    ],
+    "zamba2-7b-instruct": [
+      "zamba2-7b-instruct",
+      "zyphra/zamba2-7b-instruct"
+    ],
+    "zamba2-7b-instruct-v2": [
+      "zamba2-7b-instruct-v2",
+      "zyphra/zamba2-7b-instruct-v2"
+    ],
+    "zamba2-vl-1.2b": [
+      "zamba2-vl-1.2b",
+      "zyphra/zamba2-vl-1.2b"
+    ],
+    "zamba2-vl-2.7b": [
+      "zamba2-vl-2.7b",
+      "zyphra/zamba2-vl-2.7b"
+    ],
+    "zamba2-vl-7b": [
+      "zamba2-vl-7b",
+      "zyphra/zamba2-vl-7b"
+    ],
+    "zephyr-7b-alpha": [
+      "huggingfaceh4/zephyr-7b-alpha",
+      "zephyr-7b-alpha"
+    ],
+    "zephyr-7b-beta": [
+      "huggingfaceh4/zephyr-7b-beta",
+      "zephyr-7b-beta"
+    ],
+    "zephyr-7b-gemma-sft-v0.1": [
+      "huggingfaceh4/zephyr-7b-gemma-sft-v0.1",
+      "zephyr-7b-gemma-sft-v0.1"
+    ],
+    "zephyr-7b-gemma-v0.1": [
+      "huggingfaceh4/zephyr-7b-gemma-v0.1",
+      "zephyr-7b-gemma-v0.1"
+    ],
+    "zephyr-orpo-141b-a35b-v0.1": [
+      "huggingfaceh4/zephyr-orpo-141b-a35b-v0.1",
+      "zephyr-orpo-141b-a35b-v0.1"
+    ],
+    "dbrx-instruct": [
+      "dbrx-instruct"
+    ],
+    "dolly-v2-12b": [
+      "dolly-v2-12b"
+    ],
+    "mpt-7b-chat": [
+      "mpt-7b-chat"
+    ],
+    "mpt-7b-8k-chat": [
+      "mpt-7b-8k-chat"
+    ],
+    "jais-13b-chat": [
+      "jais-13b-chat"
+    ],
+    "codegeex4-all-9b": [
+      "codegeex4-all-9b"
+    ],
+    "spark-ultra": [
+      "spark-ultra",
+      "4.0ultra"
+    ],
+    "composer-2.5": [
+      "composer-2.5"
+    ],
+    "composer-2": [
+      "composer-2"
+    ],
+    "swe-1.5": [
+      "swe-1.5"
+    ],
+    "swe-1.6": [
+      "swe-1.6"
+    ],
+    "mercury-2.5": [
+      "mercury-2.5"
+    ],
+    "mercury-coder-small": [
+      "mercury-coder-small"
+    ],
+    "codellama-7b-instruct-hf": [
+      "codellama-7b-instruct-hf"
+    ],
+    "codellama-13b-instruct-hf": [
+      "codellama-13b-instruct-hf"
+    ],
+    "codellama-34b-instruct-hf": [
+      "codellama-34b-instruct-hf"
+    ],
+    "codellama-70b-instruct-hf": [
+      "codellama-70b-instruct-hf"
     ]
   }
 }

@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { DatabaseSync } from "node:sqlite";
 import catalog from "../../model-catalog.json" with { type: "json" };
 import cases from "../../model-normalization-cases.json" with { type: "json" };
+import families from "../../model-families.json" with { type: "json" };
 import { normalizeModel, publicCells } from "./models.ts";
 import worker from "./index.ts";
 
@@ -12,6 +13,12 @@ test("client and server share the same public-name cases", () => {
   for (const canonical of Object.keys(catalog.models)) {
     assert.equal(normalizeModel(canonical), canonical);
     assert.equal(normalizeModel(`private-route/${canonical}-sandbox`), canonical);
+  }
+  for (const [canonical, aliases] of Object.entries(catalog.models)) {
+    for (const alias of aliases) assert.equal(normalizeModel(alias), canonical, alias);
+  }
+  for (const family of families.families) {
+    assert.equal(normalizeModel(`family:${family.id}`), `family:${family.id}`);
   }
   assert.equal(normalizeModel("x".repeat(1025)), "other");
 });
@@ -26,7 +33,7 @@ function database() {
 const migration = () => readFileSync(new URL("../migrations/0003_public_model_names.sql", import.meta.url), "utf8");
 const cell = (model: string, turns = 10, hits = 1) => ({ harness: "codex", model, language: "zh", turns, hits });
 
-test("migration scrubs all four tables and matches the runtime normalizer", () => {
+test("frozen privacy migration scrubs all four tables and preserves counts", () => {
   const db = database();
   const inputs = cases.filter(([input]) => typeof input === "string").map(([input]) => cell(input!));
   const data = JSON.stringify(inputs);
@@ -38,7 +45,9 @@ test("migration scrubs all four tables and matches the runtime normalizer", () =
   for (const [table, column] of [["full_contributions", "cells"], ["contributions", "cells"], ["snapshots", "entries"], ["legacy_archive", "entries"]]) {
     const row = db.prepare(`SELECT ${column} AS data FROM ${table}`).get()!;
     const values = JSON.parse(row.data as string) as ReturnType<typeof cell>[];
-    assert.deepEqual(values.map(c => c.model), inputs.map(c => normalizeModel(c.model)), table);
+    // The deployed v1 catalog is frozen; later additions must not rewrite it.
+    assert.ok(values.every(c => c.model === "other" || Object.hasOwn(catalog.models, c.model)), table);
+    assert.ok(values.every(c => !c.model.includes("private") && !c.model.includes("secret")), table);
     assert.equal(values.reduce((n, c) => n + c.turns, 0), inputs.length * 10);
     assert.equal(values.reduce((n, c) => n + c.hits, 0), inputs.length);
   }
@@ -101,7 +110,8 @@ test("old clients are sanitized before storage, duplicate receipts survive mergi
   const result = await response.json() as { entries: ReturnType<typeof cell>[] };
   assert.equal(result.entries.reduce((n, c) => n + c.turns, 0), 95);
   assert.equal(result.entries.reduce((n, c) => n + c.hits, 0), 10);
-  assert.ok(result.entries.every(c => c.model === "other" || Object.hasOwn(catalog.models, c.model)));
+  assert.ok(result.entries.every(c => c.model === "other" || Object.hasOwn(catalog.models, c.model)
+    || families.families.some(f => c.model === `family:${f.id}`)));
   db.close();
 });
 

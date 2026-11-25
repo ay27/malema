@@ -124,6 +124,7 @@ impl Counts {
 pub struct Collection {
     pub live: Counts,
     since: Option<i64>,
+    model_names: BTreeMap<String, String>,
 }
 
 impl Collection {
@@ -131,14 +132,20 @@ impl Collection {
         Self {
             live: Counts::default(),
             since,
+            model_names: BTreeMap::new(),
         }
     }
 
     pub fn collect(&mut self, source: Source, turn: &Turn, hit: bool) {
+        let normalized_model = self
+            .model_names
+            .entry(turn.model.clone().unwrap_or_default())
+            .or_insert_with(|| model(turn.model.as_deref()))
+            .clone();
         self.live.add(
             (
                 harness(source),
-                model(turn.model.as_deref()),
+                normalized_model,
                 language(&turn.text).unwrap_or("other"),
             ),
             hit,
