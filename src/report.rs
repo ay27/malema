@@ -322,8 +322,8 @@ impl Report {
                     "submit anonymously to the global leaderboard"
                 ),
                 t(
-                    "开启后自动提交匿名统计，首次包含最近 7 天",
-                    "submits anonymous counts in the background, starting with the last 7 days"
+                    "自动分享匿名计数，可随时关闭。手动开启时包含最近 7 天。",
+                    "Shares anonymous counts. You can turn it off at any time. Turning it on manually includes the last 7 days."
                 ),
                 t("匿名提交", "Anonymous"),
                 t("参与全球排行", "join the leaderboard"),

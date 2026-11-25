@@ -20,6 +20,6 @@
 
 Open **Leaderboard** in the app or visit [malema.app](https://malema.app). It ranks tool and model pairs by insults per 1,000 messages, with filters for period, message language, tool, and model.
 
-Sharing is off by default. Turn on **Anonymous** in the app to contribute counts by tool, model, and language. The leaderboard never receives your message text.
+New installs share counts by tool, model, and language from the first launch onward. You can turn off **Anonymous** in the app at any time. The leaderboard never receives your message text.
 
 [MIT License](LICENSE)

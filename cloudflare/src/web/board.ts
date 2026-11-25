@@ -79,8 +79,8 @@ type Copy = {
 const translations: Record<Language, Copy> = {
   zh: {
     brand: "骂了吗",
-    title: "全球被骂榜",
-    tagline: "每千条真人消息里，AI 被明确骂了几次。",
+    title: "全球挨骂榜",
+    tagline: "每千条真人消息里，AI 明确挨骂几次。",
     period: "统计期次",
     current: "本期",
     previous: "上期",
@@ -99,7 +99,7 @@ const translations: Record<Language, Copy> = {
     change: "变化",
     turns: "真人消息",
     hits: "明确挨骂",
-    score: "被骂指数",
+    score: "挨骂指数",
     units: "每千条消息的明确挨骂数",
     combinations: "组合",
     messages: "真人消息",

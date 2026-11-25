@@ -303,6 +303,7 @@ impl Controller {
             .join("Library/Application Support/Malema")
             .join("contributions.json");
         let mut message = String::new();
+        let mut settings_missing = false;
         let state = match fs::read(&path) {
             Ok(bytes) => serde_json::from_slice(&bytes).unwrap_or_else(|_| {
                 message = i18n::pick(
@@ -312,7 +313,10 @@ impl Controller {
                 .to_owned();
                 State::default()
             }),
-            Err(error) if error.kind() == io::ErrorKind::NotFound => State::default(),
+            Err(error) if error.kind() == io::ErrorKind::NotFound => {
+                settings_missing = true;
+                State::default()
+            }
             Err(_) => {
                 message = i18n::pick(
                     "贡献设置暂时不可读。",
@@ -322,10 +326,33 @@ impl Controller {
                 State::default()
             }
         };
-        Self {
+        let mut controller = Self {
             path,
             state,
             message,
+        };
+        if settings_missing && controller.set_first_launch_default(home).is_err() {
+            controller.message = i18n::pick(
+                "无法保存上报设置。",
+                "could not save the contribution setting.",
+            )
+            .to_owned();
+        }
+        controller
+    }
+
+    fn set_first_launch_default(&mut self, home: &Path) -> io::Result<()> {
+        let directory = self.path.parent().expect("contribution settings parent");
+        // Older releases used an implicit off setting until the user opted in.
+        if directory.try_exists()? || home.join("Library/Caches/Malema").try_exists()? {
+            return Ok(());
+        }
+        fs::create_dir_all(directory.parent().expect("application support directory"))?;
+        match fs::create_dir(directory) {
+            Ok(()) => self.enable(now()),
+            // A second app instance may have initialized settings since the check.
+            Err(error) if error.kind() == io::ErrorKind::AlreadyExists => Ok(()),
+            Err(error) => Err(error),
         }
     }
 
@@ -556,6 +583,27 @@ fn quoted(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn reporting_defaults_on_for_a_new_install_and_remembers_opt_out() {
+        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
+        let before = now();
+        let mut controller = Controller::load(&home);
+        let since = controller.since().unwrap();
+        assert!(since >= before && since <= now());
+        assert_eq!(Controller::load(&home).since(), Some(since));
+        controller.disable().unwrap();
+        assert_eq!(Controller::load(&home).since(), None);
+        fs::remove_dir_all(home).unwrap();
+    }
+
+    #[test]
+    fn upgrade_preserves_the_previous_default_off_setting() {
+        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
+        fs::create_dir_all(home.join("Library/Caches/Malema")).unwrap();
+        assert_eq!(Controller::load(&home).since(), None);
+        fs::remove_dir_all(home).unwrap();
+    }
 
     #[test]
     fn only_eligible_utc_messages_enter_the_contribution() {
