@@ -518,7 +518,7 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                     }
                     Request::Open => {
                         let _ = std::process::Command::new("/usr/bin/open")
-                            .arg(contribute::endpoint())
+                            .arg(contribute::LEADERBOARD_URL)
                             .spawn();
                     }
                     _ => {}

@@ -19,6 +19,7 @@ const MAX_NAME: usize = 64;
 /// Messages whose tool never logged a model are still counted. The board folds
 /// this bucket into "others" instead of hiding those tools entirely.
 const UNKNOWN_MODEL: &str = "unknown";
+pub const LEADERBOARD_URL: &str = "https://malema.app";
 pub const SYNC_INTERVAL: std::time::Duration = std::time::Duration::from_secs(15 * 60);
 
 #[derive(Deserialize)]
@@ -298,14 +299,9 @@ fn random_token() -> io::Result<String> {
 
 impl Controller {
     pub fn load(home: &Path) -> Self {
-        let settings = match endpoint() {
-            "https://malema.app" => "contributions.json",
-            "https://beta.malema.app" => "contributions-beta.json",
-            _ => "contributions-local.json",
-        };
         let path = home
             .join("Library/Application Support/Malema")
-            .join(settings);
+            .join("contributions.json");
         let mut message = String::new();
         let state = match fs::read(&path) {
             Ok(bytes) => serde_json::from_slice(&bytes).unwrap_or_else(|_| {
@@ -457,28 +453,6 @@ impl Controller {
     }
 }
 
-/// Where the leaderboard lives. Release builds bake in `MALEMA_LEADERBOARD_ENDPOINT`;
-/// everything else talks to a local worker. `MALEMA_LEADERBOARD_URL` overrides the
-/// local address so a developer can point at a non-default port.
-pub fn endpoint() -> &'static str {
-    static LOCAL: OnceLock<String> = OnceLock::new();
-    if let Some(url @ ("https://malema.app" | "https://beta.malema.app")) =
-        option_env!("MALEMA_LEADERBOARD_ENDPOINT")
-    {
-        return url;
-    }
-    LOCAL.get_or_init(|| match std::env::var("MALEMA_LEADERBOARD_URL") {
-        Ok(value)
-            if value.starts_with("http://127.0.0.1:")
-                || value.starts_with("http://localhost:")
-                || value.starts_with("https://") =>
-        {
-            value.trim_end_matches('/').to_owned()
-        }
-        _ => "http://127.0.0.1:8787".to_owned(),
-    })
-}
-
 pub struct SyncResult {
     acked: Vec<(i64, u32)>,
     error: Option<String>,
@@ -503,8 +477,7 @@ pub fn sync(batches: Vec<Batch>, cancelled: &AtomicBool) -> SyncResult {
 }
 
 fn post(batch: &Batch) -> Result<(), String> {
-    let endpoint = endpoint();
-    let url = format!("{endpoint}/api/v1/contributions");
+    let url = format!("{LEADERBOARD_URL}/api/v1/contributions");
     let mut command = Command::new("/usr/bin/curl");
     command.args([
         "--disable",
@@ -520,9 +493,6 @@ fn post(batch: &Batch) -> Result<(), String> {
         "url = {}\nheader = \"Content-Type: application/json\"\n",
         quoted(&url)
     );
-    if endpoint.starts_with("http:") {
-        command.args(["--noproxy", "*"]);
-    }
     config.push_str(&format!(
         "data-binary = {}\n",
         quoted(&serde_json::to_string(batch).expect("batch serialization"))

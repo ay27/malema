@@ -27,17 +27,9 @@ npm run migrate:local
 npm run dev       # builds the bundle, then wrangler dev on 127.0.0.1:8787
 ```
 
-The beta desktop app's "Leaderboard" button opens `http://127.0.0.1:8787`.
-If something else already owns that port, run the worker elsewhere and point the
-app at it with `MALEMA_LEADERBOARD_URL`:
-
-```sh
-npx wrangler dev --ip 127.0.0.1 --port 8788 --test-scheduled
-MALEMA_LEADERBOARD_URL=http://127.0.0.1:8788 open '/path/to/骂了吗.app'
-```
-
-Anonymous submission is off by default; turning it on sends the last seven days
-on the first sync. The board stays empty until a snapshot clears the thresholds.
+Open `http://127.0.0.1:8787` to test the Worker and the web board directly.
+The desktop app uses [malema.app](https://malema.app) for the leaderboard and
+anonymous submissions.
 
 Wrangler refreshes the current snapshot at most every ten minutes while someone
 is watching. Trigger the cron by hand to check new data immediately:
@@ -63,13 +55,8 @@ into the "Other" family on the board instead of being dropped.
 
 ## Deploying to Cloudflare
 
-| Target | Wrangler configuration | Site | Submissions |
-| --- | --- | --- | --- |
-| Beta | `wrangler.beta.jsonc` | [beta.malema.app](https://beta.malema.app) | Public opt-in |
-| Production | `wrangler.production.jsonc` | [malema.app](https://malema.app) | Public opt-in |
-
-The two Workers use separate D1 databases. Use `wrangler.jsonc` for local
-development.
+`wrangler.production.jsonc` deploys the public leaderboard to
+[malema.app](https://malema.app).
 
 In **Settings → Secrets and variables → Actions**, add a repository variable
 named `CLOUDFLARE_ACCOUNT_ID` and a repository secret named
@@ -77,15 +64,9 @@ named `CLOUDFLARE_ACCOUNT_ID` and a repository secret named
 `malema.app` zone. The workflow needs permission to deploy Workers, apply D1
 migrations, read the zone, and manage Workers routes for the custom domains.
 
-Open **Actions → Deploy Cloudflare → Run workflow** and choose **beta** or
-**production** on `main`. The workflow checks and builds the web bundle, applies
-pending migrations to the selected D1, deploys the Worker, and checks the site
-and both leaderboard periods.
+Run **Actions → Deploy Cloudflare → Run workflow** on `main`. The workflow
+checks and builds the web bundle, applies pending D1 migrations, deploys the
+Worker, and checks the site and both leaderboard periods.
 
-Both Workers accept contributions that match the app's reporting protocol.
-To pause submissions, set `INGEST_MODE` to `closed` in the environment's Wrangler
-configuration and redeploy. Existing snapshots stay readable.
-
-Set the repository variable `MALEMA_LEADERBOARD_ENDPOINT` to
-`https://malema.app` before building a public desktop release. The beta target
-is `https://beta.malema.app`. Local builds default to loopback.
+To pause submissions, set `INGEST_MODE` to `closed` in
+`wrangler.production.jsonc` and redeploy. Existing snapshots stay readable.

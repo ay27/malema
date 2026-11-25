@@ -23,12 +23,6 @@ if [ -e "$framework" ]; then
   echo 'Use a fresh app path when repackaging a Sparkle build.' >&2
   exit 1
 fi
-bundle_id=local.malema.desktop
-display_name=骂了吗
-if [ "${MALEMA_BUNDLE_VARIANT:-}" = leaderboard-beta ]; then
-  bundle_id=local.malema.desktop.beta
-  display_name='骂了吗 · 榜单内测'
-fi
 if [ ! -x "$binary" ]; then
   echo '请先运行 cargo build --locked --release' >&2
   exit 1
@@ -60,9 +54,9 @@ cat > "$app/Contents/Info.plist" <<PLIST
 <plist version="1.0">
 <dict>
   <key>CFBundleExecutable</key><string>malema</string>
-  <key>CFBundleIdentifier</key><string>$bundle_id</string>
+  <key>CFBundleIdentifier</key><string>local.malema.desktop</string>
   <key>CFBundleName</key><string>骂了吗</string>
-  <key>CFBundleDisplayName</key><string>$display_name</string>
+  <key>CFBundleDisplayName</key><string>骂了吗</string>
   <key>CFBundleIconFile</key><string>AppIcon.icns</string>
   <key>CFBundleShortVersionString</key><string>$version</string>
   <key>CFBundleVersion</key><string>$bundle_version</string>

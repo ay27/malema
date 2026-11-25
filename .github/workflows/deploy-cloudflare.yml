@@ -2,21 +2,12 @@ name: Deploy Cloudflare
 
 on:
   workflow_dispatch:
-    inputs:
-      target:
-        description: Leaderboard environment
-        required: true
-        type: choice
-        default: beta
-        options:
-          - beta
-          - production
 
 permissions:
   contents: read
 
 concurrency:
-  group: cloudflare-${{ inputs.target }}
+  group: cloudflare-production
   cancel-in-progress: false
 
 jobs:
@@ -24,6 +15,9 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    env:
+      CONFIG: wrangler.production.jsonc
+      SITE: https://malema.app
     defaults:
       run:
         shell: bash
@@ -38,22 +32,7 @@ jobs:
           cache: npm
           cache-dependency-path: cloudflare/package-lock.json
 
-      - name: Select deployment target
-        id: target
-        env:
-          DEPLOY_TARGET: ${{ inputs.target }}
-        run: |
-          case "$DEPLOY_TARGET" in
-            beta) site=https://beta.malema.app ;;
-            production) site=https://malema.app ;;
-            *) exit 1 ;;
-          esac
-          echo "config=wrangler.$DEPLOY_TARGET.jsonc" >> "$GITHUB_OUTPUT"
-          echo "site=$site" >> "$GITHUB_OUTPUT"
-
       - name: Check and build
-        env:
-          CONFIG: ${{ steps.target.outputs.config }}
         run: |
           npm ci
           npm run check
@@ -65,7 +44,6 @@ jobs:
 
       - name: Apply migrations and deploy Worker
         env:
-          CONFIG: ${{ steps.target.outputs.config }}
           CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
@@ -75,8 +53,6 @@ jobs:
           npx --no-install wrangler deploy --config "$CONFIG"
 
       - name: Check the public site
-        env:
-          SITE: ${{ steps.target.outputs.site }}
         run: |
           curl --fail --silent --show-error --retry 4 --max-time 15 "$SITE/" -o /dev/null
           for period in current previous; do

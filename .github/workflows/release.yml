@@ -31,8 +31,6 @@ jobs:
           rustup toolchain install 1.93.0 --profile minimal
 
       - name: Test and build
-        env:
-          MALEMA_LEADERBOARD_ENDPOINT: ${{ vars.MALEMA_LEADERBOARD_ENDPOINT }}
         run: |
           cargo +1.93.0 test --locked --release
           cargo +1.93.0 build --locked --release
