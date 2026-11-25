@@ -25,7 +25,7 @@ brew install --cask ay27/malema/malema
 
 ## View the leaderboard
 
-Open **Leaderboard** in the app or visit [malema.app](https://malema.app). The all-time board ranks tool and model pairs by insults per 1,000 messages. Filter by message language, tool, or model.
+Open **Leaderboard** in the app or visit [malema.app](https://malema.app). The website opens with model rankings, combining each model's counts across harnesses before calculating insults per 1,000 messages. Below that, explore model/harness combinations, compare models within one harness, or compare harnesses for one model. Each board has its own message-language filter.
 
 Anonymous sharing is on by default for new installs and submits the full local counts, including history and saved AI reviews. You can turn off **Anonymous** in the app at any time. Model aliases are normalized locally to public names; unrecognized models count as “Other models”. The leaderboard never receives your message text.
 

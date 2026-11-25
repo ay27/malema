@@ -20,7 +20,7 @@ export interface Snapshot {
   entries: Entry[];
 }
 
-/** One tool/model pair with its two language rows merged back together. */
+/** One ranked group, with counts summed across matching entries. */
 export interface Combination {
   id: string;
   harness: string;
@@ -38,6 +38,7 @@ export interface Filters {
 }
 
 export type SortKey = "harness" | "model" | "turns" | "hits" | "score";
+export type GroupBy = "combination" | "model" | "harness";
 
 export const OTHER_FAMILY = "other";
 /** Every stored model and every family fallback use the shared registry. */
@@ -87,19 +88,26 @@ function splitModelValue(value: string): ["model" | "family" | "", string] {
   return ["", value];
 }
 
-export function combine(entries: Entry[], filters: Filters): Combination[] {
+export function combine(entries: Entry[], filters: Filters, groupBy: GroupBy = "combination"): Combination[] {
   const grouped = new Map<string, Combination>();
   for (const entry of entries) {
     if (!matches(entry, filters)) continue;
-    const id = combinationId(entry.harness, entry.model);
+    const harness = groupBy === "model" ? "" : entry.harness;
+    const model = groupBy === "harness" ? "" : entry.model;
+    const id = combinationId(harness, model);
     let group = grouped.get(id);
     if (!group) {
-      group = { id, harness: entry.harness, model: entry.model, turns: 0, hits: 0, score: 0, languages: {} };
+      group = { id, harness, model, turns: 0, hits: 0, score: 0, languages: {} };
       grouped.set(id, group);
     }
     group.hits += entry.hits;
     group.turns += entry.turns;
-    group.languages[entry.language] = entry;
+    const previous = group.languages[entry.language];
+    group.languages[entry.language] = {
+      harness, model, language: entry.language,
+      turns: (previous?.turns ?? 0) + entry.turns,
+      hits: (previous?.hits ?? 0) + entry.hits,
+    };
   }
   for (const group of grouped.values()) group.score = roastIndex(group.hits, group.turns);
   return [...grouped.values()];

@@ -151,3 +151,63 @@ test("an empty snapshot produces an empty board, not a crash", () => {
   assert.deepEqual(totals([]), { combinations: 0, turns: 0, hits: 0, score: 0 });
   assert.equal(rankByScore([]).size, 0);
 });
+
+test("model rankings sum across harnesses before calculating the rate", () => {
+  const entries = [
+    entry("codex", "gpt-5.4", "zh", 100, 10),
+    entry("cursor", "gpt-5.4", "zh", 900, 0),
+    entry("cursor", "gpt-5.4", "en", 1000, 30),
+    entry("claude", "claude-opus-4-5", "zh", 100, 3),
+  ];
+  const original = structuredClone(entries);
+  const rows = combine(entries, all, "model");
+  assert.equal(rows.length, 2);
+  const model = rows.find(row => row.model === "gpt-5.4")!;
+  assert.equal(model.harness, "");
+  assert.equal(model.turns, 2000);
+  assert.equal(model.hits, 40);
+  assert.equal(model.score, 20);
+  assert.equal(model.languages.zh?.turns, 1000);
+  assert.equal(model.languages.zh?.hits, 10);
+  assert.equal(rankByScore(rows).get(model.id), 2);
+  const zh = combine(entries, { ...all, language: "zh" }, "model");
+  assert.equal(zh.find(row => row.model === "gpt-5.4")?.score, 10);
+  assert.deepEqual(entries, original);
+  assert.equal(totals(rows).turns, totals(combine(entries, all)).turns);
+  assert.equal(totals(rows).hits, totals(combine(entries, all)).hits);
+});
+
+test("fixed harness and fixed model comparisons apply filters before grouping", () => {
+  const entries = [
+    entry("codex", "gpt-5.4", "zh", 100, 10),
+    entry("codex", "gpt-5.4", "en", 900, 0),
+    entry("cursor", "gpt-5.4", "zh", 100, 2),
+    entry("cursor", "claude-opus-4-5", "zh", 100, 50),
+  ];
+  const models = combine(entries, { ...all, harness: "cursor" }, "model");
+  assert.equal(models.length, 2);
+  assert.equal(totals(models).hits, 52);
+  const harnesses = combine(entries, { ...all, model: "model:gpt-5.4" }, "harness");
+  assert.equal(harnesses.length, 2);
+  assert.deepEqual(sortCombinations(harnesses, "score", -1, id => id).map(row => [row.harness, row.score]), [["cursor", 20], ["codex", 10]]);
+  assert.equal(totals(harnesses).hits, 12);
+  const zh = combine(entries, { ...all, model: "model:gpt-5.4", language: "zh" }, "harness");
+  assert.equal(sortCombinations(zh, "score", -1, id => id)[0].harness, "codex");
+  assert.deepEqual(combine(entries, { ...all, harness: "absent" }, "model"), []);
+});
+
+test("model groups retain other languages and unknown-model buckets", () => {
+  const entries: Entry[] = [
+    { harness: "codex", model: "other", language: "other", turns: 10, hits: 1 },
+    { harness: "cursor", model: "other", language: "other", turns: 90, hits: 1 },
+    entry("cursor", "family:gpt", "zh", 20, 0),
+  ];
+  const rows = combine(entries, all, "model");
+  assert.equal(rows.length, 2);
+  const other = rows.find(row => row.model === "other")!;
+  assert.equal(other.languages.other?.turns, 100);
+  assert.equal(other.score, 20);
+  assert.equal(combine(entries, { ...all, model: "family:gpt" }, "model")[0].turns, 20);
+  assert.deepEqual(combine([], all, "model"), []);
+  assert.deepEqual(combine([], all, "harness"), []);
+});

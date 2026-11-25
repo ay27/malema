@@ -3,16 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="骂了吗全球挨骂榜：AI 编程工具和模型在中英文会话里，每千条真人消息明确挨骂几次。">
+  <meta name="description" content="骂了吗全球挨骂榜：AI 模型每千条真人消息明确挨骂几次，查看模型排名与 Harness 组合对比。">
   <meta name="theme-color" content="#f7f9fc">
   <title>全球挨骂榜 · 骂了吗</title>
   <link rel="icon" href="/mark.png" type="image/png">
-  <link rel="stylesheet" href="/style.css?v=all">
+  <link rel="stylesheet" href="/style.css?v=models">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="骂了吗 Malema">
   <meta property="og:title" content="全球挨骂榜 · 骂了吗">
-  <meta property="og:description" content="AI 编程工具和模型在中英文会话里，每千条真人消息明确挨骂几次。">
+  <meta property="og:description" content="AI 模型每千条真人消息明确挨骂几次，查看模型排名与 Harness 组合对比。">
   <meta property="og:url" content="https://malema.app/">
   <meta property="og:image" content="https://malema.app/leaderboard-card.png">
   <meta property="og:image:width" content="1200">
@@ -21,10 +21,10 @@
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="全球挨骂榜 · 骂了吗">
-  <meta name="twitter:description" content="AI 编程工具和模型每千条真人消息明确挨骂几次。">
+  <meta name="twitter:description" content="AI 模型每千条真人消息明确挨骂几次。">
   <meta name="twitter:image" content="https://malema.app/leaderboard-card.png">
 
-  <script src="/board.js?v=all" type="module"></script>
+  <script src="/board.js?v=models" type="module"></script>
 </head>
 <body>
   <a class="skip-link" href="#title" data-text="skip">跳到榜单</a>
@@ -32,6 +32,8 @@
     <div class="top-inner">
       <a class="brand" href="/"><img src="/mark.png" alt="" width="34" height="34"><span data-text="brand">骂了吗</span></a>
       <nav aria-label="导航" data-label="navigation">
+        <a class="download" href="https://github.com/ay27/malema/releases/latest/download/malema-macos-arm64.zip"><span data-text="download">下载 macOS 版</span><small>Apple Silicon</small></a>
+        <a href="https://github.com/ay27/malema">GitHub</a>
         <button id="interface-language" type="button" aria-label="Switch interface to English">EN</button>
       </nav>
     </div>
@@ -42,63 +44,129 @@
       <p class="hero-lede" data-text="tagline">每千条真人消息里，AI 明确挨骂几次。</p>
     </section>
 
-    <section class="controls" aria-label="榜单筛选" data-label="filters">
-      <div>
-        <span class="field-label" data-text="messageLanguage">消息语言</span>
-        <div class="segments" id="language-filter" role="group" aria-label="消息语言" data-label="messageLanguage">
-          <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
-          <button data-language="zh" type="button" aria-pressed="false">中文</button>
-          <button data-language="en" type="button" aria-pressed="false">English</button>
-          <button data-language="other" type="button" aria-pressed="false" data-text="otherLabel">其他</button>
-        </div>
-      </div>
-      <label><span class="field-label" data-text="harness">运行工具</span>
-        <span class="select"><select id="harness"><option value="" data-text="allHarnesses">全部工具</option></select></span>
-      </label>
-      <label class="model-field"><span class="field-label" data-text="model">回复模型</span>
-        <span class="select"><select id="model"><option value="" data-text="allModels">全部模型</option></select></span>
-      </label>
-    </section>
-
+    <p id="refresh" class="refresh panel-hint" aria-live="polite"></p>
     <div id="skeleton" class="skeleton" aria-hidden="true">
       <div class="stat-row"><span></span><span></span><span></span><span></span></div>
       <div class="panel"><span class="line w60"></span><span class="line w40"></span><span class="line"></span><span class="line"></span><span class="line w80"></span></div>
     </div>
-
-    <section class="stat-row" id="stats" aria-label="汇总" data-label="summary" hidden></section>
-
     <div id="content" hidden>
-      <section class="panel" id="chart-panel" aria-labelledby="chart-title">
-        <div class="panel-head">
-          <div><h2 id="chart-title" data-text="compare">组合对比</h2><p id="chart-hint" class="panel-hint"></p></div>
-          <ul id="legend" class="legend" hidden>
-            <li><i class="key zh"></i><span data-text="zhLabel">中文</span></li>
-            <li><i class="key en"></i><span data-text="enLabel">English</span></li>
-            <li><i class="key other"></i><span data-text="otherLabel">其他</span></li>
-          </ul>
+      <section id="models" class="board-section" aria-labelledby="models-title">
+        <div class="section-heading"><h2 id="models-title" data-text="modelBoard">模型榜</h2><span class="pill" id="models-count" aria-live="polite"></span></div>
+        <div class="controls primary-controls" role="group" aria-label="榜单筛选" data-label="filters">
+          <div><span class="field-label" data-text="messageLanguage">消息语言</span>
+            <div class="segments" role="group" aria-label="消息语言" data-label="messageLanguage">
+              <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
+              <button data-language="zh" type="button" aria-pressed="false">中文</button>
+              <button data-language="en" type="button" aria-pressed="false">English</button>
+              <button data-language="other" type="button" aria-pressed="false" data-text="otherLabel">其他</button>
+            </div>
+          </div>
         </div>
-        <div id="bars" class="bars"></div>
-        <div id="chart-axis" class="chart-axis" aria-hidden="true"></div>
+        <div class="stat-row" id="stats" role="group" aria-label="汇总" data-label="summary"></div>
+        <div id="models-results" class="panel">
+          <p class="panel-hint chart-hint" id="models-hint"></p>
+          <div id="models-bars" class="bars"></div>
+          <div id="models-axis" class="chart-axis" aria-hidden="true"></div>
+          <div class="scroll" role="region" aria-labelledby="models-title" tabindex="0">
+            <table aria-labelledby="models-title"><thead><tr>
+              <th scope="col" class="rank" data-text="rank">名次</th>
+              <th scope="col"><button type="button" data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="score"><span data-text="score">挨骂指数</span><i aria-hidden="true"></i></button></th>
+            </tr></thead><tbody id="models-rows"></tbody></table>
+          </div>
+        </div>
+        <div class="empty" id="models-empty" hidden><h3 data-text="noMatch">没有匹配的数据</h3><p data-text="noMatchDetails">试试切换语言、模型或运行工具。</p></div>
       </section>
-
-      <section class="panel table-panel" id="table-panel" aria-labelledby="detail-title">
-        <div class="panel-head">
-          <div><h2 id="detail-title" data-text="details">组合明细</h2><p id="refresh" class="panel-hint" aria-live="polite"></p></div>
-          <span id="result-count" class="pill"></span>
+      <section id="combinations" class="board-section" aria-labelledby="combinations-title">
+        <div class="section-heading"><h2 id="combinations-title" data-text="combinationBoard">模型 × Harness 组合榜</h2><span class="pill" id="combinations-count" aria-live="polite"></span></div>
+        <div class="controls " role="group" aria-label="榜单筛选" data-label="filters">
+          <div><span class="field-label" data-text="messageLanguage">消息语言</span>
+            <div class="segments" role="group" aria-label="消息语言" data-label="messageLanguage">
+              <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
+              <button data-language="zh" type="button" aria-pressed="false">中文</button>
+              <button data-language="en" type="button" aria-pressed="false">English</button>
+              <button data-language="other" type="button" aria-pressed="false" data-text="otherLabel">其他</button>
+            </div>
+          </div>
+          <label><span class="field-label" data-text="harness">运行工具</span><span class="select"><select id="combinations-harness"></select></span></label>
+          <label><span class="field-label" data-text="model">回复模型</span><span class="select"><select id="combinations-model"></select></span></label>
         </div>
-        <div class="scroll">
-          <table>
-            <thead><tr>
-              <th scope="col" class="rank"><span data-text="rank">名次</span></th>
-              <th scope="col"><button data-sort="harness"><span data-text="harness">运行工具</span><i aria-hidden="true"></i></button></th>
-              <th scope="col"><button data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
-              <th scope="col" class="numeric"><button data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
-              <th scope="col" class="numeric"><button data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
-              <th scope="col" class="numeric" aria-sort="descending"><button data-sort="score"><span data-text="score">挨骂指数</span><i aria-hidden="true"></i></button></th>
-            </tr></thead>
-            <tbody id="rows"></tbody>
-          </table>
+        <div id="combinations-results" class="panel">
+          <p class="panel-hint chart-hint" id="combinations-hint"></p>
+          <div id="combinations-bars" class="bars"></div>
+          <div id="combinations-axis" class="chart-axis" aria-hidden="true"></div>
+          <div class="scroll" role="region" aria-labelledby="combinations-title" tabindex="0">
+            <table aria-labelledby="combinations-title"><thead><tr>
+              <th scope="col" class="rank" data-text="rank">名次</th>
+              <th scope="col"><button type="button" data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
+              <th scope="col"><button type="button" data-sort="harness"><span data-text="harness">运行工具</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="score"><span data-text="score">挨骂指数</span><i aria-hidden="true"></i></button></th>
+            </tr></thead><tbody id="combinations-rows"></tbody></table>
+          </div>
         </div>
+        <div class="empty" id="combinations-empty" hidden><h3 data-text="noMatch">没有匹配的数据</h3><p data-text="noMatchDetails">试试切换语言、模型或运行工具。</p></div>
+      </section>
+      <section id="by-harness" class="board-section" aria-labelledby="by-harness-title">
+        <div class="section-heading"><h2 id="by-harness-title" data-text="byHarnessBoard">固定 Harness，看模型</h2><span class="pill" id="by-harness-count" aria-live="polite"></span></div>
+        <div class="controls comparison-controls" role="group" aria-label="榜单筛选" data-label="filters">
+          <div><span class="field-label" data-text="messageLanguage">消息语言</span>
+            <div class="segments" role="group" aria-label="消息语言" data-label="messageLanguage">
+              <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
+              <button data-language="zh" type="button" aria-pressed="false">中文</button>
+              <button data-language="en" type="button" aria-pressed="false">English</button>
+              <button data-language="other" type="button" aria-pressed="false" data-text="otherLabel">其他</button>
+            </div>
+          </div>
+          <label><span class="field-label" data-text="harness">运行工具</span><span class="select"><select id="by-harness-harness"></select></span></label>
+        </div>
+        <div id="by-harness-results" class="panel">
+          <p class="panel-hint chart-hint" id="by-harness-hint"></p>
+          <div id="by-harness-bars" class="bars"></div>
+          <div id="by-harness-axis" class="chart-axis" aria-hidden="true"></div>
+          <div class="scroll" role="region" aria-labelledby="by-harness-title" tabindex="0">
+            <table aria-labelledby="by-harness-title"><thead><tr>
+              <th scope="col" class="rank" data-text="rank">名次</th>
+              <th scope="col"><button type="button" data-sort="model"><span data-text="model">回复模型</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="score"><span data-text="score">挨骂指数</span><i aria-hidden="true"></i></button></th>
+            </tr></thead><tbody id="by-harness-rows"></tbody></table>
+          </div>
+        </div>
+        <div class="empty" id="by-harness-empty" hidden><h3 data-text="noMatch">没有匹配的数据</h3><p data-text="noMatchDetails">试试切换语言、模型或运行工具。</p></div>
+      </section>
+      <section id="by-model" class="board-section" aria-labelledby="by-model-title">
+        <div class="section-heading"><h2 id="by-model-title" data-text="byModelBoard">固定模型，看 Harness</h2><span class="pill" id="by-model-count" aria-live="polite"></span></div>
+        <div class="controls comparison-controls" role="group" aria-label="榜单筛选" data-label="filters">
+          <div><span class="field-label" data-text="messageLanguage">消息语言</span>
+            <div class="segments" role="group" aria-label="消息语言" data-label="messageLanguage">
+              <button data-language="all" type="button" aria-pressed="true" data-text="allLanguages">全部</button>
+              <button data-language="zh" type="button" aria-pressed="false">中文</button>
+              <button data-language="en" type="button" aria-pressed="false">English</button>
+              <button data-language="other" type="button" aria-pressed="false" data-text="otherLabel">其他</button>
+            </div>
+          </div>
+          <label><span class="field-label" data-text="model">回复模型</span><span class="select"><select id="by-model-model"></select></span></label>
+        </div>
+        <div id="by-model-results" class="panel">
+          <p class="panel-hint chart-hint" id="by-model-hint"></p>
+          <div id="by-model-bars" class="bars"></div>
+          <div id="by-model-axis" class="chart-axis" aria-hidden="true"></div>
+          <div class="scroll" role="region" aria-labelledby="by-model-title" tabindex="0">
+            <table aria-labelledby="by-model-title"><thead><tr>
+              <th scope="col" class="rank" data-text="rank">名次</th>
+              <th scope="col"><button type="button" data-sort="harness"><span data-text="harness">运行工具</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="turns"><span data-text="turns">真人消息</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="hits"><span data-text="hits">明确挨骂</span><i aria-hidden="true"></i></button></th>
+              <th scope="col" class="numeric"><button type="button" data-sort="score"><span data-text="score">挨骂指数</span><i aria-hidden="true"></i></button></th>
+            </tr></thead><tbody id="by-model-rows"></tbody></table>
+          </div>
+        </div>
+        <div class="empty" id="by-model-empty" hidden><h3 data-text="noMatch">没有匹配的数据</h3><p data-text="noMatchDetails">试试切换语言、模型或运行工具。</p></div>
       </section>
     </div>
 
