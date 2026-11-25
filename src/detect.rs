@@ -8,25 +8,88 @@ pub const RULESET: &str = "zh-en-4";
 #[derive(Debug, Serialize)]
 pub struct Hit {
     pub rule: &'static str,
-    pub reason: &'static str,
+    pub reason: String,
     pub evidence: String,
 }
 
 struct Rule {
     id: &'static str,
-    reason: &'static str,
     pattern: Regex,
 }
 
-fn rule(id: &'static str, reason: &'static str, pattern: &str) -> Rule {
+fn rule(id: &'static str, pattern: &str) -> Rule {
     Rule {
         id,
-        reason,
         pattern: RegexBuilder::new(pattern)
             .case_insensitive(true)
             .build()
             .expect(id),
     }
+}
+
+/// Human readable explanation of a rule id, in the active interface language.
+pub fn reason(id: &str) -> String {
+    let (zh, en) = match id {
+        "zh.direct-insult" => ("用辱骂词直接称呼 AI", "calls the AI a slur directly"),
+        "zh.direct-insult-adjective" => (
+            "用笨、蠢等措辞直接贬损 AI",
+            "calls the AI dumb or stupid directly",
+        ),
+        "zh.direct-curse" => (
+            "用第二人称加粗口直接斥责 AI",
+            "curses at the AI in the second person",
+        ),
+        "zh.profanity-command" => (
+            "用粗口直接命令 AI 停止或修改操作",
+            "orders the AI to stop or change something with profanity",
+        ),
+        "zh.profanity-rebuke" => (
+            "用粗口直接反问或斥责 AI",
+            "rebukes the AI with profanity in a direct question",
+        ),
+        "zh.profanity-directed-action" => (
+            "用粗口接直接反问或修正命令",
+            "follows profanity with a direct demand aimed at the AI",
+        ),
+        "zh.profanity-ai-artifact" => (
+            "用明确辱骂词描述 AI 刚做的操作或调用的模型",
+            "insults the action or model the AI just produced",
+        ),
+        "zh.direct-dismissal" => (
+            "对 AI 使用明确的辱骂式赶斥",
+            "dismisses the AI with an explicit slur",
+        ),
+        "zh.output-insult" => (
+            "用辱骂词指向 AI 写的代码或答案",
+            "aims a slur at the code or answer the AI wrote",
+        ),
+        "zh.output-quality-insult" => (
+            "用明确辱骂词贬损 AI 产物的质量",
+            "insults the quality of what the AI produced",
+        ),
+        "zh.output-creation-insult" => (
+            "用明确辱骂词描述 AI 刚生成的产物",
+            "describes the AI output with an explicit slur",
+        ),
+        "en.direct-insult" => (
+            "用英文辱骂词直接评价 AI",
+            "insults the AI directly in English",
+        ),
+        "en.direct-curse" => (
+            "用明确的英文粗口斥责 AI",
+            "swears at the AI with explicit English profanity",
+        ),
+        "en.output-insult" => (
+            "用英文辱骂词指向 AI 的代码或答案",
+            "aims an English slur at the AI's code or answer",
+        ),
+        "mixed.direct-insult" => (
+            "中英混写仍明确用辱骂词称呼 AI",
+            "calls the AI a slur while mixing Chinese and English",
+        ),
+        _ => ("规则命中", "matched a rule"),
+    };
+    crate::i18n::pick(zh, en).to_owned()
 }
 
 // Curated terms are only candidates inside a rule with an identified target.
@@ -90,87 +153,72 @@ static RULES: LazyLock<Vec<Rule>> = LazyLock::new(|| {
     vec![
         rule(
             "zh.direct-insult",
-            "用辱骂词直接称呼 AI",
             &format!(
                 r"(?:^|[，,\s])(?:你(?:[这這](?:个|個)?|(?:就是|也是|简直是|簡直是|真是|是不是|是)(?:[个個]|一[个個])?|也太|太|真(?:的)?|个|個)?)\s*(?:[个個]|一[个個])?\s*{zh_insult}(?:[吧啊呀吗嗎了欸诶喔]|[，,\s]|$)"
             ),
         ),
         rule(
             "zh.direct-insult-adjective",
-            "用笨、蠢等措辞直接贬损 AI",
             r"(?:^|[，,\s])(?P<evidence>(?:感觉|感覺|我觉得|我覺得)?你(?:(?:好|真(?:的)?|也太|太|很|(?:怎么|怎麼|咋)(?:能|会|會)?(?:变|變)?(?:得|这么|這麼|那么|那麼)?)(?:笨|蠢|愚蠢)|(?:再(?:这么|這麼)?|又|一直在|别(?:再)?|別(?:再)?|(?:怎么|怎麼|为什么|為什麼)(?:还|還|总|總)?)(?:这么|這麼|那么|那麼)?犯蠢)(?:[啊呀了欸吧吗嗎呢]{0,2}))(?:[，,\s]|$)",
         ),
         rule(
             "zh.direct-curse",
-            "用第二人称加粗口直接斥责 AI",
             r"(?:^|[，,\s])(?P<evidence>你(?:他[妈媽](?:的)?|[tT][mM](?:[dD])?|特[么麼]的)|(?:我|老子)?[操艹肏]你(?:[妈媽]|[大你]?爷|祖宗)?)(?:$|[，,\s]|[\u{3400}-\u{9fff}])",
         ),
         rule(
             "zh.profanity-command",
-            "用粗口直接命令 AI 停止或修改操作",
             r"(?:^|[，,\s])(?P<evidence>(?:(?:你(?:就|也|还|還|再|能不能)?)|能不能|可不可以)?别他[妈媽](?:的)?(?:\s*[\p{Han}A-Za-z_]{1,8})?)",
         ),
         rule(
             "zh.profanity-rebuke",
-            "用粗口直接反问或斥责 AI",
             r"(?:^|[，,\s])(?P<evidence>我(?:他[妈媽]的?|[tT][mM](?:[dD])?)\s*(?:啥时候|啥時候|什么时候|什麼時候|哪时候|哪時候|何时|何時)\s*(?:跟你|跟妳|给你|給你|告诉你|告訴你)(?:说|說|说过|說過)?|他[妈媽]的?[，,\s]*你(?:管[他它这這]|在[干幹]嘛|搞[什啥]么)|你[妈媽]的[啊呀吧]?(?:$|[，,\s]))",
         ),
         rule(
             "zh.profanity-directed-action",
-            "用粗口接直接反问或修正命令",
             r"(?:^|[，,\s])(?P<evidence>你[妈媽]的\s*(?:能不能|可不可以|给我|給我|你(?:这|這|那|怎么|怎麼|又|到底)|到底)|他[妈媽娘]的?\s*(?:赶紧给我|趕緊給我|给我|給我)\s*(?:修好|改好|改回来|改回來|改对|改對|撤掉|停下)|他[妈媽娘]的?[，,\s]+(?:[^，,。；;]{1,28}[，,]\s*)?你管[他它这這那]干嘛)",
         ),
         rule(
             "zh.profanity-ai-artifact",
-            "用明确辱骂词描述 AI 刚做的操作或调用的模型",
             r"(?:^|[，,\s])(?P<evidence>你(?:还|還|又|居然|竟然)(?:给我|給我)?\s*(?:单独|單獨|特意|擅自|偏要)?(?:写|寫|搞|改|生成|做)[^，,。；;]{0,35}(?:傻[逼比b]|智障|脑残|腦殘|狗屎)的?(?:操作|代码|代碼|方案|设计|設計|回答|实现|實現)|[这這](?:个|個)?傻[逼比b]模型[，,\s]+你)(?:$|[，,\s]|[\p{Han}])",
         ),
         rule(
             "zh.direct-dismissal",
-            "对 AI 使用明确的辱骂式赶斥",
             r"^(?:你(?:给我|給我)?)?(?:滚蛋|滾蛋|滚出去|滾出去|滚开|滾開|去死)(?:吧|啊|呀|[，,\s]|$)",
         ),
         rule(
             "zh.output-insult",
-            "用辱骂词指向 AI 写的代码或答案",
             r"(?:你(?:刚|剛|刚才|剛才)?(?:写|寫|生成|给|給|做|改|出的|交)(?:出来|出來|出)?的?(?:这|這|那)?(?:一)?(?:段|份|套|堆|坨)?(?:代码|代碼|回答|答案|结果|結果|东西|東西|方案|输出|輸出|实现|實現)?(?:\s|，|,)*(?:就是|简直是|簡直是|全是|真是|是)(?:一|一[个個])?(?:堆|坨)?(?:垃圾|狗屎|狗屁|废物|廢物|屎)(?:[啊呀吧了]|[,，\s]|$)|你(?:怎么|怎麼)写了(?:一)?(?:堆|坨)(?:垃圾|狗屎)(?:[代码代碼]|$)|你(?:又)?写了(?:一)?(?:堆|坨)(?:垃圾代码|垃圾代碼|狗屎代码|狗屎代碼))",
         ),
         rule(
             "zh.output-quality-insult",
-            "用明确辱骂词贬损 AI 产物的质量",
             &format!(
                 r"(?:^|[，,\s])(?P<evidence>你(?:的|[这這那](?:个|個|份|版|段|套)?)\s*{ZH_ARTIFACT}(?:风格|風格|质量|品質|質量|效果|写法|寫法)?\s*(?:真(?:的)?|很|太|也太|实在|實在|简直|簡直|就是|是|得){{0,3}}\s*(?:{zh_output}|烂透|爛透|一坨屎)[啊呀了吧呢嗎吗]{{0,2}})(?:[，,\s]|$)"
             ),
         ),
         rule(
             "zh.output-creation-insult",
-            "用明确辱骂词描述 AI 刚生成的产物",
             &format!(
                 r"(?:^|[，,\s]|没想到|沒想到)(?P<evidence>你(?:竟然|居然|又|还|還|能|给我|給我|怎么|怎麼){{0,3}}(?:写|寫|生成|输出|輸出|做|给|給)(?:出来|出來|出|了){{0,2}}(?:(?:这么|這麼|那么|那麼|这种|這種)?{zh_output}的?{ZH_ARTIFACT}|(?:一)?(?:堆|坨)(?:狗屎|屎)|的(?:是|就是)(?:一)?(?:个|個)?(?:啥|什么|甚麼)?(?:一)?(?:个|個)?破玩意[儿兒]?)[啊呀了吧呢嗎吗]{{0,2}})(?:[，,\s]|$)"
             ),
         ),
         rule(
             "en.direct-insult",
-            "用英文辱骂词直接评价 AI",
             &format!(
                 r"(?:\byou(?:\s+are|'re|\s+sound|\s+seem)\s+{EN_MOD}|\bare\s+you\s+{EN_MOD}|\byou\s+(?:you\s+)?{EN_MOD}){en_insult}\b"
             ),
         ),
         rule(
             "en.direct-curse",
-            "用明确的英文粗口斥责 AI",
             r"(?:^|[,\s])(?:(?:go\s+)?fuck\s+(?:you|yourself)|screw\s+you|what\s+the\s+fuck\s+are\s+you\s+doing)(?:\s|[,!]|$)",
         ),
         rule(
             "en.output-insult",
-            "用英文辱骂词指向 AI 的代码或答案",
             &format!(
                 r"\b(?:your\s+(?:code|answer|reply|output|patch|solution|implementation)|(?:the|this)\s+(?:code|answer|patch|implementation)\s+you\s+(?:wrote|gave me|generated))\s+(?:is|was)\s+{EN_MOD}{en_output}\b"
             ),
         ),
         rule(
             "mixed.direct-insult",
-            "中英混写仍明确用辱骂词称呼 AI",
             &format!(
                 r"(?:^|[，,\s])你(?:[这這][个個]?|(?:就是|真是|是)(?:[个個]|一[个個])?|[个個])\s*{EN_MOD}{en_insult}\b"
             ),
@@ -245,7 +293,7 @@ pub fn detect(text: &str) -> Option<Hit> {
                         .expect("matched rule");
                     return Some(Hit {
                         rule: rule.id,
-                        reason: rule.reason,
+                        reason: reason(rule.id),
                         evidence: hit
                             .as_str()
                             .trim_matches(|c: char| c.is_whitespace() || matches!(c, ',' | '，'))

@@ -19,7 +19,7 @@ time = { version = "0.3", features = ["local-offset", "parsing"] }
 [target.'cfg(target_os = "macos")'.dependencies]
 objc2 = "0.6"
 objc2-app-kit = { version = "0.3", default-features = false, features = ["NSApplication", "NSEvent", "NSImage", "NSMenu", "NSMenuItem", "NSWindow"] }
-objc2-foundation = { version = "0.3", default-features = false, features = ["NSBundle", "NSString", "NSURL"] }
+objc2-foundation = { version = "0.3", default-features = false, features = ["NSArray", "NSBundle", "NSLocale", "NSString", "NSURL"] }
 tao = "0.34"
 url = "2.5"
 wry = { version = "0.53", default-features = false, features = ["protocol"] }

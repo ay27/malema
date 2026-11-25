@@ -1,4 +1,4 @@
-use crate::{detect, sources};
+use crate::{detect, i18n, sources};
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -10,6 +10,10 @@ use std::sync::LazyLock;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::{Duration, Instant};
 use url::Url;
+
+fn t<'a>(zh: &'a str, en: &'a str) -> &'a str {
+    i18n::pick(zh, en)
+}
 
 const PROMPT: &str = include_str!("review-prompt.txt");
 const BATCH_SIZE: usize = 40;
@@ -30,14 +34,15 @@ pub enum Provider {
 }
 
 impl Provider {
-    fn name(self) -> &'static str {
+    fn name(self) -> String {
         match self {
             Self::Codex => "Codex",
             Self::Claude => "Claude Code",
             Self::Jev => "Jev · TypeSafe",
-            Self::CustomSystemOne => "自定义 · Jev System One",
-            Self::CustomChat => "自定义 · OpenAI 兼容",
+            Self::CustomSystemOne => t("自定义 · Jev System One", "custom · Jev System One"),
+            Self::CustomChat => t("自定义 · OpenAI 兼容", "custom · OpenAI compatible"),
         }
+        .to_owned()
     }
 
     fn is_custom(self) -> bool {
@@ -87,13 +92,13 @@ struct Finding {
     source: &'static str,
     date: Option<String>,
     model: Option<String>,
-    reason: &'static str,
+    reason: String,
     rule_hit: bool,
 }
 
 #[derive(Serialize)]
 pub struct Outcome {
-    provider: &'static str,
+    provider: String,
     total: usize,
     reviewed: usize,
     skipped: usize,
@@ -181,8 +186,11 @@ pub fn run(
             result.reviewed += 1;
             result.rule_hits_reviewed += usize::from(item.rule_hit);
             let reason = match verdict {
-                b'1' => "明确辱骂当前 AI",
-                b'2' => "明确辱骂当前 AI 的产物或操作",
+                b'1' => t("明确辱骂当前 AI", "explicitly insults the AI"),
+                b'2' => t(
+                    "明确辱骂当前 AI 的产物或操作",
+                    "explicitly insults what the AI produced",
+                ),
                 b'3' => {
                     result.uncertain += 1;
                     continue;
@@ -196,7 +204,7 @@ pub fn run(
                 source: item.source,
                 date: item.date.clone(),
                 model: item.model.clone(),
-                reason,
+                reason: reason.to_owned(),
                 rule_hit: item.rule_hit,
             });
         }
@@ -223,8 +231,10 @@ fn redact(text: &str, evidence: Option<&str>) -> Option<String> {
     let cleaned = detect::visible_lines(text)
         .filter(|line| !SENSITIVE_LINE.is_match(line))
         .map(|line| {
-            let inline = INLINE_CODE.replace_all(line, "[代码]");
-            IDENTIFIER.replace_all(&inline, "[脱敏]").into_owned()
+            let inline = INLINE_CODE.replace_all(line, t("[代码]", "[code]"));
+            IDENTIFIER
+                .replace_all(&inline, t("[脱敏]", "[redacted]"))
+                .into_owned()
         })
         .collect::<Vec<_>>()
         .join(" ");
@@ -259,14 +269,14 @@ impl Request {
                 .iter()
                 .any(|s| s.label() == self.source)
         {
-            return Err("无法识别所选会话来源".into());
+            return Err(t("无法识别所选会话来源", "unknown session source").into());
         }
         if self.first_day.is_some() != self.last_day.is_some() || self.first_day > self.last_day {
-            return Err("复核日期范围无效".into());
+            return Err(t("复核日期范围无效", "invalid review date range").into());
         }
         if matches!(self.provider, Provider::Jev) {
             if self.api_key.trim().is_empty() {
-                return Err("请填写 TypeSafe API Key".into());
+                return Err(t("请填写 TypeSafe API Key", "enter a TypeSafe API key").into());
             }
         } else if self.provider.is_custom() {
             self.custom_endpoint()?;
@@ -274,20 +284,25 @@ impl Request {
                 || self.model.chars().count() > 128
                 || self.model.chars().any(char::is_control)
             {
-                return Err("请填写有效的模型名称".into());
+                return Err(t("请填写有效的模型名称", "enter a valid model name").into());
             }
         }
         if (matches!(self.provider, Provider::Jev) || self.provider.is_custom())
             && (self.api_key.len() > 4096 || self.api_key.chars().any(char::is_control))
         {
-            return Err("API 密钥格式不正确".into());
+            return Err(t("API 密钥格式不正确", "the API key format is invalid").into());
         }
         Ok(())
     }
 
     fn custom_endpoint(&self) -> Result<Url, String> {
         let address = self.endpoint.trim();
-        let mut url = Url::parse(address).map_err(|_| "请填写完整的 HTTP 或 HTTPS Endpoint")?;
+        let mut url = Url::parse(address).map_err(|_| {
+            t(
+                "请填写完整的 HTTP 或 HTTPS Endpoint",
+                "enter a full HTTP or HTTPS endpoint",
+            )
+        })?;
         if address.len() > 4096
             || address.chars().any(char::is_control)
             || !matches!(url.scheme(), "http" | "https")
@@ -296,7 +311,11 @@ impl Request {
             || url.password().is_some()
             || url.fragment().is_some()
         {
-            return Err("请填写完整的 HTTP 或 HTTPS Endpoint，密钥请填在单独的输入框".into());
+            return Err(t(
+                "请填写完整的 HTTP 或 HTTPS Endpoint，密钥请填在单独的输入框",
+                "enter a full HTTP or HTTPS endpoint and put the key in its own field",
+            )
+            .into());
         }
         let path = url.path().trim_end_matches('/');
         if matches!(self.provider, Provider::CustomChat) && path.ends_with("/v1") {
@@ -337,14 +356,22 @@ impl Request {
                 chat_request(self.model.trim(), input),
                 cancel,
             )?;
-            let output: Value =
-                serde_json::from_str(&body).map_err(|_| "自定义 API 回执格式无效")?;
+            let output: Value = serde_json::from_str(&body).map_err(|_| {
+                t(
+                    "自定义 API 回执格式无效",
+                    "the custom API response is malformed",
+                )
+            })?;
             let content = output["choices"][0]["message"]["content"]
                 .as_str()
-                .ok_or("自定义 API 未返回 Chat Completions 文本")?;
-            return parse_decisions(content, input.len(), self.provider.name());
+                .ok_or(t(
+                    "自定义 API 未返回 Chat Completions 文本",
+                    "the custom API returned no Chat Completions text",
+                ))?;
+            return parse_decisions(content, input.len(), &self.provider.name());
         }
-        let payload = serde_json::to_string(input).map_err(|_| "片段编码失败")?;
+        let payload = serde_json::to_string(input)
+            .map_err(|_| t("片段编码失败", "failed to encode the excerpt"))?;
         let prompt = format!("{PROMPT}\n待判定消息\n{payload}");
         let output = match self.provider {
             Provider::Codex => {
@@ -388,12 +415,16 @@ impl Request {
                         Some(
                             "command_execution" | "mcp_tool_call" | "web_search" | "file_change",
                         ) => {
-                            return Err("Codex 返回了意外的工具操作".into());
+                            return Err(t(
+                                "Codex 返回了意外的工具操作",
+                                "Codex returned an unexpected tool call",
+                            )
+                            .into());
                         }
                         _ => {}
                     }
                 }
-                answer.ok_or("Codex 没有返回判定")?
+                answer.ok_or(t("Codex 没有返回判定", "Codex returned no verdict"))?
             }
             Provider::Claude => {
                 let mut command = Command::new(find_cli("claude")?);
@@ -414,18 +445,25 @@ impl Request {
                     "dontAsk",
                 ]);
                 let stdout = execute(command, prompt, cancel, "Claude Code")?;
-                let output: Value =
-                    serde_json::from_str(&stdout).map_err(|_| "Claude Code 回执格式无效")?;
+                let output: Value = serde_json::from_str(&stdout).map_err(|_| {
+                    t(
+                        "Claude Code 回执格式无效",
+                        "the Claude Code response is malformed",
+                    )
+                })?;
                 output["result"]
                     .as_str()
-                    .ok_or("Claude Code 没有返回判定")?
+                    .ok_or(t(
+                        "Claude Code 没有返回判定",
+                        "Claude Code returned no verdict",
+                    ))?
                     .to_owned()
             }
             Provider::Jev | Provider::CustomSystemOne | Provider::CustomChat => {
                 unreachable!("network providers handled above")
             }
         };
-        parse_decisions(&output, input.len(), self.provider.name())
+        parse_decisions(&output, input.len(), &self.provider.name())
     }
 
     fn judge_jev(
@@ -473,19 +511,43 @@ impl Request {
             endpoint,
         ]);
         let name = self.provider.name();
-        let stdout = execute(command, config, cancel, name)?;
-        let (body, status) = stdout
-            .rsplit_once('\n')
-            .ok_or_else(|| format!("没有收到 {name} 的 HTTP 状态"))?;
+        let stdout = execute(command, config, cancel, &name)?;
+        let (body, status) = stdout.rsplit_once('\n').ok_or_else(|| {
+            t(
+                &format!("没有收到 {name} 的 HTTP 状态"),
+                &format!("no HTTP status from {name}"),
+            )
+            .to_owned()
+        })?;
         match status {
             "200" => Ok(body.to_owned()),
-            "401" | "403" => Err(format!(
-                "{name} 拒绝授权（HTTP {status}），请检查密钥和访问权限"
-            )),
-            "402" => Err(format!("{name} 要求付款（HTTP 402），请检查额度")),
-            "429" => Err(format!("{name} 达到限流，请稍后再试或缩小复核范围")),
-            "529" => Err(format!("{name} 当前繁忙，请稍后再试")),
-            _ => Err(format!("{name} 请求失败（HTTP {status}）")),
+            "401" | "403" => {
+                let zh = format!("{name} 拒绝授权（HTTP {status}），请检查密钥和访问权限");
+                let en = format!(
+                    "{name} refused the credentials (HTTP {status}); check the key and its permissions"
+                );
+                Err(t(&zh, &en).to_owned())
+            }
+            "402" => Err(t(
+                &format!("{name} 要求付款（HTTP 402），请检查额度"),
+                &format!("{name} requires payment (HTTP 402); check the quota"),
+            )
+            .to_owned()),
+            "429" => Err(t(
+                &format!("{name} 达到限流，请稍后再试或缩小复核范围"),
+                &format!("{name} is rate limited; retry later or review a smaller range"),
+            )
+            .to_owned()),
+            "529" => Err(t(
+                &format!("{name} 当前繁忙，请稍后再试"),
+                &format!("{name} is busy; try again later"),
+            )
+            .to_owned()),
+            _ => Err(t(
+                &format!("{name} 请求失败（HTTP {status}）"),
+                &format!("{name} request failed (HTTP {status})"),
+            )
+            .to_owned()),
         }
     }
 }
@@ -513,10 +575,19 @@ fn parse_decisions(output: &str, count: usize, provider: &str) -> Result<String,
         .and_then(|text| text.strip_suffix("```"))
         .unwrap_or(text)
         .trim();
-    let parsed: Decisions =
-        serde_json::from_str(text).map_err(|_| format!("{provider} 返回的判定格式无效"))?;
+    let parsed: Decisions = serde_json::from_str(text).map_err(|_| {
+        t(
+            &format!("{provider} 返回的判定格式无效"),
+            &format!("{provider} returned a malformed verdict"),
+        )
+        .to_owned()
+    })?;
     if parsed.v.len() != count || !parsed.v.bytes().all(|v| matches!(v, b'0'..=b'3')) {
-        return Err(format!("{provider} 返回的标签与批次不匹配"));
+        return Err(t(
+            &format!("{provider} 返回的标签与批次不匹配"),
+            &format!("{provider} returned labels that do not match the batch"),
+        )
+        .to_owned());
     }
     Ok(parsed.v)
 }
@@ -566,16 +637,25 @@ enum JevChoice {
 }
 
 fn jev_decisions(body: &str, count: usize) -> Result<String, String> {
-    let response: JevResponse = serde_json::from_str(body).map_err(|_| "Jev 回执格式无效")?;
+    let response: JevResponse = serde_json::from_str(body)
+        .map_err(|_| t("Jev 回执格式无效", "the Jev response is malformed"))?;
     let mut answers = response.answers;
     if answers.len() != count {
-        return Err("Jev 返回的标签数与批次不匹配".into());
+        return Err(t(
+            "Jev 返回的标签数与批次不匹配",
+            "Jev returned the wrong number of labels",
+        )
+        .into());
     }
     (0..count)
         .map(|index| {
             let id = format!("message_{index}");
             let Some(JevAnswer::Choice { choice }) = answers.remove(&id) else {
-                return Err("Jev 返回的消息编号与批次不匹配".into());
+                return Err(t(
+                    "Jev 返回的消息编号与批次不匹配",
+                    "Jev returned message ids that do not match the batch",
+                )
+                .into());
             };
             Ok(match choice {
                 JevChoice::NoAbuse => '0',
@@ -682,7 +762,13 @@ fn find_cli(name: &str) -> Result<PathBuf, String> {
         .into_iter()
         .map(|base| base.join(name))
         .find(|path| path.is_file())
-        .ok_or_else(|| format!("未找到 {name}，请通过已安装并登录的 CLI 运行"))
+        .ok_or_else(|| {
+            t(
+                &format!("未找到 {name}，请通过已安装并登录的 CLI 运行"),
+                &format!("{name} was not found; run it once from an installed and signed-in CLI"),
+            )
+            .to_owned()
+        })
 }
 
 fn execute(
@@ -700,7 +786,13 @@ fn execute(
         .stdout(Stdio::piped())
         .stderr(Stdio::null())
         .spawn()
-        .map_err(|err| format!("无法启动 {provider}（{err}）"))?;
+        .map_err(|err| {
+            t(
+                &format!("无法启动 {provider}（{err}）"),
+                &format!("could not start {provider} ({err})"),
+            )
+            .to_owned()
+        })?;
     let mut stdin = child.stdin.take().expect("piped stdin");
     let stdout = child.stdout.take().expect("piped stdout");
     let input_task = std::thread::spawn(move || stdin.write_all(input.as_bytes()));
@@ -718,34 +810,50 @@ fn execute(
         if cancel.load(Ordering::Relaxed) || start.elapsed() >= Duration::from_secs(95) {
             let _ = child.kill();
             let _ = child.wait();
-            return Err(format!("{provider} 已取消或本批次超时"));
+            return Err(t(
+                &format!("{provider} 已取消或本批次超时"),
+                &format!("{provider} was cancelled or the batch timed out"),
+            )
+            .to_owned());
         }
         match child.try_wait() {
             Ok(Some(status)) if status.success() => break,
             Ok(Some(status)) => {
-                return Err(format!(
-                    "{provider} 调用失败（退出码 {}），请检查登录或接口配置",
-                    status.code().unwrap_or(-1)
-                ));
+                let code = status.code().unwrap_or(-1);
+                let zh = format!("{provider} 调用失败（退出码 {code}），请检查登录或接口配置");
+                let en = format!(
+                    "{provider} failed (exit code {code}); check the sign-in or endpoint settings"
+                );
+                return Err(t(&zh, &en).to_owned());
             }
             Ok(None) => std::thread::sleep(Duration::from_millis(100)),
             Err(error) => {
                 let _ = child.kill();
                 let _ = child.wait();
-                return Err(format!("读取 {provider} 状态失败（{error}）"));
+                return Err(t(
+                    &format!("读取 {provider} 状态失败（{error}）"),
+                    &format!("could not read the {provider} status ({error})"),
+                )
+                .to_owned());
             }
         }
     }
     input_task
         .join()
-        .map_err(|_| "发送片段失败")?
-        .map_err(|_| "发送片段失败")?;
+        .map_err(|_| t("发送片段失败", "failed to send the excerpt"))?
+        .map_err(|_| t("发送片段失败", "failed to send the excerpt"))?;
     let output = receive
         .recv_timeout(Duration::from_secs(2))
-        .map_err(|_| "读取判定超时")?
-        .map_err(|_| "无法读取判定")?;
+        .map_err(|_| t("读取判定超时", "timed out reading the verdict"))?
+        .map_err(|_| t("无法读取判定", "could not read the verdict"))?;
     if output.len() >= 2 * 1024 * 1024 {
-        return Err("判定响应过大".into());
+        return Err(t("判定响应过大", "the verdict response is too large").into());
     }
-    String::from_utf8(output).map_err(|_| "判定响应编码无效".into())
+    String::from_utf8(output).map_err(|_| {
+        t(
+            "判定响应编码无效",
+            "the verdict response is not valid UTF-8",
+        )
+        .into()
+    })
 }

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="<!-- MALEMA_LANG -->">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
-<title>骂了吗</title>
+<title><!-- MALEMA_TITLE --></title>
 <style>
 :root{color-scheme:light;--ink:#263344;--muted:#5d6b7c;--line:#e5eaf1;--bg:#f7f9fc;--card:#fff;--nav:#edf3fa;--blue:#4566be;--orange:#ad4d58;--radius:16px;font:14px/1.55 -apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif}
 *{box-sizing:border-box}body{margin:0;color:var(--ink);background:var(--bg)}button,select{font:inherit;color:inherit}button,select,summary{cursor:pointer}button:focus-visible,select:focus-visible,summary:focus-visible{outline:2px solid #4867ee;outline-offset:3px}[hidden]{display:none!important}
@@ -15,6 +15,10 @@ aside{position:sticky;top:0;height:100vh;background:var(--nav);color:var(--ink);
 nav{display:grid;gap:6px}nav button{width:100%;text-align:left;display:flex;align-items:center;gap:10px;border:0;border-radius:8px;padding:10px 11px;color:#53627b;background:none;white-space:nowrap}
 nav button:hover{color:#334f9e;background:#e3ecfa}nav button[aria-current="page"]{background:#dfeaff;color:#3856a4;font-weight:650}
 .nav-icon{width:18px;flex:none;font:18px/1 -apple-system,sans-serif;text-align:center;color:#5975bd}
+.language-toggle{margin:auto 8px 6px;display:flex;align-items:center;justify-content:center;gap:6px;width:calc(100% - 16px);padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--card);font-size:12px;color:var(--muted)}
+.language-toggle:hover{color:var(--ink);border-color:#c9d5e4}
+.repository-link{margin:0 8px 10px;display:flex;align-items:center;justify-content:center;gap:6px;width:calc(100% - 16px);padding:6px 8px;border:1px solid transparent;border-radius:8px;background:transparent;font-size:12px;color:#5e6e81}
+.repository-link:hover{color:var(--ink);border-color:var(--line);background:var(--card)}
 .local{margin:auto 8px 0;display:flex;align-items:center;gap:8px;font-size:12px;color:#5e6e81;white-space:nowrap}
 .local::before{content:"";width:7px;height:7px;background:#469178;border-radius:50%}
 .contribution-control{margin-top:auto}
@@ -147,6 +151,7 @@ dialog::backdrop{background:#263a5c40}
 </head>
 <body>
 <!-- MALEMA_BODY -->
+<script id="report-i18n" type="application/json"><!-- MALEMA_I18N --></script>
 <script id="report-data" type="application/json"><!-- MALEMA_DATA --></script>
 <script>
 const dataScript = document.getElementById("report-data");
@@ -154,7 +159,9 @@ if (document.querySelector(".shell")) init(JSON.parse(dataScript.textContent));
 
 function init(initialData) {
   const $ = id => document.getElementById(id);
-  const fmt = new Intl.NumberFormat("zh-CN");
+  const T = JSON.parse(document.getElementById("report-i18n").textContent);
+  const fill = (text, values) => text.replace(/\{(\w+)\}/g, (_, key) => values[key]);
+  const fmt = new Intl.NumberFormat(T.locale);
   const colors = { "Codex":"#6689df", "Claude Code":"#c97b70", "DeepSeek Harness":"#6b9fc7",
     "WorkBuddy":"#4d9c89", "Cursor":"#927ac7", "pi":"#9c8757" };
   const today = new Date();
@@ -227,7 +234,7 @@ function init(initialData) {
     $("rate").textContent = rates(total.hits,total.turns);
     $("active-days").textContent = hasData ? fmt.format(new Set(viewRows.flatMap(row => row.date ? [row.date] : [])).size) : "—";
     const missing = viewRows.reduce((acc,row) => acc + (row.date ? 0 : row.turns),0);
-    $("undated").textContent = missing ? fmt.format(missing) + " 条日期未知" : "";
+    $("undated").textContent = missing ? fill(T.undated, {count: fmt.format(missing)}) : "";
     plot();
     breakdown(viewRows, total.turns);
     heatmap();
@@ -241,11 +248,11 @@ function init(initialData) {
     for (const node of selected("[data-day]")) node.setAttribute("aria-pressed",String(node.dataset.day === day));
     const b = bucket(day);
     for (const area of [$("chart-detail"), $("heat-detail")]) {
-      const text = el("span", "", day + "　");
-      text.append(el("strong", "", hasData ? fmt.format(b.turns) + " 条真人消息 · " + b.hits + " 次挨骂" : "—"));
+      const text = el("span", "", day + " ");
+      text.append(el("strong", "", hasData ? fill(b.hits === 1 ? T.dayDetailOne : T.dayDetail, {turns: fmt.format(b.turns), hits: b.hits}) : "—"));
       area.replaceChildren(text);
       if (b.hits) {
-        const review = el("button","plain-btn","查看记录");
+        const review = el("button","plain-btn",T.viewRecords);
         review.addEventListener("click",() => {
           current.recordsDay = day;
           changeView("records");
@@ -259,7 +266,7 @@ function init(initialData) {
     const b = bucket(day);
     const button = el("button",klass);
     button.dataset.day = day;
-    button.title = day + " · " + b.turns + " 条真人消息 · " + b.hits + " 次挨骂";
+    button.title = day + " · " + fill(b.hits === 1 ? T.dayDetailOne : T.dayDetail, {turns: fmt.format(b.turns), hits: b.hits});
     button.setAttribute("aria-label",button.title);
     button.setAttribute("aria-pressed",String(current.day === day));
     button.addEventListener("click",()=>selectDay(day));
@@ -300,11 +307,11 @@ function init(initialData) {
 
   function breakdown(rows, total) {
     const byClient = current.groups === "source";
-    const sum = groups(rows, row => byClient ? row.client : (row.model || "模型未知"));
+    const sum = groups(rows, row => byClient ? row.client : (row.model || T.unknownModel));
     const items = [...sum.entries()].sort((a,b) => b[1].turns-a[1].turns || a[0].localeCompare(b[0]));
     const host = $("breakdown");
     host.replaceChildren();
-    if (!items.length) host.append(el("p","subtle",hasData ? "所选时间没有记录" : "正在统计…"));
+    if (!items.length) host.append(el("p","subtle",hasData ? T.noRecordsInRange : T.counting));
     const maximum = byClient ? items.length : 6;
     for (const [label,n] of items.slice(0,maximum)){
       const group = el("div","group");
@@ -312,13 +319,13 @@ function init(initialData) {
       const name = el("p","",label);
       name.title = label;
       const progress = el("div","bar-track");
-      const fill = el("span","");
-      fill.style.width = (total ? 100*n.turns/total : 0) + "%";
-      progress.append(fill);
-      group.append(name,el("b","",fmt.format(n.turns)),progress,el("small","", n.hits + " 次挨骂"));
+      const bar = el("span","");
+      bar.style.width = (total ? 100*n.turns/total : 0) + "%";
+      progress.append(bar);
+      group.append(name,el("b","",fmt.format(n.turns)),progress,el("small","", fill(n.hits === 1 ? T.insultOne : T.insultCount,{count:n.hits})));
       host.append(group);
     }
-    if (items.length > maximum) host.append(el("p","subtle","另有 " + (items.length-maximum) + " 个模型"));
+    if (items.length > maximum) host.append(el("p","subtle",fill(T.moreModels,{count:items.length-maximum})));
   }
 
   function heatmap() {
@@ -334,7 +341,7 @@ function init(initialData) {
     const max = Math.max(1, ...[...byDate].filter(([day]) => within(day,localDate(oldest))).map(([,n])=>n.turns));
     for (let week = new Date(start); week <= anchor; week.setUTCDate(week.getUTCDate()+7)) {
       const month = week.getUTCMonth();
-      host.append(el("span","heat-month",month === lastMonth ? "" : month + 1 + "月"));
+      host.append(el("span","heat-month",month === lastMonth ? "" : T.months[month]));
       lastMonth = month;
       for (let i=0; i<7; i++){
         const date=new Date(week);
@@ -349,7 +356,7 @@ function init(initialData) {
       }
     }
     host.style.setProperty("--weeks", Math.floor((anchor - start) / 604800000) + 1);
-    $("heat-range").textContent = current.days ? "近 " + current.days + " 天" : "近 90 天";
+    $("heat-range").textContent = current.days ? fill(T.lastDays,{days:current.days}) : T.last90;
   }
 
   function filterRecords() {
@@ -361,11 +368,11 @@ function init(initialData) {
       row.hidden = !shown;
       if(shown) count++;
     }
-    $("record-count").textContent = recordsLoaded ? fmt.format(count) + " 条" : "";
+    $("record-count").textContent = recordsLoaded ? fill(T.countItems,{count:fmt.format(count)}) : "";
     $("empty-records").hidden = count > 0;
-    $("empty-records").textContent = recordsLoaded ? "所选范围内没有明确冲 AI 的辱骂。" : "正在读取记录…";
+    $("empty-records").textContent = recordsLoaded ? T.noRecords : T.readingRecords;
     $("clear-day").hidden = !current.recordsDay;
-    $("clear-day").textContent = current.recordsDay ? current.recordsDay + "　清除日期" : "";
+    $("clear-day").textContent = current.recordsDay ? fill(T.clearDay,{day:current.recordsDay}) : "";
   }
 
   const indexNumbers = (key, value) => key === "score" ? value.toFixed(1) : fmt.format(value);
@@ -378,7 +385,7 @@ function init(initialData) {
       .sort((a,b) => b[metric] - a[metric] || indexTie(a,b));
     const shown = ordered.slice(0,6);
     $("index-chart").hidden = !entries.length;
-    $("index-chart-count").textContent = ordered.length > shown.length ? "前 " + shown.length + " 组" : "";
+    $("index-chart-count").textContent = ordered.length > shown.length ? fill(T.topGroups,{count:shown.length}) : "";
     $("index-chart-empty").hidden = shown.length > 0;
     if (!shown.length) {
       $("index-bars").replaceChildren();
@@ -395,7 +402,7 @@ function init(initialData) {
     const bars = shown.map(entry => {
       const button = el("button","index-chart-row");
       button.type = "button";
-      const model = entry.model || "模型未知";
+      const model = entry.model || T.unknownModel;
       const label = el("span","index-chart-name");
       label.append(el("strong","",model),el("small","",entry.client));
       const track = el("span","index-chart-track");
@@ -406,8 +413,8 @@ function init(initialData) {
       track.append(bar);
       const value = el("span","index-chart-value");
       value.append(el("strong","",indexNumbers(metric,entry[metric])));
-      if (metric === "score") value.append(el("small","",fmt.format(entry.hits) + " 次 / " + fmt.format(entry.turns) + " 条"));
-      button.title = entry.client + " · " + model + " · 查看明细";
+      if (metric === "score") value.append(el("small","",fill(T.hitsOverTurns,{hits:fmt.format(entry.hits),turns:fmt.format(entry.turns)})));
+      button.title = entry.client + " · " + model + " · " + T.viewDetails;
       button.append(label,track,value);
       button.addEventListener("click",()=>{
         const row = tableRows.get(entry.key);
@@ -425,7 +432,7 @@ function init(initialData) {
       const [client, model] = JSON.parse(key);
       return {key,client,model,...count,score: model && count.turns ? 1000 * count.hits / count.turns : null};
     }).filter(({model,turns,hits}) => {
-      return (model || "模型未知").toLocaleLowerCase().includes(indexView.query)
+      return (model || T.unknownModel).toLocaleLowerCase().includes(indexView.query)
         && turns >= indexView.minimum && (!indexView.hitsOnly || hits > 0);
     });
     const key = indexView.sort;
@@ -443,9 +450,9 @@ function init(initialData) {
       button.lastElementChild.textContent = active ? (indexView.direction === 1 ? "↑" : "↓") : "↕";
     }
     $("index-empty").hidden = entries.length > 0;
-    $("index-empty").textContent = hasData ? "没有符合筛选条件的组合。" : "正在统计…";
+    $("index-empty").textContent = hasData ? T.noCombination : T.counting;
     $("index-table").hidden = !entries.length;
-    $("index-count").textContent = hasData ? fmt.format(entries.length) + " 个组合" : "";
+    $("index-count").textContent = hasData ? fill(T.combinations,{count:fmt.format(entries.length)}) : "";
     const tableRows = new Map();
     $("index-rows").replaceChildren(...entries.map(({key,client,model,turns,hits,score}) => {
       const row = el("tr","");
@@ -453,7 +460,7 @@ function init(initialData) {
       row.toggleAttribute("data-unknown",score === null);
       const harness = el("td","index-harness");
       harness.append(marker(colors[client]),client);
-      row.append(harness,el("td",model ? "" : "subtle",model || "模型未知"),
+      row.append(harness,el("td",model ? "" : "subtle",model || T.unknownModel),
         el("td","",fmt.format(turns)),el("td","",fmt.format(hits)),
         el("td","",score === null ? "—" : indexNumbers("score",score)));
       tableRows.set(key,row);
@@ -469,7 +476,7 @@ function init(initialData) {
       else button.removeAttribute("aria-current");
     }
     for(const pane of selected("[data-pane]")) pane.hidden=pane.dataset.pane!==next;
-    $("current-title").textContent = {overview:"总览",records:"挨骂记录",index:"被骂指数",sources:"数据来源"}[next];
+    $("current-title").textContent = T.views[next];
     const sourceFilter = $("source-filter"), rangeFilter = $("range-filter");
     if(next === "index") {
       $("index-source-slot").append(sourceFilter);
@@ -533,7 +540,7 @@ function init(initialData) {
     function setOption(option) {
       for (const item of options) item.setAttribute("aria-selected", String(item === option));
       trigger.firstElementChild.textContent = option.textContent;
-      trigger.setAttribute("aria-label", label + "：" + option.textContent);
+      trigger.setAttribute("aria-label", fill(T.optionLabel,{label:label,option:option.textContent}));
     }
     for (const option of options) option.addEventListener("click", () => {
       setOption(option);
@@ -614,13 +621,13 @@ function init(initialData) {
     rescan.addEventListener("click",()=>{
       rescan.disabled=true;
       scanStatus.hidden=false;
-      scanStatus.textContent="正在后台扫描…";
+      scanStatus.textContent=T.scanning;
       window.ipc.postMessage("rescan");
     });
     window.scanCached=snapshot=>{
       data=snapshot;
       hasData=true;
-      scanStatus.textContent="上次结果 · 后台更新中";
+      scanStatus.textContent=T.cachedScan;
       renderSources();
       refreshData();
     };
@@ -654,6 +661,14 @@ function init(initialData) {
     });
     post("status");
   }
+  const repositoryLink = $("open-repository");
+  if (repositoryLink && window.ipc) {
+    repositoryLink.addEventListener("click", () => window.ipc.postMessage("open-repository"));
+  }
+  const languageToggle = $("language-toggle");
+  if (languageToggle && window.ipc) {
+    languageToggle.addEventListener("click", () => window.ipc.postMessage(T.nextLanguageCode));
+  }
   const reviewDialog=$("review-dialog");
   if(reviewDialog && window.ipc){
     const endpoint=$("review-endpoint"), model=$("review-model"), customKey=$("review-custom-key");
@@ -668,7 +683,7 @@ function init(initialData) {
         if(lastCustom && lastCustom!==value)endpoint.value=model.value=customKey.value="";
         lastCustom=value;
         const systemOne=value==="custom_system_one";
-        $("review-endpoint-label").textContent=systemOne ? "Jev System One 接口地址" : "Chat Completions 接口地址";
+        $("review-endpoint-label").textContent=systemOne ? T.endpointSystemOne : T.endpointChat;
         endpoint.placeholder=systemOne ? "https://example.com/v1/systemone" : "https://example.com/v1/chat/completions";
       }
     });
@@ -678,8 +693,8 @@ function init(initialData) {
     const key=$("review-key");
     let runRange="";
     const rangeText=()=>[
-      current.source || "全部来源",
-      current.recordsDay || (current.days ? "近 "+current.days+" 天" : "全部时间")
+      current.source || T.allSources,
+      current.recordsDay || (current.days ? fill(T.lastDays,{days:current.days}) : T.allTime)
     ].join(" · ");
     const setBusy=busy=>{
       for(const item of [provider.trigger,scope.trigger,key,endpoint,model,customKey,$("start-review")]) item.disabled=busy;
@@ -722,38 +737,38 @@ function init(initialData) {
       results.hidden=true;
       results.replaceChildren();
       setBusy(true);
-      showStatus("正在整理所选范围的本机会话…");
+      showStatus(T.reviewPreparing);
       window.ipc.postMessage(JSON.stringify(request));
     });
     stop.addEventListener("click",()=>{
       stop.disabled=true;
-      showStatus("正在停止复核…");
+      showStatus(T.reviewStopping);
       window.ipc.postMessage("cancel-review");
     });
     window.reviewProgress=(done,total)=>{
-      if(!stop.disabled)showStatus("正在复核 · "+fmt.format(done)+" / "+fmt.format(total)+" 条");
+      if(!stop.disabled)showStatus(fill(T.reviewProgress,{done:fmt.format(done),total:fmt.format(total)}));
     };
     window.reviewDone=review=>{
       setBusy(false);
       const found=review.findings.length;
       if(review.error) showStatus(review.error,true);
-      else if(review.cancelled) showStatus("复核已停止");
-      else showStatus("复核完成 · "+review.provider);
+      else if(review.cancelled) showStatus(T.reviewStopped);
+      else showStatus(fill(T.reviewFinished,{provider:review.provider}));
       if(review.error && !review.reviewed)return;
       results.hidden=false;
       results.append(
         el("p","subtle",runRange),
-        el("p","",fmt.format(review.reviewed)+" 条已复核 · "+fmt.format(found)+" 条明确挨骂 · "+fmt.format(review.uncertain)+" 条证据不足")
+        el("p","",fill(T.reviewSummary,{reviewed:fmt.format(review.reviewed),found:fmt.format(found),uncertain:fmt.format(review.uncertain)}))
       );
-      if(review.skipped) results.append(el("p","subtle",fmt.format(review.skipped)+" 条没有可提交的脱敏片段"));
+      if(review.skipped) results.append(el("p","subtle",fill(T.reviewSkipped,{count:fmt.format(review.skipped)})));
       if(review.reviewed) results.append(el("p","subtle",
-        "新增 "+fmt.format(review.added)+" 条 · 规则命中获确认 "+fmt.format(review.retained)+" / "+fmt.format(review.rule_hits_reviewed)+" 条"));
+        fill(T.reviewAdded,{added:fmt.format(review.added),retained:fmt.format(review.retained),reviewed:fmt.format(review.rule_hits_reviewed)})));
       for(const finding of review.findings){
         const detail=el("details","record");
         const label=el("summary",""), head=el("span","");
         head.append(el("strong","",finding.reason),el("small","",
-          (finding.rule_hit ? "规则已命中" : "AI 新发现")+" · "+finding.source+" · "+
-          (finding.model || "模型未知")+" · "+(finding.date || "日期未知")));
+          (finding.rule_hit ? T.ruleHit : T.aiFound)+" · "+finding.source+" · "+
+          (finding.model || T.unknownModel)+" · "+(finding.date || T.unknownDate)));
         label.append(head);
         const body=el("div","record-body");
         body.append(el("blockquote","",finding.text));
@@ -770,25 +785,25 @@ function init(initialData) {
       const title=el("h2","");
       title.append(marker(colors[source.client]),source.client);
       const n=source.turns;
-      const status=source.found ? fmt.format(n) + " 条真人消息 · " + source.hits + " 次挨骂" : "未找到本地记录";
+      const status=source.found ? fill(source.hits === 1 ? T.sourceStatusOne : T.sourceStatus,{turns:fmt.format(n),hits:source.hits}) : T.noLocalRecords;
       card.append(title,el("p","",status));
       if(source.found){
-        const detail=[fmt.format(source.files)+" 个会话文件"];
-        if(source.compressed)detail.push(fmt.format(source.compressed)+" 个压缩文件");
-        if(source.archived)detail.push(fmt.format(source.archived)+" 个归档文件");
-        if(source.history_turns)detail.push(fmt.format(source.history_turns)+" 条由输入历史补录");
+        const detail=[fill(T.sessionFiles,{count:fmt.format(source.files)})];
+        if(source.compressed)detail.push(fill(T.compressedFiles,{count:fmt.format(source.compressed)}));
+        if(source.archived)detail.push(fill(T.archivedFiles,{count:fmt.format(source.archived)}));
+        if(source.history_turns)detail.push(fill(T.historyTurns,{count:fmt.format(source.history_turns)}));
         card.append(el("small","",detail.join(" · ")));
-        if(source.versioned_turns)card.append(el("small","",fmt.format(source.versioned_turns)+" 条有工具版本"));
+        if(source.versioned_turns)card.append(el("small","",fill(T.versionedTurns,{count:fmt.format(source.versioned_turns)})));
         const skipped=[];
-        if(source.ignored)skipped.push(source.ignored+" 个子代理或自动评审");
-        if(source.duplicates)skipped.push(source.duplicates+" 个重复会话文件");
-        if(source.errors)skipped.push(source.errors+" 个读取异常");
-        if(source.malformed)skipped.push(source.malformed+" 行无法解析");
+        if(source.ignored)skipped.push(fill(T.autoReviews,{count:source.ignored}));
+        if(source.duplicates)skipped.push(fill(T.duplicateFiles,{count:source.duplicates}));
+        if(source.errors)skipped.push(fill(T.readErrors,{count:source.errors}));
+        if(source.malformed)skipped.push(fill(T.malformedLines,{count:source.malformed}));
         if(skipped.length)card.append(el("small","",skipped.join(" · ")));
         const calendar = [];
-        if(source.inferred_neighbors)calendar.push(fmt.format(source.inferred_neighbors)+" 条由同日相邻消息补齐");
-        if(source.inferred_file_days)calendar.push(fmt.format(source.inferred_file_days)+" 条按文件日期推断");
-        if(source.missing_days)calendar.push(fmt.format(source.missing_days)+" 条日期未知");
+        if(source.inferred_neighbors)calendar.push(fill(T.inferredNeighbors,{count:fmt.format(source.inferred_neighbors)}));
+        if(source.inferred_file_days)calendar.push(fill(T.inferredFiles,{count:fmt.format(source.inferred_file_days)}));
+        if(source.missing_days)calendar.push(fill(T.missingDays,{count:fmt.format(source.missing_days)}));
         if(calendar.length)card.append(el("small","",calendar.join(" · ")));
       }
       sourceList.append(card);

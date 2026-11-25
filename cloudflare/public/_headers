@@ -2,3 +2,15 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: no-referrer
   Content-Security-Policy: default-src 'self'; frame-ancestors 'none'; base-uri 'none'
+
+/mark.png
+  Cache-Control: public, max-age=604800
+
+/card.png
+  Cache-Control: public, max-age=604800
+
+/board.js
+  Cache-Control: public, max-age=60, must-revalidate
+
+/style.css
+  Cache-Control: public, max-age=60, must-revalidate

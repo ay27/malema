@@ -1,6 +1,9 @@
+#![recursion_limit = "512"]
+
 #[cfg(target_os = "macos")]
 mod contribute;
 mod detect;
+mod i18n;
 mod report;
 #[cfg(target_os = "macos")]
 mod review;
@@ -12,8 +15,9 @@ use std::io::{self, Write};
 use std::path::{Path, PathBuf};
 
 fn main() {
+    i18n::set_lang(i18n::system());
     if let Err(error) = run() {
-        eprintln!("骂了吗: {error}");
+        eprintln!("{}: {error}", i18n::pick("骂了吗", "Malema"));
         std::process::exit(1);
     }
 }
@@ -24,38 +28,71 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     let mut html = None;
     let mut audit = None;
     let mut summary = false;
+    let mut help = false;
     while let Some(arg) = args.next() {
         let value = |value: Option<OsString>| -> io::Result<PathBuf> {
-            value
-                .map(PathBuf::from)
-                .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "选项缺少路径"))
+            value.map(PathBuf::from).ok_or_else(|| {
+                io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    i18n::pick("选项缺少路径", "the option needs a path"),
+                )
+            })
         };
         match arg.to_str() {
             Some("--home") => home = Some(value(args.next())?),
             Some("--report") => html = Some(value(args.next())?),
             Some("--audit") => audit = Some(value(args.next())?),
             Some("--summary") => summary = true,
-            Some("--help" | "-h") => {
-                println!(
-                    "骂了吗\n  malema                         打开桌面应用\n  malema --report FILE.html      扫描并导出私人报表\n  malema --summary               扫描并输出计数\n  malema --audit FILE.json       扫描并导出带片段的本地复核数据\n  --home DIR                     使用指定目录作为会话根目录"
-                );
-                return Ok(());
+            Some("--help" | "-h") => help = true,
+            _ => {
+                return Err(io::Error::new(
+                    io::ErrorKind::InvalidInput,
+                    format!(
+                        "{} {}",
+                        i18n::pick("无法识别的参数", "unrecognized argument"),
+                        arg.to_string_lossy()
+                    ),
+                )
+                .into());
             }
-            _ => return Err(format!("无法识别的参数 {}", arg.to_string_lossy()).into()),
         }
     }
     let use_env = home.is_none();
     let home = home
         .or_else(|| std::env::var_os("HOME").map(PathBuf::from))
-        .ok_or("找不到用户目录")?;
+        .ok_or_else(|| {
+            io::Error::new(
+                io::ErrorKind::NotFound,
+                i18n::pick("找不到用户目录", "cannot find the home directory"),
+            )
+        })?;
     if !home.is_dir() {
-        return Err("用户目录不可读或不存在".into());
+        return Err(io::Error::new(
+            io::ErrorKind::NotFound,
+            i18n::pick(
+                "用户目录不可读或不存在",
+                "the home directory is unreadable or missing",
+            ),
+        )
+        .into());
+    }
+    i18n::set_lang(i18n::load(&home));
+    if help {
+        println!("{}", helptext());
+        return Ok(());
     }
     if html.is_none() && audit.is_none() && !summary {
         return desktop(home, use_env);
     }
     if html.is_some() && html == audit {
-        return Err("报表和复核数据需要不同的输出文件".into());
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            i18n::pick(
+                "报表和复核数据需要不同的输出文件",
+                "the report and the audit data need different output files",
+            ),
+        )
+        .into());
     }
     let report = report::build(&home, use_env);
     if let Some(path) = html {
@@ -68,10 +105,31 @@ fn run() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+fn helptext() -> String {
+    format!(
+        "{}\n  malema                         {}\n  malema --report FILE.html      {}\n  malema --summary               {}\n  malema --audit FILE.json       {}\n  --home DIR                     {}",
+        i18n::pick("骂了吗", "Malema"),
+        i18n::pick("打开桌面应用", "open the desktop app"),
+        i18n::pick("扫描并导出私人报表", "scan and export a private report"),
+        i18n::pick("扫描并输出计数", "scan and print the counts"),
+        i18n::pick(
+            "扫描并导出带片段的本地复核数据",
+            "scan and export local audit data with excerpts"
+        ),
+        i18n::pick(
+            "使用指定目录作为会话根目录",
+            "use this directory as the session root"
+        ),
+    )
+}
+
 fn private_write(path: &Path, content: &[u8]) -> io::Result<()> {
-    let name = path
-        .file_name()
-        .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidInput, "需要文件名"))?;
+    let name = path.file_name().ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::InvalidInput,
+            i18n::pick("需要文件名", "a file name is required"),
+        )
+    })?;
     let temporary = path.with_file_name(format!(
         ".{}.{}.tmp",
         name.to_string_lossy(),
@@ -99,24 +157,31 @@ fn private_write(path: &Path, content: &[u8]) -> io::Result<()> {
 #[cfg(target_os = "macos")]
 fn install_app_menu(
     window: &tao::window::Window,
-) -> Result<Option<objc2::rc::Retained<objc2::runtime::AnyObject>>, &'static str> {
+    updater: Option<&objc2::rc::Retained<objc2::runtime::AnyObject>>,
+) -> Result<(), &'static str> {
     use objc2::{MainThreadMarker, MainThreadOnly, sel};
     use objc2_app_kit::{NSApplication, NSEventModifierFlags, NSMenu, NSMenuItem, NSWindow};
     use objc2_foundation::NSString;
     use tao::platform::macos::WindowExtMacOS;
 
-    let mtm = MainThreadMarker::new().ok_or("应用菜单必须在主线程创建")?;
+    let mtm = MainThreadMarker::new().ok_or(i18n::pick(
+        "应用菜单必须在主线程创建",
+        "the app menu must be built on the main thread",
+    ))?;
     let app = NSApplication::sharedApplication(mtm);
     let menu = NSMenu::new(mtm);
     let app_item = NSMenuItem::new(mtm);
-    let app_menu = NSMenu::initWithTitle(NSMenu::alloc(mtm), &NSString::from_str("骂了吗"));
+    let app_menu = NSMenu::initWithTitle(
+        NSMenu::alloc(mtm),
+        &NSString::from_str(i18n::pick("骂了吗", "Malema")),
+    );
     // Tao owns this NSWindow for the lifetime of the app's event loop.
-    let native_window =
-        unsafe { window.ns_window().cast::<NSWindow>().as_ref() }.ok_or("找不到应用窗口")?;
+    let native_window = unsafe { window.ns_window().cast::<NSWindow>().as_ref() }
+        .ok_or(i18n::pick("找不到应用窗口", "the app window is missing"))?;
     let quit = unsafe {
         NSMenuItem::initWithTitle_action_keyEquivalent(
             NSMenuItem::alloc(mtm),
-            &NSString::from_str("退出骂了吗"),
+            &NSString::from_str(i18n::pick("退出骂了吗", "Quit Malema")),
             Some(sel!(performClose:)),
             &NSString::from_str("q"),
         )
@@ -124,12 +189,11 @@ fn install_app_menu(
     // Route through CloseRequested so an active review can cancel before exit.
     unsafe { quit.setTarget(Some(native_window.as_ref())) };
     quit.setKeyEquivalentModifierMask(NSEventModifierFlags::Command);
-    let updater = sparkle_updater();
-    if let Some(controller) = &updater {
+    if let Some(controller) = updater {
         let item = unsafe {
             NSMenuItem::initWithTitle_action_keyEquivalent(
                 NSMenuItem::alloc(mtm),
-                &NSString::from_str("检查更新…"),
+                &NSString::from_str(i18n::pick("检查更新…", "Check for Updates…")),
                 Some(sel!(checkForUpdates:)),
                 &NSString::from_str(""),
             )
@@ -138,18 +202,31 @@ fn install_app_menu(
         app_menu.addItem(&item);
         app_menu.addItem(&NSMenuItem::separatorItem(mtm));
     }
+    let about = unsafe {
+        NSMenuItem::initWithTitle_action_keyEquivalent(
+            NSMenuItem::alloc(mtm),
+            &NSString::from_str(i18n::pick("关于骂了吗", "About Malema")),
+            Some(sel!(orderFrontStandardAboutPanel:)),
+            &NSString::from_str(""),
+        )
+    };
+    app_menu.addItem(&about);
+    app_menu.addItem(&NSMenuItem::separatorItem(mtm));
     app_menu.addItem(&quit);
     app_item.setSubmenu(Some(&app_menu));
     menu.addItem(&app_item);
 
     let edit_item = NSMenuItem::new(mtm);
-    let edit_menu = NSMenu::initWithTitle(NSMenu::alloc(mtm), &NSString::from_str("编辑"));
+    let edit_menu = NSMenu::initWithTitle(
+        NSMenu::alloc(mtm),
+        &NSString::from_str(i18n::pick("编辑", "Edit")),
+    );
     // The focused WebKit editor receives AppKit's standard responder actions.
     for (title, action, key) in [
-        ("剪切", sel!(cut:), "x"),
-        ("复制", sel!(copy:), "c"),
-        ("粘贴", sel!(paste:), "v"),
-        ("全选", sel!(selectAll:), "a"),
+        (i18n::pick("剪切", "Cut"), sel!(cut:), "x"),
+        (i18n::pick("复制", "Copy"), sel!(copy:), "c"),
+        (i18n::pick("粘贴", "Paste"), sel!(paste:), "v"),
+        (i18n::pick("全选", "Select All"), sel!(selectAll:), "a"),
     ] {
         let item = unsafe {
             NSMenuItem::initWithTitle_action_keyEquivalent(
@@ -165,7 +242,7 @@ fn install_app_menu(
     edit_item.setSubmenu(Some(&edit_menu));
     menu.addItem(&edit_item);
     app.setMainMenu(Some(&menu));
-    Ok(updater)
+    Ok(())
 }
 
 #[cfg(target_os = "macos")]
@@ -181,7 +258,13 @@ fn sparkle_updater() -> Option<objc2::rc::Retained<objc2::runtime::AnyObject>> {
     let bundle = NSBundle::bundleWithURL(&url)?;
     // The updater is embedded and signed as part of the app bundle.
     if !unsafe { bundle.load() } {
-        eprintln!("无法载入 Sparkle 更新组件");
+        eprintln!(
+            "{}",
+            i18n::pick(
+                "无法载入 Sparkle 更新组件",
+                "the Sparkle updater component failed to load"
+            )
+        );
         return None;
     }
     let class = AnyClass::get(c"SPUStandardUpdaterController")?;
@@ -230,6 +313,8 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
     use tao::window::WindowBuilder;
     use wry::WebViewBuilder;
 
+    const REPOSITORY: &str = "https://github.com/ay27/malema";
+
     enum Action {
         ReportReady,
         Scan,
@@ -245,17 +330,20 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
         CancelReview,
         ReviewProgress(usize, usize),
         ReviewDone(review::Outcome),
+        OpenRepository,
+        Language(i18n::Lang),
     }
 
     let event_loop = EventLoopBuilder::<Action>::with_user_event().build();
     let proxy = event_loop.create_proxy();
     let window = WindowBuilder::new()
-        .with_title("骂了吗")
+        .with_title(i18n::pick("骂了吗", "Malema"))
         .with_inner_size(LogicalSize::new(1130.0, 790.0))
         .with_min_inner_size(LogicalSize::new(390.0, 410.0))
         .with_position(LogicalPosition::new(105.0, 65.0))
         .build(&event_loop)?;
-    let updater = install_app_menu(&window)?;
+    let updater = sparkle_updater();
+    install_app_menu(&window, updater.as_ref())?;
     let ipc = proxy.clone();
     let webview = WebViewBuilder::new()
         .with_incognito(true)
@@ -265,6 +353,9 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 "report-ready" => Some(Action::ReportReady),
                 "rescan" => Some(Action::Scan),
                 "cancel-review" => Some(Action::CancelReview),
+                "open-repository" => Some(Action::OpenRepository),
+                "language:zh" => Some(Action::Language(i18n::Lang::Zh)),
+                "language:en" => Some(Action::Language(i18n::Lang::En)),
                 raw if raw.starts_with("contribution:") && raw.len() < 512 => {
                     serde_json::from_str(raw.trim_start_matches("contribution:"))
                         .ok()
@@ -404,7 +495,11 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                                 next_poll = Instant::now() + contribute::SYNC_INTERVAL;
                                 try_sync = true;
                             } else {
-                                contribution.message = "无法保存贡献设置。".to_owned();
+                                contribution.message = i18n::pick(
+                                    "无法保存贡献设置。",
+                                    "could not save the contribution setting.",
+                                )
+                                .to_owned();
                             }
                         }
                     }
@@ -414,8 +509,11 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                                 cancel.store(true, Ordering::Relaxed);
                             }
                         } else {
-                            contribution.message =
-                                "无法保存关闭设置。请检查应用配置目录。".to_owned();
+                            contribution.message = i18n::pick(
+                                "无法保存关闭设置。请检查应用配置目录。",
+                                "could not save the off switch; check the application support directory.",
+                            )
+                            .to_owned();
                         }
                     }
                     Request::Open => {
@@ -429,7 +527,11 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
             Event::UserEvent(Action::ContributionDone(result)) => {
                 sent = None;
                 if contribution.finish(result).is_err() {
-                    contribution.message = "无法保存同步回执。下次会安全重试。".to_owned();
+                    contribution.message = i18n::pick(
+                    "无法保存同步回执。下次会安全重试。",
+                    "could not save the sync receipt; the next run will retry safely.",
+                )
+                .to_owned();
                 }
                 try_sync = true;
                 update = true;
@@ -462,6 +564,17 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                 } else if let Ok(json) = serde_json::to_string(&outcome) {
                     let _ = webview.evaluate_script(&format!("window.reviewDone?.({json})"));
                 }
+            }
+            Event::UserEvent(Action::OpenRepository) => {
+                let _ = std::process::Command::new("/usr/bin/open")
+                    .arg(REPOSITORY)
+                    .spawn();
+            }
+            Event::UserEvent(Action::Language(next)) if next != i18n::lang() => {
+                let _ = i18n::save(&home, next);
+                i18n::set_lang(next);
+                let _ = install_app_menu(&window, updater.as_ref());
+                let _ = webview.load_html(&report::desktop_shell());
             }
             Event::WindowEvent {
                 event: WindowEvent::CloseRequested,
@@ -500,7 +613,13 @@ fn desktop(home: PathBuf, use_env: bool) -> Result<(), Box<dyn std::error::Error
                         let _ = proxy.send_event(Action::ContributionDone(result));
                     });
                 }
-                Err(_) => contribution.message = "无法保存待上报计数。".to_owned(),
+                Err(_) => {
+                    contribution.message = i18n::pick(
+                        "无法保存待上报计数。",
+                        "could not save the pending counts.",
+                    )
+                    .to_owned();
+                }
                 _ => {}
             }
         }

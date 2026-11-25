@@ -1,0 +1,616 @@
+// Public leaderboard front-end. Rendering lives here; every number comes from
+// ./logic.ts so the arithmetic is unit-tested without a DOM.
+import {
+  axisMaximum,
+  axisTicks,
+  combine,
+  compareModels,
+  familyName,
+  familyOf,
+  OTHER_FAMILY,
+  rankByScore,
+  rankMovement,
+  roastIndex,
+  sortCombinations,
+  totals,
+  type Combination,
+  type Entry,
+  type Language,
+  type Snapshot,
+  type SortKey,
+} from "./logic";
+
+type Copy = {
+  brand: string;
+  title: string;
+  tagline: string;
+  period: string;
+  current: string;
+  previous: string;
+  messageLanguage: string;
+  allLanguages: string;
+  harness: string;
+  allHarnesses: string;
+  model: string;
+  allModels: string;
+  modelFamilies: string;
+  otherModels: string;
+  family: (name: string) => string;
+  compare: string;
+  details: string;
+  rank: string;
+  change: string;
+  turns: string;
+  hits: string;
+  score: string;
+  units: string;
+  combinations: string;
+  messages: string;
+  insults: string;
+  overall: string;
+  top: string;
+  skip: string;
+  navigation: string;
+  filters: string;
+  summary: string;
+  retry: string;
+  loading: string;
+  noData: string;
+  noMatch: string;
+  noMatchDetails: string;
+  failed: string;
+  failedDetails: string;
+  topSix: string;
+  updated: string;
+  noSnapshot: string;
+  newEntry: string;
+  noChange: string;
+  noComparison: string;
+  climbed: (n: number) => string;
+  fell: (n: number) => string;
+  thresholds: (turns: string, contributors: string) => string;
+  count: (n: string) => string;
+  ofTotal: (shown: string, all: string) => string;
+  otherUI: string;
+  zhLabel: string;
+  enLabel: string;
+};
+
+const translations: Record<Language, Copy> = {
+  zh: {
+    brand: "骂了吗",
+    title: "全球被骂榜",
+    tagline: "每千条真人消息里，AI 被明确骂了几次。",
+    period: "统计期次",
+    current: "本期",
+    previous: "上期",
+    messageLanguage: "消息语言",
+    allLanguages: "全部",
+    harness: "运行工具",
+    allHarnesses: "全部工具",
+    model: "回复模型",
+    allModels: "全部模型",
+    modelFamilies: "模型系列",
+    otherModels: "其他模型",
+    family: name => name + " 系列",
+    compare: "组合对比",
+    details: "组合明细",
+    rank: "名次",
+    change: "变化",
+    turns: "真人消息",
+    hits: "明确挨骂",
+    score: "被骂指数",
+    units: "每千条消息的明确挨骂数",
+    combinations: "组合",
+    messages: "真人消息",
+    insults: "明确挨骂",
+    overall: "整体指数",
+    top: "回到顶部 ↑",
+    skip: "跳到榜单",
+    navigation: "导航",
+    filters: "榜单筛选",
+    summary: "汇总",
+    retry: "再试一次",
+    loading: "正在读取榜单",
+    noData: "样本还在积累",
+    noMatch: "没有匹配的组合",
+    noMatchDetails: "试试切换语言、模型或运行工具。",
+    failed: "暂时读不到榜单",
+    failedDetails: "请稍后重试。",
+    topSix: "前 6 组 · ",
+    updated: "快照更新于 ",
+    noSnapshot: "等待首份榜单快照",
+    newEntry: "新进榜",
+    noChange: "持平",
+    noComparison: "无可比期次",
+    climbed: n => `上升 ${n} 名`,
+    fell: n => `下降 ${n} 名`,
+    thresholds: (turns, contributors) => `同一工具、模型和语言至少有 ${turns} 条消息，来自 ${contributors} 个贡献安装。`,
+    count: n => `${n} 个组合`,
+    ofTotal: (shown, all) => `显示 ${shown} / ${all}`,
+    otherUI: "Switch interface to English",
+    zhLabel: "中文",
+    enLabel: "English",
+  },
+  en: {
+    brand: "Malema",
+    title: "Global AI Roasting Board",
+    tagline: "How often an AI gets explicitly insulted, per thousand human messages.",
+    period: "Reporting period",
+    current: "Current",
+    previous: "Previous",
+    messageLanguage: "Message language",
+    allLanguages: "All",
+    harness: "Harness",
+    allHarnesses: "All harnesses",
+    model: "Reply model",
+    allModels: "All models",
+    modelFamilies: "Model families",
+    otherModels: "Other models",
+    family: name => name + " family",
+    compare: "Top combinations",
+    details: "All combinations",
+    rank: "#",
+    change: "Move",
+    turns: "Human messages",
+    hits: "Clear insults",
+    score: "Roast index",
+    units: "clear insults per 1,000 messages",
+    combinations: "Combinations",
+    messages: "Human messages",
+    insults: "Clear insults",
+    overall: "Overall index",
+    top: "Back to top ↑",
+    skip: "Skip to leaderboard",
+    navigation: "Navigation",
+    filters: "Leaderboard filters",
+    summary: "Summary",
+    retry: "Try again",
+    loading: "Loading rankings",
+    noData: "Still collecting samples",
+    noMatch: "No matching combinations",
+    noMatchDetails: "Try another language, model, or harness.",
+    failed: "Could not load rankings",
+    failedDetails: "Please try again shortly.",
+    topSix: "Top 6 · ",
+    updated: "Snapshot updated ",
+    noSnapshot: "Waiting for the first snapshot",
+    newEntry: "New",
+    noChange: "No change",
+    noComparison: "No period to compare",
+    climbed: n => `up ${n}`,
+    fell: n => `down ${n}`,
+    thresholds: (turns, contributors) => `Each harness, model and language needs at least ${turns} messages from ${contributors} contributing installations.`,
+    count: n => `${n} combinations`,
+    ofTotal: (shown, all) => `showing ${shown} of ${all}`,
+    otherUI: "切换至中文界面",
+    zhLabel: "中文",
+    enLabel: "English",
+  },
+};
+
+const $ = <T extends HTMLElement = HTMLElement>(id: string): T => document.getElementById(id) as T;
+
+function dom<K extends keyof HTMLElementTagNameMap>(
+  tag: K,
+  className = "",
+  text?: string,
+): HTMLElementTagNameMap[K] {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text !== undefined) element.textContent = text;
+  return element;
+}
+
+interface Ui {
+  locale: Language;
+  filtering: Language | "all";
+  key: SortKey;
+  order: 1 | -1;
+  state: "loading" | "ready" | "error";
+  data: Snapshot | null;
+  previous: Snapshot | null;
+}
+
+const languagePreference = "malema-interface-language";
+
+function initialLanguage(): Language {
+  try {
+    const saved = localStorage.getItem(languagePreference);
+    if (saved === "en" || saved === "zh") return saved;
+  } catch {
+    // The switch still works for this visit when browser storage is unavailable.
+  }
+  return document.documentElement.lang.startsWith("en") ? "en" : "zh";
+}
+
+const ui: Ui = {
+  locale: initialLanguage(),
+  filtering: "all",
+  key: "score",
+  order: -1,
+  state: "loading",
+  data: null,
+  previous: null,
+};
+
+let activeRequest: AbortController | undefined;
+
+const copy = (): Copy => translations[ui.locale];
+const number = (value: number): string => new Intl.NumberFormat(ui.locale).format(value);
+const precision = (value: number): string =>
+  new Intl.NumberFormat(ui.locale, { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
+const harnessName = (key: string): string => ui.data?.harnesses[key] ?? key;
+const languageLabel = (language: Language): string =>
+  language === "zh" ? copy().zhLabel : copy().enLabel;
+
+const currentFilters = () => ({
+  harness: ($("harness") as HTMLSelectElement).value,
+  model: ($("model") as HTMLSelectElement).value,
+  language: ui.filtering,
+});
+
+function setInterface(): void {
+  document.documentElement.lang = ui.locale === "zh" ? "zh-CN" : "en";
+  document.title = copy().title + " · " + copy().brand;
+  for (const node of document.querySelectorAll<HTMLElement>("[data-text]")) {
+    const key = node.dataset.text as keyof Copy;
+    const value = copy()[key];
+    if (typeof value === "string") node.textContent = value;
+  }
+  for (const node of document.querySelectorAll<HTMLElement>("[data-label]")) {
+    const value = copy()[node.dataset.label as keyof Copy];
+    if (typeof value === "string") node.setAttribute("aria-label", value);
+  }
+  const toggle = $("interface-language");
+  toggle.textContent = ui.locale === "zh" ? "EN" : "中文";
+  toggle.setAttribute("aria-label", copy().otherUI);
+  renderLanguageSegments();
+  updateHarnesses();
+  updateModels();
+}
+
+function renderLanguageSegments(): void {
+  const labels: Record<string, string> = {
+    all: copy().allLanguages,
+    zh: copy().zhLabel,
+    en: copy().enLabel,
+  };
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
+    const value = button.dataset.language as keyof typeof labels;
+    button.textContent = labels[value];
+  }
+}
+
+function updateHarnesses(): void {
+  const select = $("harness") as HTMLSelectElement;
+  const selected = select.value;
+  const ids = new Set([
+    ...Object.keys(ui.data?.harnesses ?? {}),
+    ...(ui.data?.entries ?? []).map(entry => entry.harness),
+  ]);
+  if (selected) ids.add(selected);
+  select.replaceChildren(
+    new Option(copy().allHarnesses, ""),
+    ...[...ids].map(id => new Option(harnessName(id), id)),
+  );
+  select.value = selected;
+}
+
+function updateModels(): void {
+  const select = $("model") as HTMLSelectElement;
+  const selected = select.value;
+  const models = new Set<string>((ui.data?.entries ?? []).map(entry => entry.model));
+  if (selected.startsWith("model:")) models.add(selected.slice("model:".length));
+
+  const groups = new Map<string, HTMLOptionElement[]>();
+  for (const name of [...models].sort(compareModels)) {
+    const family = familyOf(name);
+    if (!groups.has(family)) groups.set(family, []);
+    groups.get(family)!.push(new Option(name, "model:" + name));
+  }
+
+  const families = dom("optgroup");
+  families.label = copy().modelFamilies;
+  for (const id of [...new Set([...groups.keys(), OTHER_FAMILY])]) {
+    if (id === OTHER_FAMILY && !groups.has(OTHER_FAMILY)) continue;
+    families.append(new Option(copy().family(familyName(id)), "family:" + id));
+  }
+
+  const options: (HTMLOptionElement | HTMLOptGroupElement)[] = [new Option(copy().allModels, "")];
+  if (families.childElementCount) options.push(families);
+  for (const [id, children] of groups) {
+    const group = dom("optgroup");
+    group.label = familyName(id);
+    group.append(...children);
+    options.push(group);
+  }
+  select.replaceChildren(...options);
+  select.value = selected;
+  if (select.selectedIndex < 0) select.selectedIndex = 0;
+}
+
+/* ---------------------------------------------------------------- summary */
+
+function renderSummary(rows: Combination[]): void {
+  const total = totals(rows);
+  const cards: { label: string; value: string }[] = [
+    { label: copy().combinations, value: number(total.combinations) },
+    { label: copy().messages, value: number(total.turns) },
+    { label: copy().insults, value: number(total.hits) },
+    { label: copy().overall, value: precision(total.score) },
+  ];
+  $("stats").replaceChildren(
+    ...cards.map(card => {
+      const figure = dom("div", "stat");
+      figure.append(dom("span", "stat-label", card.label), dom("strong", "stat-value", card.value));
+      return figure;
+    }),
+  );
+}
+
+/* ------------------------------------------------------------------ chart */
+
+function movementBadge(rank: number, movement: number | null | undefined): HTMLElement {
+  const badge = dom("span", "movement");
+  if (movement === undefined) {
+    badge.classList.add("unknown");
+    badge.textContent = "—";
+    badge.title = copy().noComparison;
+  } else if (movement === null) {
+    badge.classList.add("new");
+    badge.textContent = copy().newEntry;
+    badge.title = copy().newEntry;
+  } else if (movement > 0) {
+    badge.classList.add("up");
+    badge.textContent = "▲" + movement;
+    badge.title = copy().climbed(movement);
+  } else if (movement < 0) {
+    badge.classList.add("down");
+    badge.textContent = "▼" + -movement;
+    badge.title = copy().fell(-movement);
+  } else {
+    badge.classList.add("flat");
+    badge.textContent = "–";
+    badge.title = copy().noChange;
+  }
+  badge.dataset.rank = String(rank);
+  return badge;
+}
+
+function renderAxis(maximum: number): void {
+  const axis = $("chart-axis");
+  const ticks = axisTicks(maximum, 4);
+  axis.replaceChildren(
+    ...ticks.map(tick => {
+      const mark = dom("span", "axis-tick", precision(tick));
+      mark.style.left = (100 * tick) / maximum + "%";
+      return mark;
+    }),
+  );
+}
+
+function renderBars(rows: Combination[], ranks: Map<string, number>, movement: Map<string, number | null>): void {
+  const top = sortCombinations(rows, "score", -1, harnessName).slice(0, 6);
+  const maximum = axisMaximum(Math.max(0, ...top.flatMap(row => Object.values(row.languages).map(entry => roastIndex(entry.hits, entry.turns)))));
+  renderAxis(maximum);
+  const languages: Language[] = ui.filtering === "all" ? ["zh", "en"] : [ui.filtering];
+
+  const bar = (language: Language, entry: Entry | undefined): HTMLElement => {
+    const row = dom("span", "bar-line " + language);
+    const track = dom("span", "track");
+    track.setAttribute("aria-hidden", "true");
+    if (entry) {
+      const fill = dom("i", "fill");
+      fill.style.width = (100 * roastIndex(entry.hits, entry.turns)) / maximum + "%";
+      track.append(fill);
+      row.title = `${languageLabel(language)} · ${number(entry.hits)} / ${number(entry.turns)}`;
+    } else {
+      row.classList.add("absent");
+    }
+    row.append(
+      track,
+      dom(
+        "span",
+        entry ? "bar-value" : "bar-value missing",
+        entry ? precision(roastIndex(entry.hits, entry.turns)) : "—",
+      ),
+    );
+    return row;
+  };
+
+  const elements = top.map(entry => {
+    const row = dom("button", "bar-row");
+    row.type = "button";
+    const name = dom("span", "bar-name");
+    const rank = ranks.get(entry.id);
+    const title = dom("span", "bar-title");
+    title.append(
+      rank ? dom("span", "bar-rank", String(rank)) : dom("span", "bar-rank", "—"),
+      dom("strong", "", entry.model),
+      movementBadge(rank ?? 0, movement.get(entry.id)),
+    );
+    name.append(title, dom("small", "", harnessName(entry.harness)));
+    const group = dom("span", "bar-group");
+    group.append(...languages.map(language => bar(language, entry.languages[language])));
+    row.append(name, group);
+    row.addEventListener("click", () => {
+      const target = document.querySelector<HTMLElement>(`[data-id="${CSS.escape(entry.id)}"]`);
+      target?.scrollIntoView({ block: "center" });
+      target?.focus({ preventScroll: true });
+    });
+    return row;
+  });
+
+  $("bars").replaceChildren(...elements);
+  $("legend").hidden = !elements.length || languages.length === 1;
+  $("chart-hint").textContent = (rows.length > 6 ? copy().topSix : "") + copy().units;
+}
+
+/* ------------------------------------------------------------------ table */
+
+function renderTable(
+  rows: Combination[],
+  ranks: Map<string, number>,
+  movement: Map<string, number | null>,
+): void {
+  for (const button of document.querySelectorAll<HTMLButtonElement>("[data-sort]")) {
+    const header = button.closest("th");
+    const active = button.dataset.sort === ui.key;
+    if (active) header?.setAttribute("aria-sort", ui.order < 0 ? "descending" : "ascending");
+    else header?.removeAttribute("aria-sort");
+    const caret = button.querySelector("i");
+    if (caret) caret.textContent = active ? (ui.order < 0 ? "↓" : "↑") : "↕";
+  }
+
+  const ordered = sortCombinations(rows, ui.key, ui.order, harnessName);
+  $("rows").replaceChildren(
+    ...ordered.map(entry => {
+      const rank = ranks.get(entry.id) ?? 0;
+      const row = dom("tr");
+      row.tabIndex = -1;
+      row.dataset.id = entry.id;
+      const rankCell = dom("td", "rank", rank ? String(rank) : "—");
+      const changeCell = dom("td", "change");
+      changeCell.append(movementBadge(rank, movement.get(entry.id)));
+      const modelCell = dom("td", "", entry.model);
+      if (familyOf(entry.model) === OTHER_FAMILY) modelCell.classList.add("subtle");
+      row.append(
+        rankCell,
+        changeCell,
+        dom("td", "", harnessName(entry.harness)),
+        modelCell,
+        dom("td", "numeric", number(entry.turns)),
+        dom("td", "numeric", number(entry.hits)),
+        dom("td", "numeric strong", precision(entry.score)),
+      );
+      return row;
+    }),
+  );
+}
+
+/* ----------------------------------------------------------------- render */
+
+function render(): void {
+  const filters = currentFilters();
+  const rows = combine(ui.data?.entries ?? [], filters);
+  const ranks = rankByScore(rows);
+  const movement = ui.previous?.updatedAt
+    ? rankMovement(ranks, rankByScore(combine(ui.previous.entries, filters)))
+    : new Map<string, number | null>();
+
+  renderSummary(rows);
+  renderBars(rows, ranks, movement);
+  renderTable(rows, ranks, movement);
+
+  const loaded = ui.state === "ready";
+  const populated = loaded && rows.length > 0;
+  $("skeleton").hidden = ui.state !== "loading";
+  $("stats").hidden = !loaded;
+  $("content").hidden = !populated;
+  $("empty").hidden = populated || ui.state === "loading";
+
+  $("retry").hidden = ui.state !== "error";
+  const threshold = ui.data?.thresholds ?? { turns: 300, contributors: 5 };
+  const limits = copy().thresholds(number(threshold.turns), number(threshold.contributors));
+  const empty =
+    ui.state === "error"
+      ? [copy().failed, copy().failedDetails]
+      : ui.data?.entries.length
+        ? [copy().noMatch, copy().noMatchDetails]
+        : [copy().noData, limits];
+  $("empty-title").textContent = empty[0];
+  $("empty-details").textContent = empty[1];
+
+  $("period-range").textContent = ui.data ? `${ui.data.start} – ${ui.data.end} UTC` : "";
+  $("refresh").textContent = ui.data?.updatedAt
+    ? copy().updated + new Date(ui.data.updatedAt).toLocaleString(ui.locale)
+    : copy().noSnapshot;
+
+  const all = combine(ui.data?.entries ?? [], { harness: "", model: "", language: "all" }).length;
+  $("result-count").textContent =
+    rows.length === all ? copy().count(number(rows.length)) : copy().ofTotal(number(rows.length), number(all));
+}
+
+/* ------------------------------------------------------------------- data */
+
+const periodValue = (): string => ($("period") as HTMLSelectElement).value;
+
+async function snapshot(period: string, signal: AbortSignal): Promise<Snapshot | null> {
+  const response = await fetch("/api/v1/leaderboard?period=" + period, { signal });
+  if (!response.ok) return null;
+  return (await response.json()) as Snapshot;
+}
+
+async function load({ quiet = false } = {}): Promise<void> {
+  activeRequest?.abort();
+  const request = new AbortController();
+  activeRequest = request;
+  if (!quiet) {
+    ui.state = "loading";
+    ui.data = null;
+    render();
+  }
+  try {
+    const period = periodValue();
+    const [data, previous] = await Promise.all([
+      snapshot(period, request.signal),
+      period === "current" ? snapshot("previous", request.signal).catch(() => null) : null,
+    ]);
+    if (request.signal.aborted) return;
+    if (!data) throw new Error("snapshot unavailable");
+    ui.data = data;
+    ui.previous = previous;
+    ui.state = "ready";
+    updateHarnesses();
+    updateModels();
+    render();
+  } catch {
+    if (request.signal.aborted || (quiet && ui.state === "ready")) return;
+    ui.state = "error";
+    render();
+  }
+}
+
+/* ----------------------------------------------------------------- events */
+
+$("interface-language").addEventListener("click", () => {
+  ui.locale = ui.locale === "zh" ? "en" : "zh";
+  try {
+    localStorage.setItem(languagePreference, ui.locale);
+  } catch {
+    // Browser storage is optional.
+  }
+  setInterface();
+  render();
+});
+
+for (const button of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
+  button.addEventListener("click", () => {
+    ui.filtering = button.dataset.language as Language | "all";
+    for (const other of document.querySelectorAll<HTMLButtonElement>("[data-language]")) {
+      other.setAttribute("aria-pressed", String(other === button));
+    }
+    render();
+  });
+}
+
+for (const button of document.querySelectorAll<HTMLButtonElement>("[data-sort]")) {
+  button.addEventListener("click", () => {
+    const key = button.dataset.sort as SortKey;
+    ui.order = ui.key === key ? ((ui.order === 1 ? -1 : 1) as 1 | -1) : (key === "model" || key === "harness" ? 1 : -1);
+    ui.key = key;
+    render();
+  });
+}
+
+$("period").addEventListener("change", () => void load());
+$("retry").addEventListener("click", () => void load());
+$("harness").addEventListener("change", render);
+$("model").addEventListener("change", render);
+
+setInterface();
+void load();
+setInterval(() => {
+  if (!document.hidden) void load({ quiet: true });
+}, 60_000);

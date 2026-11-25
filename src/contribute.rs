@@ -1,3 +1,4 @@
+use crate::i18n;
 use crate::sources::{Source, Turn};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -12,6 +13,12 @@ use time::OffsetDateTime;
 const DAY: i64 = 86_400;
 const EPOCH_MONDAY: i64 = 4;
 const MAX_TURNS: u32 = 5_000;
+/// Model names travel verbatim, so the wire format needs a shape both ends can
+/// check without knowing the model. Keep this in sync with `cloudflare/src/index.ts`.
+const MAX_NAME: usize = 64;
+/// Messages whose tool never logged a model are still counted. The board folds
+/// this bucket into "others" instead of hiding those tools entirely.
+const UNKNOWN_MODEL: &str = "unknown";
 pub const SYNC_INTERVAL: std::time::Duration = std::time::Duration::from_secs(15 * 60);
 
 #[derive(Deserialize)]
@@ -20,7 +27,6 @@ struct Contract {
     protocol: u32,
     ruleset: String,
     language_version: String,
-    models: BTreeMap<String, Vec<String>>,
 }
 
 fn contract() -> &'static Contract {
@@ -58,18 +64,26 @@ fn harness(source: Source) -> &'static str {
     }
 }
 
-fn model(raw: &str) -> Option<&'static str> {
-    let key = raw.to_ascii_lowercase();
-    let models = &contract().models;
-    if let Some((known, _)) = models.get_key_value(&key) {
-        return Some(known);
+/// Keep the reported name as the tool spelled it. Normalising to lowercase only
+/// merges case variants; it never maps an unknown model onto a known one, so a
+/// model released today shows up on the board today instead of disappearing.
+/// A message with no usable name is filed under `UNKNOWN_MODEL` rather than
+/// dropped, so a tool that does not log its model still reaches the board.
+fn model(raw: Option<&str>) -> String {
+    let name: String = raw
+        .unwrap_or_default()
+        .trim()
+        .chars()
+        .filter(|&c| !c.is_control())
+        .map(|c| c.to_ascii_lowercase())
+        .take(MAX_NAME)
+        .collect();
+    let name = name.trim_end();
+    if name.is_empty() {
+        UNKNOWN_MODEL.to_owned()
+    } else {
+        name.to_owned()
     }
-    models.iter().find_map(|(known, aliases)| {
-        aliases
-            .iter()
-            .any(|alias| alias == &key)
-            .then_some(known.as_str())
-    })
 }
 
 fn language(text: &str) -> Option<&'static str> {
@@ -124,10 +138,10 @@ fn language(text: &str) -> Option<&'static str> {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct Weeks(BTreeMap<i64, BTreeMap<(&'static str, &'static str, &'static str), (u32, u32)>>);
+pub struct Weeks(BTreeMap<i64, BTreeMap<(&'static str, String, &'static str), (u32, u32)>>);
 
 impl Weeks {
-    fn add(&mut self, week: i64, key: (&'static str, &'static str, &'static str), hit: bool) {
+    fn add(&mut self, week: i64, key: (&'static str, String, &'static str), hit: bool) {
         let (turns, hits) = self.0.entry(week).or_default().entry(key).or_default();
         if *turns < MAX_TURNS {
             *turns += 1;
@@ -140,10 +154,10 @@ impl Weeks {
             .get(&week)
             .into_iter()
             .flatten()
-            .map(|(&(harness, model, language), &(turns, hits))| Cell {
-                harness: harness.to_owned(),
-                model: model.to_owned(),
-                language: language.to_owned(),
+            .map(|((harness, model, language), &(turns, hits))| Cell {
+                harness: (*harness).to_owned(),
+                model: model.clone(),
+                language: (*language).to_owned(),
                 turns,
                 hits,
             })
@@ -190,15 +204,12 @@ impl Collection {
         if !open(week, self.now) || (!live && !preview) {
             return;
         }
-        let Some(model) = turn.model.as_deref().and_then(model) else {
-            return;
-        };
         let Some(language) = language(&turn.text) else {
             return;
         };
-        let key = (harness(source), model, language);
+        let key = (harness(source), model(turn.model.as_deref()), language);
         if live {
-            self.live.add(week, key, hit);
+            self.live.add(week, key.clone(), hit);
         }
         if preview {
             self.preview.add(week, key, hit);
@@ -298,12 +309,20 @@ impl Controller {
         let mut message = String::new();
         let state = match fs::read(&path) {
             Ok(bytes) => serde_json::from_slice(&bytes).unwrap_or_else(|_| {
-                message = "贡献设置无法读取，请重新确认后开启。".to_owned();
+                message = i18n::pick(
+                    "贡献设置无法读取，请重新确认后开启。",
+                    "the contribution settings could not be read; confirm them again to enable it.",
+                )
+                .to_owned();
                 State::default()
             }),
             Err(error) if error.kind() == io::ErrorKind::NotFound => State::default(),
             Err(_) => {
-                message = "贡献设置暂时不可读。".to_owned();
+                message = i18n::pick(
+                    "贡献设置暂时不可读。",
+                    "the contribution settings are temporarily unreadable.",
+                )
+                .to_owned();
                 State::default()
             }
         };
@@ -438,11 +457,26 @@ impl Controller {
     }
 }
 
+/// Where the leaderboard lives. Release builds bake in `MALEMA_LEADERBOARD_ENDPOINT`;
+/// everything else talks to a local worker. `MALEMA_LEADERBOARD_URL` overrides the
+/// local address so a developer can point at a non-default port.
 pub fn endpoint() -> &'static str {
-    match option_env!("MALEMA_LEADERBOARD_ENDPOINT") {
-        Some(url @ ("https://malema.app" | "https://beta.malema.app")) => url,
-        _ => "http://127.0.0.1:8787",
+    static LOCAL: OnceLock<String> = OnceLock::new();
+    if let Some(url @ ("https://malema.app" | "https://beta.malema.app")) =
+        option_env!("MALEMA_LEADERBOARD_ENDPOINT")
+    {
+        return url;
     }
+    LOCAL.get_or_init(|| match std::env::var("MALEMA_LEADERBOARD_URL") {
+        Ok(value)
+            if value.starts_with("http://127.0.0.1:")
+                || value.starts_with("http://localhost:")
+                || value.starts_with("https://") =>
+        {
+            value.trim_end_matches('/').to_owned()
+        }
+        _ => "http://127.0.0.1:8787".to_owned(),
+    })
 }
 
 pub struct SyncResult {
@@ -505,7 +539,13 @@ fn post(batch: &Batch) -> Result<(), String> {
         "data-binary = {}\n",
         quoted(&serde_json::to_string(batch).expect("batch serialization"))
     ));
-    let fallback = || "暂时无法连接榜单服务。应用下次会重试。".to_owned();
+    let fallback = || {
+        i18n::pick(
+            "暂时无法连接榜单服务。应用下次会重试。",
+            "cannot reach the leaderboard service right now; the app will retry later.",
+        )
+        .to_owned()
+    };
     let mut child = command
         .args(["--config", "-"])
         .stdin(Stdio::piped())
@@ -532,10 +572,26 @@ fn post(batch: &Batch) -> Result<(), String> {
         return Ok(());
     }
     Err(match status {
-        "403" => "内测服务需要有效邀请。".to_owned(),
-        "409" => "这周的贡献版本有冲突，请检查是否同时运行了两个副本。".to_owned(),
-        "400" => "榜单拒绝了这批计数。请确认客户端和服务端版本一致。".to_owned(),
-        "429" => "上报暂时限流。应用下次会重试。".to_owned(),
+        "403" => i18n::pick(
+            "内测服务需要有效邀请。",
+            "the beta service needs a valid invite.",
+        )
+        .to_owned(),
+        "409" => i18n::pick(
+            "这周的贡献版本有冲突，请检查是否同时运行了两个副本。",
+            "this week's contribution revision conflicts; check whether two copies are running.",
+        )
+        .to_owned(),
+        "400" => i18n::pick(
+            "榜单拒绝了这批计数。请确认客户端和服务端版本一致。",
+            "the leaderboard rejected these counts; make sure the client and server versions match.",
+        )
+        .to_owned(),
+        "429" => i18n::pick(
+            "上报暂时限流。应用下次会重试。",
+            "uploads are rate limited right now; the app will retry later.",
+        )
+        .to_owned(),
         _ => fallback(),
     })
 }
@@ -585,20 +641,64 @@ mod tests {
             payload,
             serde_json::json!([
                 {"harness":"codex","model":"gpt-5.6-luna","language":"en","turns":1,"hits":1},
-                {"harness":"codex","model":"gpt-5.6-luna","language":"zh","turns":1,"hits":0}
+                {"harness":"codex","model":"gpt-5.6-luna","language":"zh","turns":1,"hits":0},
+                {"harness":"codex","model":"secret-private-name","language":"en","turns":1,"hits":0}
             ])
         );
-        assert_eq!(counts.preview.counts(), (2, 1));
+        assert_eq!(counts.preview.counts(), (3, 1));
         counts.start(utc, false);
         assert_eq!(counts.live.counts(), (0, 0));
     }
 
     #[test]
+    fn unreleased_model_names_survive_the_contract() {
+        let utc = (EPOCH_MONDAY + 28 * 700 + 1) * DAY;
+        let mut counts = Collection::new(utc, Some(utc - DAY));
+        for name in [
+            Some("gpt-7-experimental"),
+            Some("Some Vendor/Model:2026"),
+            Some("  MiXeD  "),
+            None,
+        ] {
+            counts.collect(
+                Source::Claude,
+                &Turn {
+                    inferred_day: None,
+                    model: name.map(str::to_owned),
+                    harness_version: None,
+                    date: None,
+                    timestamp: Some(utc - 1),
+                    text: "Please look at this code".to_owned(),
+                    session: "s".to_owned(),
+                    line: 1,
+                },
+                false,
+            );
+        }
+        let week = bucket(day(utc), 7);
+        let models: Vec<String> = counts
+            .live
+            .cells(week)
+            .into_iter()
+            .map(|c| c.model)
+            .collect();
+        assert_eq!(
+            models,
+            vec![
+                "gpt-7-experimental".to_owned(),
+                "mixed".to_owned(),
+                "some vendor/model:2026".to_owned(),
+                UNKNOWN_MODEL.to_owned()
+            ]
+        );
+    }
+
+    #[test]
     fn sample_limit_applies_to_the_numerator_and_denominator() {
         let mut weeks = Weeks::default();
-        let key = ("codex", "gpt-5.6-luna", "zh");
+        let key = ("codex", "gpt-5.6-luna".to_owned(), "zh");
         for _ in 0..MAX_TURNS {
-            weeks.add(4, key, false);
+            weeks.add(4, key.clone(), false);
         }
         weeks.add(4, key, true);
         assert_eq!(weeks.counts(), (u64::from(MAX_TURNS), 0));

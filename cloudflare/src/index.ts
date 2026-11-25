@@ -36,7 +36,11 @@ const dayMs = 86_400_000;
 const monday = 4;
 const maxBytes = 65_536;
 const maxTurns = 5_000;
-const maxCells = Object.keys(contract.models).length * Object.keys(contract.harnesses).length * 2;
+// Harness and model names travel from the client verbatim, so the board can show
+// a tool or model the day it ships instead of waiting for a contract release.
+// These caps only bound the wire format; they are not allow-lists.
+const maxName = 64;
+const maxCells = 2_048;
 const bucket = (day: number, width: number) => day - ((day - monday) % width);
 const today = () => Math.floor(Date.now() / dayMs);
 const own = (value: object, key: string) => Object.hasOwn(value, key);
@@ -51,6 +55,12 @@ function hasKeys(object: unknown, ...keys: string[]): object is Record<string, u
 
 function integer(value: unknown, min: number, max: number): value is number {
   return typeof value === "number" && Number.isSafeInteger(value) && value >= min && value <= max;
+}
+
+/** A harness or model name: printable, non-empty, already trimmed, bounded length. */
+function name(value: unknown): value is string {
+  return typeof value === "string" && value.length > 0 && value.length <= maxName
+    && value === value.trim() && !/[\u0000-\u001f\u007f]/.test(value);
 }
 
 function accepted(value: unknown, day: number): Contribution | null {
@@ -69,8 +79,7 @@ function accepted(value: unknown, day: number): Contribution | null {
   const cells: Cell[] = [];
   for (const candidate of value.cells) {
     if (!hasKeys(candidate, "harness", "model", "language", "turns", "hits")
-      || typeof candidate.harness !== "string" || !own(contract.harnesses, candidate.harness)
-      || typeof candidate.model !== "string" || !own(contract.models, candidate.model)
+      || !name(candidate.harness) || !name(candidate.model)
       || (candidate.language !== "zh" && candidate.language !== "en")
       || !integer(candidate.turns, 1, maxTurns) || !integer(candidate.hits, 0, candidate.turns)) return null;
     const { harness, model, language, turns, hits } = candidate;

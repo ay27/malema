@@ -1,31 +1,102 @@
-# 骂了吗全球被骂榜
+# Leaderboard backend and web board
 
-TypeScript Worker 接收 Rust 桌面端主动开启后的统计，D1 保存周累计和公开榜单快照。公开网页在 `public/`，客户端和 Worker 共用上级目录的 `leaderboard-contract.json`。
+A TypeScript Worker that stores anonymised weekly counters from the macOS app in
+D1 and serves the public board in `public/`. The client and the Worker share
+`../leaderboard-contract.json`.
 
-## 本机内测
+The board is built from `src/web/board.ts`, which imports the arithmetic from
+`src/web/logic.ts`. Both are type-checked and the logic module is unit-tested, so
+`public/board.js` is a build artifact — edit the TypeScript, not the bundle. The
+bundle is committed anyway, so `wrangler deploy` works on a fresh clone without a
+build step; `npm run build` refreshes it.
 
-需要 Node.js 22 或更新版本。从本目录运行：
+```sh
+npm ci
+npm run check     # tsc --noEmit
+npm test          # node --test, no DOM
+npm run build     # esbuild → public/board.js
+```
+
+## Local testing
+
+Node.js 22 or newer. From this directory:
 
 ```sh
 npm ci
 npm run migrate:local
-npm run dev
+npm run dev       # builds the bundle, then wrangler dev on 127.0.0.1:8787
 ```
 
-本地 beta 桌面应用的「全球榜单」会在默认浏览器打开 `http://127.0.0.1:8787`。侧栏底部的「匿名提交」开关默认关闭，开启后首次提交包含最近 7 天的统计。网页开始时为空，达到门槛后才有榜单。
+The beta desktop app's "Leaderboard" button opens `http://127.0.0.1:8787`.
+If something else already owns that port, run the worker elsewhere and point the
+app at it with `MALEMA_LEADERBOARD_URL`:
 
-Wrangler 本地预览在有人查看本期榜时，每 10 分钟最多刷新一次快照。也可以手动触发定时任务，用来立即检查新数据：
+```sh
+npx wrangler dev --ip 127.0.0.1 --port 8788 --test-scheduled
+MALEMA_LEADERBOARD_URL=http://127.0.0.1:8788 open '/path/to/骂了吗.app'
+```
+
+Anonymous submission is off by default; turning it on sends the last seven days
+on the first sync. The board stays empty until a snapshot clears the thresholds.
+
+Wrangler refreshes the current snapshot at most every ten minutes while someone
+is watching. Trigger the cron by hand to check new data immediately:
 
 ```sh
 curl 'http://127.0.0.1:8787/__scheduled?cron=*/10+*+*+*+*'
 ```
 
-上报接口 `POST /api/v1/contributions` 接收协议版本、规则版本、周期代号、UTC 周和计数。每周由一个递增版本的完整统计覆盖。榜单接口 `GET /api/v1/leaderboard?period=current` 或 `period=previous` 只返回已达门槛的快照。每个安装每周、每个工具 × 模型 × 语言最多计 5,000 条消息，客户端对同一个样本同时统计分子和分母。合计榜仅汇总通过门槛的语言分组。
+## API
 
-## Cloudflare 部署时的配置
+- `POST /api/v1/contributions` takes the protocol version, ruleset version,
+  season, UTC week and counters. Each week replaces the previous submission only
+  when `revision` is higher. Every install can count at most 5,000 messages per
+  tool × model × language per week; the client caps the numerator and the
+  denominator over the same sample.
+- `GET /api/v1/leaderboard?period=current|previous` returns snapshots that
+  cleared the threshold. The total only aggregates language groups that passed.
 
-本目录的 `wrangler.jsonc` 是本机配置。生产或远程内测应使用单独的 Worker 和独立 D1 库。填入真实数据库 ID，分别应用各自的 migration，在准备发布时绑定相应的 Custom Domain。
+Harness and model names are free-form strings: the Worker checks length and
+printable characters instead of an allow-list, so a client that reports a new
+tool or an unreleased model still lands in the data. Unrecognised models fall
+into the "Other" family on the board instead of being dropped.
 
-- `INGEST_MODE=invite` 允许带邀请凭证的上报。把 `INGEST_INVITE` 设为 Worker secret。内测启动时通过环境变量 `MALEMA_LEADERBOARD_INVITE` 向客户端提供邀请。
-- `INGEST_MODE=public` 开启公开写入。未设置有效模式时写入关闭，网页仍读取最后的数据快照。
-- 桌面端编译变量 `MALEMA_LEADERBOARD_ENDPOINT` 支持 `https://beta.malema.app` 和 `https://malema.app`，默认连接回环地址。开发和测试环境无需真实会话或 Cloudflare 账户。
+## Deploying to Cloudflare
+
+Deploy the site and API together as one Worker with Static Assets and D1. Keep
+`wrangler.jsonc` for local development. Production and beta each need their own
+Worker name and D1 database.
+
+1. From this directory, sign in with `npx wrangler login` and confirm the
+   intended account with `npx wrangler whoami`. The domain must be an active
+   Cloudflare zone in that account.
+2. Create the production database with `npx wrangler d1 create malema-production`.
+   In a separate `wrangler.production.jsonc`, use the production database name
+   and ID, keep the `DB` binding and Cron trigger, and set the route to
+   `{ "pattern": "malema.app", "custom_domain": true }`. Start with
+   `INGEST_MODE=closed` for a read-only launch.
+3. From the verified commit, build, migrate, and deploy.
+
+   ```sh
+   npm ci
+   npm run check
+   npm test
+   npm run build
+   npx wrangler deploy --config wrangler.production.jsonc --dry-run
+   npx wrangler d1 migrations apply DB --config wrangler.production.jsonc --remote
+   npx wrangler deploy --config wrangler.production.jsonc
+   ```
+
+4. Check the site and both API periods on the custom domain. On a fresh
+   database the board displays a no-data state. Check that the snapshot
+   timestamp advances after the Cron trigger runs.
+
+For beta submissions, set `INGEST_MODE=invite` on the beta Worker and store
+`INGEST_INVITE` as a Worker secret. The beta app reads
+`MALEMA_LEADERBOARD_INVITE` from its environment. For a public launch,
+`INGEST_MODE=public` accepts submissions without an invite. Returning to
+`closed` stops new submissions while keeping existing snapshots readable.
+
+Set the repository variable `MALEMA_LEADERBOARD_ENDPOINT` to
+`https://malema.app` before building a public desktop release. The beta target
+is `https://beta.malema.app`. Local builds default to loopback.
