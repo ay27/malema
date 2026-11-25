@@ -333,6 +333,10 @@ impl Report {
               <button class="contribution-switch" id="contribution-switch" type="button" role="switch" aria-checked="false" aria-label="{}" title="{}" disabled>
                 <span class="contribution-label">{}<small>{}</small></span><span class="switch-track" aria-hidden="true"></span>
               </button>
+              <div class="contribution-status" id="contribution-status" role="status" hidden>
+                <p id="contribution-summary" hidden></p>
+                <p id="contribution-time" hidden></p>
+              </div>
               <p class="contribution-error" id="contribution-error" role="status" hidden></p>
             </div>"#,
                 t(
@@ -340,8 +344,8 @@ impl Report {
                     "submit anonymously to the global leaderboard"
                 ),
                 t(
-                    "自动分享匿名计数，可随时关闭。手动开启时包含最近 7 天。",
-                    "Shares anonymous counts. You can turn it off at any time. Turning it on manually includes the last 7 days."
+                    "上报规则扫描的匿名计数。手动开启时包含最近 7 天。",
+                    "Shares anonymous counts from the rule-based scan. Turning it on manually includes the last 7 days."
                 ),
                 t("匿名提交", "Anonymous"),
                 t("参与全球排行", "join the leaderboard"),
@@ -697,6 +701,10 @@ fn dictionary() -> String {
         "optionLabel": t("{label}：{option}", "{label}: {option}"),
         "scanning": t("正在后台扫描…", "scanning in the background…"),
         "cachedScan": t("上次结果 · 后台更新中", "previous result · updating in the background"),
+        "contributionSending": t("正在上报…", "Sending counts…"),
+        "contributionWaiting": t("尚无成功上报", "No confirmed uploads yet"),
+        "contributionConfirmed": t("近期已确认 {turns} 条消息 · {hits} 次挨骂", "Recently confirmed · {turns} messages · {hits} insults"),
+        "contributionLastSync": t("最近成功 {time}", "Last successful upload {time}"),
         "endpointSystemOne": t("Jev System One 接口地址", "Jev System One endpoint"),
         "endpointChat": t("Chat Completions 接口地址", "Chat Completions endpoint"),
         "allSources": t("全部来源", "all sources"),
@@ -848,6 +856,7 @@ mod tests {
         assert!(shell.contains("id=\"language-toggle\""));
         assert!(shell.contains("id=\"open-repository\""));
         assert!(shell.contains("id=\"contribution-switch\""));
+        assert!(shell.contains("id=\"contribution-status\""));
     }
 
     #[test]

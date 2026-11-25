@@ -245,6 +245,27 @@ struct Slot {
     revision: u32,
     cells: Vec<Cell>,
     acked: bool,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    previous_confirmation: Option<ConfirmedCounts>,
+}
+
+#[derive(Clone, Copy, Default, Deserialize, Serialize)]
+struct ConfirmedCounts {
+    turns: u64,
+    hits: u64,
+}
+
+impl Slot {
+    fn confirmed_counts(&self) -> Option<ConfirmedCounts> {
+        if self.acked {
+            Some(ConfirmedCounts {
+                turns: self.cells.iter().map(|cell| u64::from(cell.turns)).sum(),
+                hits: self.cells.iter().map(|cell| u64::from(cell.hits)).sum(),
+            })
+        } else {
+            self.previous_confirmation
+        }
+    }
 }
 
 #[derive(Clone, Default, Deserialize, Serialize)]
@@ -282,6 +303,8 @@ pub struct Status {
     enabled: bool,
     sending: bool,
     ready: bool,
+    confirmed: Option<ConfirmedCounts>,
+    last_sync: Option<i64>,
     message: String,
 }
 
@@ -385,10 +408,18 @@ impl Controller {
     }
 
     pub fn status(&self, ready: bool, sending: bool) -> Status {
+        let mut confirmed = None;
+        for counts in self.state.slots.values().filter_map(Slot::confirmed_counts) {
+            let total = confirmed.get_or_insert_with(ConfirmedCounts::default);
+            total.turns += counts.turns;
+            total.hits += counts.hits;
+        }
         Status {
             enabled: self.state.since.is_some(),
             sending,
             ready,
+            confirmed,
+            last_sync: self.state.last_sync,
             message: self.message.clone(),
         }
     }
@@ -407,10 +438,10 @@ impl Controller {
             || state.slots.len() != self.state.slots.len();
         for &week in counts.0.keys().filter(|&&week| open(week, now)) {
             let cells = counts.cells(week);
-            let revision = match state.slots.get(&week) {
+            let (revision, previous_confirmation) = match state.slots.get(&week) {
                 Some(slot) if slot.cells == cells => continue,
-                Some(slot) => slot.revision + 1,
-                None => 1,
+                Some(slot) => (slot.revision + 1, slot.confirmed_counts()),
+                None => (1, None),
             };
             state.slots.insert(
                 week,
@@ -418,6 +449,7 @@ impl Controller {
                     revision,
                     cells,
                     acked: false,
+                    previous_confirmation,
                 },
             );
             changed = true;
@@ -458,6 +490,7 @@ impl Controller {
 
     pub fn finish(&mut self, result: SyncResult) -> io::Result<()> {
         let mut state = self.state.clone();
+        let mut confirmed = false;
         for (week, revision) in &result.acked {
             if let Some(slot) = state
                 .slots
@@ -465,9 +498,11 @@ impl Controller {
                 .filter(|slot| slot.revision == *revision)
             {
                 slot.acked = true;
+                slot.previous_confirmation = None;
+                confirmed = true;
             }
         }
-        if !result.acked.is_empty() {
+        if confirmed {
             state.last_sync = Some(now());
             self.save(state)?;
         }
@@ -583,6 +618,50 @@ fn quoted(value: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn receipt_keeps_confirmed_counts_while_a_replacement_is_pending() {
+        let home = std::env::temp_dir().join(format!("malema-test-{}", random_token().unwrap()));
+        let now = now();
+        let week = bucket(day(now), 7);
+        let mut controller = Controller::load(&home);
+        let mut counts = Weeks::default();
+        let key = ("codex", "test-model".to_owned(), "en");
+        counts.add(week, key.clone(), true);
+        let batch = controller.prepare(&counts, now).unwrap().pop().unwrap();
+        assert!(controller.status(true, true).confirmed.is_none());
+        controller
+            .finish(SyncResult {
+                acked: vec![(week, batch.revision)],
+                error: None,
+            })
+            .unwrap();
+
+        counts.add(week, key, false);
+        let replacement = controller.prepare(&counts, now).unwrap().pop().unwrap();
+        let mut reloaded = Controller::load(&home);
+        let status = reloaded.status(true, true);
+        let confirmed = status.confirmed.unwrap();
+        assert_eq!((confirmed.turns, confirmed.hits), (1, 1));
+        assert!(status.last_sync.is_some());
+
+        reloaded
+            .finish(SyncResult {
+                acked: Vec::new(),
+                error: Some("retry".to_owned()),
+            })
+            .unwrap();
+        assert_eq!(reloaded.status(true, false).confirmed.unwrap().turns, 1);
+        reloaded
+            .finish(SyncResult {
+                acked: vec![(week, replacement.revision)],
+                error: None,
+            })
+            .unwrap();
+        let confirmed = reloaded.status(true, false).confirmed.unwrap();
+        assert_eq!((confirmed.turns, confirmed.hits), (2, 1));
+        fs::remove_dir_all(home).unwrap();
+    }
 
     #[test]
     fn reporting_defaults_on_for_a_new_install_and_remembers_opt_out() {

@@ -30,7 +30,9 @@ nav button:hover{color:#334f9e;background:#e3ecfa}nav button[aria-current="page"
 .switch-track::before{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 3px #26334433}
 .contribution-switch[aria-checked="true"] .switch-track{border-color:var(--blue);background:var(--blue)}
 .contribution-switch[aria-checked="true"] .switch-track::before{transform:translateX(14px)}
-.contribution-error{margin:3px 8px 0;color:#9b3749;font-size:11px;overflow-wrap:anywhere}
+.contribution-status,.contribution-error{margin:3px 8px 0;color:#5e6e81;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.contribution-status p{margin:0}
+.contribution-error{color:#9b3749}
 main{min-width:0}.toolbar{position:sticky;top:0;z-index:3;background:#fffffff5;border-bottom:1px solid var(--line);padding:13px clamp(15px,3vw,33px);display:flex;align-items:center;justify-content:space-between;gap:10px}
 .toolbar strong{font-size:17px;white-space:nowrap}.controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
 .scan-status{white-space:nowrap}
@@ -649,9 +651,20 @@ function init(initialData) {
   if (contributionSwitch && window.ipc) {
     const post = (action, data = {}) => window.ipc.postMessage("contribution:" + JSON.stringify({action,...data}));
     const error = $("contribution-error");
+    const receipt = $("contribution-status"), summary = $("contribution-summary"), lastSync = $("contribution-time");
+    const formatTime = new Intl.DateTimeFormat(T.locale, {dateStyle:"short",timeStyle:"short"});
     window.contributionStatus = status => {
       contributionSwitch.setAttribute("aria-checked", String(status.enabled));
       contributionSwitch.disabled = !status.enabled && (!status.ready || status.sending);
+      const confirmed = status.confirmed;
+      summary.textContent = status.sending ? T.contributionSending : confirmed
+        ? fill(T.contributionConfirmed,{turns:fmt.format(confirmed.turns),hits:fmt.format(confirmed.hits)})
+        : status.enabled && status.ready && !status.last_sync && !status.message ? T.contributionWaiting : "";
+      lastSync.textContent = status.last_sync
+        ? fill(T.contributionLastSync,{time:formatTime.format(new Date(status.last_sync * 1000))}) : "";
+      summary.hidden = !summary.textContent;
+      lastSync.hidden = !lastSync.textContent;
+      receipt.hidden = summary.hidden && lastSync.hidden;
       error.textContent = status.message;
       error.hidden = !status.message;
     };
